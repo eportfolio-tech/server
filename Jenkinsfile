@@ -1,9 +1,15 @@
 pipeline {
   agent any
   stages {
-    stage('') {
+    stage('Build') {
       steps {
-        git(url: 'https://github.com/Haswf/COMP30022BackEndDev', branch: 'master')
+        sh 'sh \'./gradlew assemble\''
+      }
+    }
+
+    stage('Test') {
+      steps {
+        sh 'sh \'./gradlew test\''
       }
     }
 
