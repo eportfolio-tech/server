@@ -3,6 +3,9 @@ jdk: oraclejdk11
 os: linux
 dist: trusty
 
+before_install:
+  - chmod +x gradlew
+
 install:
   - ./gradlew assemble
 
