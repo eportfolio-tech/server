@@ -6,12 +6,6 @@ dist: trusty
 before_install:
   - chmod +x gradlew
 
-install:
-  - ./gradlew assemble
-
-script:
-  - ./gradlew build --scan -s
-
 before_cache:
   - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
   - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
