@@ -20,6 +20,11 @@ repositories {
     maven { url 'https://repo.spring.io/snapshot' }
 }
 
+buildScan {
+    licenseAgreementUrl = "https://gradle.com/terms-of-service"
+    licenseAgree = "yes"
+}
+
 ext {
     set('azureVersion', "2.3.1")
 }

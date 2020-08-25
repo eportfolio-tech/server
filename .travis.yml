@@ -3,6 +3,7 @@ jdk: oraclejdk11
 os: linux
 dist: trusty
 
+# Fix gradlew permission
 before_install:
   - chmod +x gradlew
 
