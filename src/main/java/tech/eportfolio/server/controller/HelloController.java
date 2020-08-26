@@ -1,4 +1,4 @@
-package tech.eportfolio.server.Controller;
+package tech.eportfolio.server.controller;
 
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestMapping;

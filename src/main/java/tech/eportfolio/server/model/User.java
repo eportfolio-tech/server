@@ -1,6 +1,7 @@
-package tech.eportfolio.server;
+package tech.eportfolio.server.model;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;

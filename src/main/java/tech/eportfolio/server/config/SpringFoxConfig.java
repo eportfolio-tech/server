@@ -1,4 +1,4 @@
-package tech.eportfolio.server.Config;
+package tech.eportfolio.server.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
