@@ -15,7 +15,7 @@ after_success:
     ; fi`
 - export IMAGE_NAME=docker.pkg.github.com/haswf/comp30022backenddev/eportfolio-server-docker
 - echo $COMMIT
-- docker build --build-arg JAR_FILE=build/libs/*.jar -t $IMAGE_NAME:$COMMIT .
+- docker build --build-arg JAR_FILE=build/libs/*.jar -t $IMAGE_NAME:$TRAVIS_COMMIT .
 - docker tag $IMAGE_NAME:$COMMIT $IMAGE_NAME:$TAG
 - docker push $IMAGE_NAME
 
