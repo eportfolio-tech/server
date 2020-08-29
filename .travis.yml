@@ -10,9 +10,8 @@ install:
 - "./gradlew build"
 after_success:
 - docker login https://docker.pkg.github.com -u haswf -p $DOCKER_TOKEN
-- export TAG=`if [ "$TRAVIS_BRANCH" == "master" ]; then echo "latest"; else echo $TRAVIS_BRANCH
-  ; fi`
-- export IMAGE_NAME=docker.pkg.github.com/haswf/comp30022backenddev/eportfolio-server-docker
+- export TAG=`if [ "$TRAVIS_BRANCH" == "master" ]; then echo "latest"; else echo $TRAVIS_BRANCH; fi`
+- export IMAGE_NAME=docker.pkg.github.com/haswf/comp30022backenddev/eportfolio-server-docker:$TAG
 - echo $COMMIT
 - docker build --build-arg JAR_FILE=build/libs/*.jar -t $IMAGE_NAME:$TRAVIS_COMMIT .
 - docker tag $IMAGE_NAME:$COMMIT $IMAGE_NAME:$TAG

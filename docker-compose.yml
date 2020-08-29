@@ -2,8 +2,9 @@ version: "3"
 services:
   server:
     image: docker.pkg.github.com/haswf/comp30022backenddev/eportfolio-server-docker
-    ports:
-      - "8090:8090"
+    expose:
+      - "8090"
+    restart: always
   watchtower:
     image: containrrr/watchtower
     volumes:
@@ -19,4 +20,4 @@ services:
       #  Check if new docker image exist every 300 seconds
       # clean-up old images
     command: --interval 300  --cleanup
-    restart: unless-stopped
+    restart: always
