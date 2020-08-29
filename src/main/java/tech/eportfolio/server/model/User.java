@@ -1,8 +1,6 @@
 package tech.eportfolio.server.model;
 
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.*;
+import lombok.Data;
 
 import javax.persistence.*;
 
@@ -21,14 +19,12 @@ public class User {
     @Column(nullable = false)
     private String password;
 
-    private String preferedName;
+    private String preferredName;
     private String title;
     private String phone;
-
-    @Override
-    public String toString() {
-        return String.format(
-                "Customer[id=%d, firstName='%s', lastName='%s']",
-                id, firstName, lastName);
-    }
+    @Column(nullable = false, unique = true)
+    private String username;
+    private boolean deleted = false;
+    private boolean locked = false;
+    private boolean enabled = true;
 }

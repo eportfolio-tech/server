@@ -2,14 +2,15 @@ package tech.eportfolio.server.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import tech.eportfolio.server.model.User;
 import tech.eportfolio.server.exception.UserNotFoundException;
+import tech.eportfolio.server.model.User;
 import tech.eportfolio.server.repository.UserRepository;
 import tech.eportfolio.server.service.UserService;
 
 import java.util.List;
 
 @RestController
+@RequestMapping("/users")
 public class UserController {
     @Autowired
     private UserService service;
@@ -39,7 +40,6 @@ public class UserController {
 
     @PutMapping("/users/{id}")
     public User replaceEmployee(@RequestBody User newUser, @PathVariable Long id) {
-
         return repository.findById(id)
                 .map(user -> {
                     user.setFirstName(newUser.getFirstName());
