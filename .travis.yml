@@ -26,3 +26,6 @@ cache:
   directories:
   - "$HOME/.gradle/caches/"
   - "$HOME/.gradle/wrapper/"
+
+notifications:
+  slack: comp30022-workspace:yePNqzMI6WiNSkp7Ck1YP45E
