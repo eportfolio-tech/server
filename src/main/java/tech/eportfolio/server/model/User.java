@@ -6,7 +6,6 @@ import javax.persistence.*;
 
 @Data
 @Entity
-@Table(name = "user")
 public class User {
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
@@ -16,15 +15,16 @@ public class User {
 
     @Column(nullable = false)
     private String email;
+
     @Column(nullable = false)
     private String password;
-
-    private String preferredName;
     private String title;
     private String phone;
+
     @Column(nullable = false, unique = true)
     private String username;
     private boolean deleted = false;
     private boolean locked = false;
     private boolean enabled = true;
+
 }

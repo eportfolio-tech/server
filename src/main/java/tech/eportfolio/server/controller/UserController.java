@@ -2,12 +2,15 @@ package tech.eportfolio.server.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import tech.eportfolio.server.dto.UserDTO;
+import tech.eportfolio.server.exception.EmailAlreadyInUseException;
 import tech.eportfolio.server.exception.UserNotFoundException;
 import tech.eportfolio.server.model.User;
 import tech.eportfolio.server.repository.UserRepository;
 import tech.eportfolio.server.service.UserService;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/users")
@@ -26,8 +29,12 @@ public class UserController {
     }
 
     @PostMapping("/")
-    public User createOneUser(@RequestBody User user) {
-        return service.save(user);
+    public User createOneUser(@RequestBody UserDTO userDTO) {
+        Optional<User> user = service.findUserByEmail(userDTO.getEmail());
+        if (user.isPresent()) {
+            throw new EmailAlreadyInUseException(userDTO.getEmail());
+        }
+        return service.save(service.fromUserDTO(userDTO));
     }
 
     // Single item

@@ -1,15 +1,21 @@
 package tech.eportfolio.server.service;
 
+import tech.eportfolio.server.dto.UserDTO;
 import tech.eportfolio.server.model.User;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface UserService {
     User save(User user);
 
-    User findById(long id);
+    Optional<User> findById(long id);
 
     List<User> findAll();
 
-    User findUsersByEmail(String email);
+    Optional<User> findUserByEmail(String email);
+
+    User fromUserDTO(UserDTO userDTO);
+
+    Optional<User> findUserByUsername(String username);
 }
