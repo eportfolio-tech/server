@@ -1,6 +1,6 @@
 package tech.eportfolio.server.constraint;
 
-import validator.FieldsValidator;
+import tech.eportfolio.server.validator.FieldsValidator;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;

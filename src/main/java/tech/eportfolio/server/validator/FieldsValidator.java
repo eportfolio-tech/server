@@ -1,4 +1,4 @@
-package validator;
+package tech.eportfolio.server.validator;
 
 import org.springframework.beans.BeanWrapperImpl;
 import tech.eportfolio.server.constraint.FieldsConstraint;

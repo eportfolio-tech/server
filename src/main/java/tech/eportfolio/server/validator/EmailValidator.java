@@ -1,9 +1,10 @@
-package validator;
+package tech.eportfolio.server.validator;
 
 import tech.eportfolio.server.constraint.EmailConstraint;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
+
 
 public class EmailValidator implements ConstraintValidator<EmailConstraint, String> {
 
