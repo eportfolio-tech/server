@@ -20,40 +20,35 @@ public class UserController {
 
     // Aggregate root
 
-    @GetMapping("/users")
+    @GetMapping("/")
     public List<User> findAll() {
         return service.findAll();
     }
 
-    @PostMapping("/users")
-    public User createNewUser(@RequestBody User user) {
+    @PostMapping("/")
+    public User createOneUser(@RequestBody User user) {
         return service.save(user);
     }
 
     // Single item
 
-    @GetMapping("/users/{id}")
+    @GetMapping("/{id}")
     public User findOneUser(@PathVariable Long id) {
         return repository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException(id));
     }
 
-    @PutMapping("/users/{id}")
-    public User replaceEmployee(@RequestBody User newUser, @PathVariable Long id) {
+    @PutMapping("/{id}")
+    public User updateOneUser(@RequestBody User changedUser, @PathVariable Long id) {
         return repository.findById(id)
                 .map(user -> {
-                    user.setFirstName(newUser.getFirstName());
-                    user.setLastName(newUser.getLastName());
+                    user.setFirstName(changedUser.getFirstName());
+                    user.setLastName(changedUser.getLastName());
                     return repository.save(user);
                 })
                 .orElseGet(() -> {
-                    newUser.setId(id);
-                    return repository.save(newUser);
+                    changedUser.setId(id);
+                    return repository.save(changedUser);
                 });
-    }
-
-    @DeleteMapping("/users/{id}")
-    public void deleteUser(@PathVariable Long id) {
-        repository.deleteById(id);
     }
 }
