@@ -13,7 +13,7 @@ public class User {
     private String firstName;
     private String lastName;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String email;
 
     @Column(nullable = false)
@@ -21,10 +21,9 @@ public class User {
     private String title;
     private String phone;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private String username;
     private boolean deleted = false;
     private boolean locked = false;
     private boolean enabled = true;
-
 }
