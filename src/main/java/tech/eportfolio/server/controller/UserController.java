@@ -9,7 +9,6 @@ import tech.eportfolio.server.model.User;
 import tech.eportfolio.server.repository.UserRepository;
 import tech.eportfolio.server.service.UserService;
 
-import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -21,13 +20,6 @@ public class UserController {
     @Autowired
     private UserRepository repository;
 
-    // Aggregate root
-
-    @GetMapping("/")
-    public List<User> findAll() {
-        return service.findAll();
-    }
-
     @PostMapping("/")
     public User createOneUser(@RequestBody UserDTO userDTO) {
         Optional<User> user = service.findUserByEmail(userDTO.getEmail());
@@ -38,11 +30,13 @@ public class UserController {
     }
 
     // Single item
-
     @GetMapping("/{id}")
     public User findOneUser(@PathVariable Long id) {
-        return repository.findById(id)
-                .orElseThrow(() -> new UserNotFoundException(id));
+        Optional<User> user = service.findById(id);
+        if (user.isEmpty()) {
+            throw new UserNotFoundException(id);
+        }
+        return user.get();
     }
 
     @PutMapping("/{id}")
