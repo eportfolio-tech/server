@@ -6,7 +6,13 @@ import javax.persistence.*;
 
 @Data
 @Entity
+@Table(name = "user",
+        indexes = {
+                @Index(columnList = "username", name = "username_index"),
+                @Index(columnList = "email", name = "email_index")
+        })
 public class User {
+
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
     private Long id;
