@@ -9,6 +9,7 @@ import tech.eportfolio.server.model.User;
 import tech.eportfolio.server.repository.UserRepository;
 import tech.eportfolio.server.service.UserService;
 
+import javax.validation.Valid;
 import java.util.Optional;
 
 @RestController
@@ -21,7 +22,7 @@ public class UserController {
     private UserRepository repository;
 
     @PostMapping("/")
-    public User createOneUser(@RequestBody UserDTO userDTO) {
+    public User createOneUser(@RequestBody @Valid UserDTO userDTO) {
         Optional<User> user = service.findUserByEmail(userDTO.getEmail());
         if (user.isPresent()) {
             throw new EmailAlreadyInUseException(userDTO.getEmail());
