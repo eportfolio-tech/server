@@ -1,8 +1,11 @@
 package tech.eportfolio.server.model;
 
 import lombok.Data;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
+import java.util.Date;
 
 @Data
 @Entity
@@ -32,4 +35,12 @@ public class User {
     private boolean deleted = false;
     private boolean locked = false;
     private boolean enabled = true;
+
+    @Column(nullable = false)
+    @CreationTimestamp
+    private Date createdAt;
+
+    @Column(nullable = false)
+    @UpdateTimestamp
+    private Date updatedOn;
 }
