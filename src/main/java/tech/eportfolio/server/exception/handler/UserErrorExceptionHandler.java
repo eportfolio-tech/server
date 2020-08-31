@@ -9,14 +9,17 @@ import tech.eportfolio.server.exception.EmailAlreadyInUseException;
 import tech.eportfolio.server.exception.UserNotFoundException;
 import tech.eportfolio.server.exception.response.UserErrorResponse;
 
+import java.util.Collections;
 import java.util.stream.Collectors;
 
 @ControllerAdvice
 public class UserErrorExceptionHandler {
+
     @ExceptionHandler
     public ResponseEntity<UserErrorResponse> handleException(EmailAlreadyInUseException ex) {
         UserErrorResponse error = new UserErrorResponse();
         error.setStatus(HttpStatus.CONFLICT.value());
+        error.setErrors(Collections.singletonList(ex.getMessage()));
         error.setMessage(ex.getMessage());
         error.setTimeStamp(System.currentTimeMillis());
         return new ResponseEntity<>(error, HttpStatus.CONFLICT);
