@@ -5,6 +5,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Date;
 
 @Data
@@ -14,22 +15,19 @@ import java.util.Date;
                 @Index(columnList = "username", name = "username_index"),
                 @Index(columnList = "email", name = "email_index")
         })
-public class User {
-
+public class User implements Serializable {
     @Id
-    @GeneratedValue(strategy= GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(nullable = false, updatable = false)
     private Long id;
     private String firstName;
     private String lastName;
-
     @Column(nullable = false, unique = true)
     private String email;
-
     @Column(nullable = false)
     private String password;
     private String title;
     private String phone;
-
     @Column(nullable = false)
     private String username;
     private boolean deleted = false;
@@ -43,4 +41,9 @@ public class User {
     @Column(nullable = false)
     @UpdateTimestamp
     private Date updatedOn;
+
+    private String[] roles;
+    private String[] authorities;
+
+
 }

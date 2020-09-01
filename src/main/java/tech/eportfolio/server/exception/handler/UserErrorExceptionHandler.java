@@ -3,8 +3,8 @@ package tech.eportfolio.server.exception.handler;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 import tech.eportfolio.server.exception.EmailAlreadyInUseException;
 import tech.eportfolio.server.exception.UserNotFoundException;
 import tech.eportfolio.server.exception.response.UserErrorResponse;
@@ -12,7 +12,7 @@ import tech.eportfolio.server.exception.response.UserErrorResponse;
 import java.util.Collections;
 import java.util.stream.Collectors;
 
-@ControllerAdvice
+@RestControllerAdvice
 public class UserErrorExceptionHandler {
 
     @ExceptionHandler

@@ -3,25 +3,38 @@ package tech.eportfolio.server.service.impl;
 import ma.glasnost.orika.BoundMapperFacade;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.impl.DefaultMapperFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import tech.eportfolio.server.dto.UserDTO;
+import tech.eportfolio.server.exception.UserNotFoundException;
 import tech.eportfolio.server.model.User;
+import tech.eportfolio.server.model.UserPrincipal;
 import tech.eportfolio.server.repository.UserRepository;
 import tech.eportfolio.server.service.UserService;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 
 @Service
-public class UserServiceImpl implements UserService {
+@Transactional
+@Qualifier("UserDetailsService")
+public class UserServiceImpl implements UserService, UserDetailsService {
+    private final Logger LOGGER = LoggerFactory.getLogger(getClass());
+
     @Autowired
     BoundMapperFacade<UserDTO, User> boundMapper;
 
     @Autowired
     private UserRepository userRepository;
+
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
@@ -63,4 +76,15 @@ public class UserServiceImpl implements UserService {
     }
 
 
+    @Override
+    public UserDetails loadUserByUsername(String username) {
+        User user = userRepository.findByUsername(username);
+        if (user == null) {
+            LOGGER.error("User not found by username: {}", username);
+            throw new UserNotFoundException(username);
+        } else {
+            LOGGER.info("Found user by username: {}", username);
+            return new UserPrincipal(user);
+        }
+    }
 }
