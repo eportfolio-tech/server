@@ -1,6 +1,8 @@
 package tech.eportfolio.server.interceptor;
 
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -21,6 +23,8 @@ import java.util.Map;
  */
 @Component
 public class PathUsernameInterceptor extends HandlerInterceptorAdapter {
+    private final Logger LOGGER = LoggerFactory.getLogger(getClass());
+
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws IOException {
         // Extract path variable `username` from request if it exists
@@ -37,6 +41,8 @@ public class PathUsernameInterceptor extends HandlerInterceptorAdapter {
             // exceptionHandler defined in @ControllerAdvice
             // See https://stackoverflow.com/questions/22062311/how-to-use-exceptionhandler-in-spring-interceptor
             JwtAccessDeniedHandler jwtAccessDeniedHandler = new JwtAccessDeniedHandler();
+            LOGGER.info("PathUsernameInterceptor failed: {} in JWT mismatch with {} in path", SecurityContextHolder.getContext().
+                    getAuthentication().getName(), usernameInPath);
             jwtAccessDeniedHandler.handle(request, response, new AccessDeniedException(SecurityConstant.ACCESS_DENIED_MESSAGE));
         }
         return true;
