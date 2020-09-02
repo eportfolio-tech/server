@@ -1,11 +1,12 @@
 package tech.eportfolio.server.exception;
 
 public class UserNotFoundException extends RuntimeException {
+    public static final String PROMPT = "User doesn't exist: ";
     public UserNotFoundException(Long id) {
-        super("Could not find user id" + id);
+        super(PROMPT + id);
     }
 
     public UserNotFoundException(String username) {
-        super("Could not find user username" + username);
+        super(PROMPT + username);
     }
 }
