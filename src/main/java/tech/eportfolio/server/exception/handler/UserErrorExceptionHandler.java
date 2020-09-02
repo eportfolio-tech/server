@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import tech.eportfolio.server.exception.EmailAlreadyInUseException;
 import tech.eportfolio.server.exception.UserNotFoundException;
-import tech.eportfolio.server.exception.response.UserErrorResponse;
+import tech.eportfolio.server.exception.response.HttpResponse;
 
 import java.util.Collections;
 import java.util.stream.Collectors;
@@ -16,28 +16,31 @@ import java.util.stream.Collectors;
 public class UserErrorExceptionHandler {
 
     @ExceptionHandler
-    public ResponseEntity<UserErrorResponse> handleException(EmailAlreadyInUseException ex) {
-        UserErrorResponse error = new UserErrorResponse();
+    public ResponseEntity<HttpResponse> handleException(EmailAlreadyInUseException ex) {
+        HttpResponse error = new HttpResponse();
         error.setStatus(HttpStatus.CONFLICT.value());
         error.setErrors(Collections.singletonList(ex.getMessage()));
         error.setMessage(ex.getMessage());
+        error.setHttpStatus(HttpStatus.CONFLICT);
         error.setTimeStamp(System.currentTimeMillis());
         return new ResponseEntity<>(error, HttpStatus.CONFLICT);
     }
 
     @ExceptionHandler
-    public ResponseEntity<UserErrorResponse> handleException(UserNotFoundException ex) {
-        UserErrorResponse error = new UserErrorResponse();
+    public ResponseEntity<HttpResponse> handleException(UserNotFoundException ex) {
+        HttpResponse error = new HttpResponse();
         error.setStatus(HttpStatus.NOT_FOUND.value());
         error.setMessage(ex.getMessage());
+        error.setHttpStatus(HttpStatus.NOT_FOUND);
         error.setErrors(Collections.singletonList(ex.getMessage()));
         error.setTimeStamp(System.currentTimeMillis());
         return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler
-    public ResponseEntity<UserErrorResponse> handleException(MethodArgumentNotValidException ex) {
-        UserErrorResponse error = new UserErrorResponse();
+    public ResponseEntity<HttpResponse> handleException(MethodArgumentNotValidException ex) {
+        HttpResponse error = new HttpResponse();
+        error.setHttpStatus(HttpStatus.BAD_REQUEST);
         error.setStatus(HttpStatus.BAD_REQUEST.value());
         error.setErrors(ex.getBindingResult().getFieldErrors().stream().map(
                 e -> e.getField() + e.getDefaultMessage()).collect(Collectors.toList()));
@@ -47,9 +50,11 @@ public class UserErrorExceptionHandler {
     }
 
     @ExceptionHandler(Throwable.class)
-    public ResponseEntity<UserErrorResponse> handleException(Exception ex) {
-        UserErrorResponse error = new UserErrorResponse();
+    public ResponseEntity<HttpResponse> handleException(Exception ex) {
+        HttpResponse error = new HttpResponse();
+        error.setHttpStatus(HttpStatus.BAD_REQUEST);
         error.setStatus(HttpStatus.BAD_REQUEST.value());
+        error.setErrors(Collections.singletonList(ex.getMessage()));
         error.setMessage(ex.getMessage());
         error.setTimeStamp(System.currentTimeMillis());
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);

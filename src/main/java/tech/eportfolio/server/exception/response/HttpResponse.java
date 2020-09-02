@@ -1,15 +1,21 @@
 package tech.eportfolio.server.exception.response;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.http.HttpStatus;
 
+import java.util.List;
+
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Builder
 public class HttpResponse {
-    private long timeStamp;
-    private int status;
     private HttpStatus httpStatus;
     private String message;
-    private String error;
+    private int status;
+    private long timeStamp;
+    private List<String> errors;
 }

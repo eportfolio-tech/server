@@ -1,5 +1,7 @@
-package tech.eportfolio.server.filter;
+package tech.eportfolio.server.security;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
@@ -8,7 +10,6 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
-import tech.eportfolio.server.security.SecurityConstant;
 import tech.eportfolio.server.utility.JWTTokenProvider;
 
 import javax.servlet.FilterChain;
@@ -20,6 +21,9 @@ import java.util.List;
 
 @Component
 public class JWTAuthorizationFilter extends OncePerRequestFilter {
+
+    private final Logger LOGGER = LoggerFactory.getLogger(getClass());
+
     private final JWTTokenProvider jwtTokenProvider;
 
     public JWTAuthorizationFilter(JWTTokenProvider tokenProvider) {
@@ -28,6 +32,7 @@ public class JWTAuthorizationFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+        // Allow OPTIONS request
         if (request.getMethod().equalsIgnoreCase(HttpMethod.OPTIONS.name())) {
             response.setStatus(HttpStatus.OK.value());
         } else {

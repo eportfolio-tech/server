@@ -1,4 +1,4 @@
-package tech.eportfolio.server.filter;
+package tech.eportfolio.server.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.http.HttpStatus;
@@ -7,12 +7,12 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.Http403ForbiddenEntryPoint;
 import org.springframework.stereotype.Component;
 import tech.eportfolio.server.exception.response.HttpResponse;
-import tech.eportfolio.server.security.SecurityConstant;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Collections;
 
 /**
  * @author haswell
@@ -25,7 +25,7 @@ public class JwtAuthenticationEntryPoint extends Http403ForbiddenEntryPoint {
                 status(HttpStatus.FORBIDDEN.value()).
                 httpStatus(HttpStatus.FORBIDDEN).
                 message(HttpStatus.FORBIDDEN.getReasonPhrase().toLowerCase()).
-                error(SecurityConstant.FORBIDDEN_MESSAGE).
+                errors(Collections.singletonList(SecurityConstant.FORBIDDEN_MESSAGE)).
                 timeStamp(System.currentTimeMillis()).build();
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setStatus(HttpStatus.FORBIDDEN.value());
