@@ -62,6 +62,11 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
+    public boolean verifyPassword(User user, String password) {
+        return bCryptPasswordEncoder.matches(password, user.getPassword());
+    }
+
+    @Override
     public User register(User user) {
         Optional<User> emailResult = findByEmail(user.getEmail());
         if (emailResult.isPresent()) {
@@ -77,9 +82,20 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             throw new UsernameExistException(user.getUsername());
         }
 
-        user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+        user.setPassword(encodePassword(user.getPassword()));
         user.setRoles(Role.ROLE_USER.name());
         user.setAuthorities(Role.ROLE_USER.getAuthorities());
+        return userRepository.save(user);
+    }
+
+    @Override
+    public String encodePassword(String raw) {
+        return bCryptPasswordEncoder.encode(raw);
+    }
+
+    @Override
+    public User changePassword(User user, String password) {
+        user.setPassword(this.encodePassword(password));
         return userRepository.save(user);
     }
 

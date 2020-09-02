@@ -1,12 +1,19 @@
 package tech.eportfolio.server.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import tech.eportfolio.server.dto.PasswordResetRequestBody;
 import tech.eportfolio.server.exception.UserNotFoundException;
 import tech.eportfolio.server.model.User;
 import tech.eportfolio.server.repository.UserRepository;
+import tech.eportfolio.server.security.SecurityConstant;
 import tech.eportfolio.server.service.UserService;
 
+import javax.validation.Valid;
+import javax.validation.constraints.Null;
+import java.nio.file.AccessDeniedException;
 import java.util.Optional;
 
 /**
@@ -51,6 +58,28 @@ public class UserController {
             throw new UserNotFoundException(username);
         }
         return user.get();
+    }
+
+    /**
+     * Reset password of an given user
+     *
+     * @param username username
+     * @return Nothing
+     */
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    @PostMapping("/{username}/password-reset")
+    public ResponseEntity<Null> passwordReset(@PathVariable String username, @RequestBody @Valid PasswordResetRequestBody passwordResetRequestBody) throws AccessDeniedException {
+        Optional<User> userOptional = service.findByUsername(username);
+        if (userOptional.isEmpty()) {
+            throw new UserNotFoundException(username);
+        }
+        User user = userOptional.get();
+        if (service.verifyPassword(user, passwordResetRequestBody.getOldPassword())) {
+            service.changePassword(user, passwordResetRequestBody.getNewPassword());
+            return new ResponseEntity<>(HttpStatus.ACCEPTED);
+        } else {
+            throw new AccessDeniedException(SecurityConstant.ACCESS_DENIED_MESSAGE);
+        }
     }
 
 //    @PutMapping("/{username}")

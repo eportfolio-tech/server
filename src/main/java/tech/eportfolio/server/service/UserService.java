@@ -18,4 +18,11 @@ public interface UserService {
     User fromUserDTO(UserDTO userDTO);
 
     Optional<User> findByUsername(String username);
+
+    boolean verifyPassword(User user, String password);
+
+    String encodePassword(String raw);
+
+    User changePassword(User user, String password);
+
 }
