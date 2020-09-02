@@ -10,6 +10,7 @@ import tech.eportfolio.server.exception.UserNotFoundException;
 import tech.eportfolio.server.exception.UsernameExistException;
 import tech.eportfolio.server.exception.response.HttpResponse;
 
+import java.nio.file.AccessDeniedException;
 import java.util.Collections;
 import java.util.stream.Collectors;
 
@@ -61,6 +62,17 @@ public class AuthenticationExceptionHandler {
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<HttpResponse> handleException(AccessDeniedException ex) {
+        HttpResponse error = new HttpResponse();
+        error.setHttpStatus(HttpStatus.UNAUTHORIZED);
+        error.setStatus(HttpStatus.UNAUTHORIZED.value());
+        error.setErrors(Collections.singletonList(ex.getMessage()));
+        error.setMessage(ex.getMessage());
+        error.setTimeStamp(System.currentTimeMillis());
+        return new ResponseEntity<>(error, HttpStatus.UNAUTHORIZED);
+    }
+
     @ExceptionHandler(Throwable.class)
     public ResponseEntity<HttpResponse> handleException(Exception ex) {
         HttpResponse error = new HttpResponse();
@@ -71,4 +83,6 @@ public class AuthenticationExceptionHandler {
         error.setTimeStamp(System.currentTimeMillis());
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
+
+
 }
