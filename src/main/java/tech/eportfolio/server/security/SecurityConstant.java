@@ -10,7 +10,11 @@ public class SecurityConstant {
     public static final String AUTHORITIES = "Authorities";
     public static final String FORBIDDEN_MESSAGE = "You need to log in to access this resource";
     public static final String ACCESS_DENIED_MESSAGE = "You do not have permission to access this resource";
-    public static final String OPTIONS_HTTP_METHOD = "OPTIONS";
+    public static final String[] PUBLIC_PATH = {
+            // Swagger resources
+            "/swagger-ui.html", "/v2/api-docs", "/configuration/ui", "/swagger-resources/**", "/configuration/**", "/webjars/**",
+            // Authentication endpoints
+            "/authentication/**"};
 
     private SecurityConstant() {
         throw new IllegalStateException("SecurityConstant is an Utility class");

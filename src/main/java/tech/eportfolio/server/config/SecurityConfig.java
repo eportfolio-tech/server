@@ -15,6 +15,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import tech.eportfolio.server.exception.handler.JwtAccessDeniedHandler;
 import tech.eportfolio.server.filter.JWTAuthorizationFilter;
 import tech.eportfolio.server.filter.JwtAuthenticationEntryPoint;
+import tech.eportfolio.server.security.SecurityConstant;
 import tech.eportfolio.server.service.impl.UserServiceImpl;
 
 @Configuration
@@ -50,8 +51,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 // Don't keep track of session
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 // permit access to public path
-                .and().authorizeRequests().antMatchers("/user", "/swagger-ui.html", "/v2/api-docs",
-                "/configuration/ui", "/swagger-resources/**", "/configuration/**", "/webjars/**").permitAll()
+                .and().authorizeRequests().antMatchers(SecurityConstant.PUBLIC_PATH).permitAll()
                 // require authorization for other paths
                 .anyRequest().authenticated().and().authorizeRequests().and().
                 exceptionHandling().accessDeniedHandler(jwtAccessDeniedHandler)

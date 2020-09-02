@@ -30,6 +30,7 @@ public class UserErrorExceptionHandler {
         UserErrorResponse error = new UserErrorResponse();
         error.setStatus(HttpStatus.NOT_FOUND.value());
         error.setMessage(ex.getMessage());
+        error.setErrors(Collections.singletonList(ex.getMessage()));
         error.setTimeStamp(System.currentTimeMillis());
         return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
     }
