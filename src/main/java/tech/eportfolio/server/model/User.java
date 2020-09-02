@@ -42,7 +42,7 @@ public class User implements Serializable {
     @UpdateTimestamp
     private Date updatedOn;
 
-    private String[] roles;
+    private String roles;
     private String[] authorities;
 
 

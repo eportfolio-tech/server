@@ -12,8 +12,12 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
+import tech.eportfolio.server.constant.Role;
 import tech.eportfolio.server.dto.UserDTO;
+import tech.eportfolio.server.exception.EmailExistException;
 import tech.eportfolio.server.exception.UserNotFoundException;
+import tech.eportfolio.server.exception.UsernameExistException;
 import tech.eportfolio.server.model.User;
 import tech.eportfolio.server.model.UserPrincipal;
 import tech.eportfolio.server.repository.UserRepository;
@@ -22,12 +26,15 @@ import tech.eportfolio.server.service.UserService;
 import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 
 @Service
 @Transactional
 @Qualifier("UserDetailsService")
 public class UserServiceImpl implements UserService, UserDetailsService {
     private final Logger LOGGER = LoggerFactory.getLogger(getClass());
+
+    private final Random random = new Random(System.currentTimeMillis());
 
     @Autowired
     BoundMapperFacade<UserDTO, User> boundMapper;
@@ -44,9 +51,26 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         return mapperFactory.getMapperFacade(UserDTO.class, User.class);
     }
 
+
     @Override
-    public User save(User user) {
+    public User register(User user) {
+        Optional<User> emailResult = findUserByEmail(user.getEmail());
+        if (emailResult.isPresent()) {
+            throw new EmailExistException(user.getEmail());
+        }
+
+        if (StringUtils.isEmpty(user.getUsername())) {
+            user.setUsername(user.getFirstName() + user.getLastName() + random.nextInt());
+        }
+
+        Optional<User> userNameResult = findUserByUsername(user.getUsername());
+        if (userNameResult.isPresent()) {
+            throw new UsernameExistException(user.getUsername());
+        }
+
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+        user.setRoles(Role.ROLE_USER.name());
+        user.setAuthorities(Role.ROLE_USER.getAuthorities());
         return userRepository.save(user);
     }
 

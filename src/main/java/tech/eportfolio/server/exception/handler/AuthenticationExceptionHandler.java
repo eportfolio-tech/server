@@ -5,18 +5,19 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import tech.eportfolio.server.exception.EmailAlreadyInUseException;
+import tech.eportfolio.server.exception.EmailExistException;
 import tech.eportfolio.server.exception.UserNotFoundException;
+import tech.eportfolio.server.exception.UsernameExistException;
 import tech.eportfolio.server.exception.response.HttpResponse;
 
 import java.util.Collections;
 import java.util.stream.Collectors;
 
 @RestControllerAdvice
-public class UserErrorExceptionHandler {
+public class AuthenticationExceptionHandler {
 
-    @ExceptionHandler
-    public ResponseEntity<HttpResponse> handleException(EmailAlreadyInUseException ex) {
+    @ExceptionHandler(EmailExistException.class)
+    public ResponseEntity<HttpResponse> handleException(EmailExistException ex) {
         HttpResponse error = new HttpResponse();
         error.setStatus(HttpStatus.CONFLICT.value());
         error.setErrors(Collections.singletonList(ex.getMessage()));
@@ -26,7 +27,18 @@ public class UserErrorExceptionHandler {
         return new ResponseEntity<>(error, HttpStatus.CONFLICT);
     }
 
-    @ExceptionHandler
+    @ExceptionHandler(UsernameExistException.class)
+    public ResponseEntity<HttpResponse> handleException(UsernameExistException ex) {
+        HttpResponse error = new HttpResponse();
+        error.setStatus(HttpStatus.CONFLICT.value());
+        error.setErrors(Collections.singletonList(ex.getMessage()));
+        error.setMessage(ex.getMessage());
+        error.setHttpStatus(HttpStatus.CONFLICT);
+        error.setTimeStamp(System.currentTimeMillis());
+        return new ResponseEntity<>(error, HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler(UserNotFoundException.class)
     public ResponseEntity<HttpResponse> handleException(UserNotFoundException ex) {
         HttpResponse error = new HttpResponse();
         error.setStatus(HttpStatus.NOT_FOUND.value());
@@ -37,7 +49,7 @@ public class UserErrorExceptionHandler {
         return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
     }
 
-    @ExceptionHandler
+    @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<HttpResponse> handleException(MethodArgumentNotValidException ex) {
         HttpResponse error = new HttpResponse();
         error.setHttpStatus(HttpStatus.BAD_REQUEST);
