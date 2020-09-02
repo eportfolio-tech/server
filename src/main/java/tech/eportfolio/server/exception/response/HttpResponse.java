@@ -1,4 +1,4 @@
-package tech.eportfolio.server;
+package tech.eportfolio.server.exception.response;
 
 import lombok.Builder;
 import lombok.Data;

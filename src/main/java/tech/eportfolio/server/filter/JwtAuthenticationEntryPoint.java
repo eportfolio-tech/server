@@ -6,7 +6,7 @@ import org.springframework.http.MediaType;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.Http403ForbiddenEntryPoint;
 import org.springframework.stereotype.Component;
-import tech.eportfolio.server.HttpResponse;
+import tech.eportfolio.server.exception.response.HttpResponse;
 import tech.eportfolio.server.security.SecurityConstant;
 
 import javax.servlet.http.HttpServletRequest;
