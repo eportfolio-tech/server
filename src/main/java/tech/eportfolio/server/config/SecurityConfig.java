@@ -50,7 +50,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 // Don't keep track of session
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 // permit access to public path
-                .and().authorizeRequests().antMatchers("/users").permitAll()
+                .and().authorizeRequests().antMatchers("/user", "/swagger-ui.html", "/v2/api-docs",
+                "/configuration/ui", "/swagger-resources/**", "/configuration/**", "/webjars/**").permitAll()
                 // require authorization for other paths
                 .anyRequest().authenticated().and().authorizeRequests().and().
                 exceptionHandling().accessDeniedHandler(jwtAccessDeniedHandler)
