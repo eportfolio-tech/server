@@ -34,7 +34,7 @@ public class User implements Serializable {
     private boolean locked = false;
     private boolean enabled = true;
 
-    @Column(nullable = false)
+    @Column(nullable = false, updatable = false)
     @CreationTimestamp
     private Date createdAt;
 
@@ -44,6 +44,5 @@ public class User implements Serializable {
 
     private String roles;
     private String[] authorities;
-
 
 }

@@ -13,9 +13,9 @@ public interface UserService {
 
     List<User> findAll();
 
-    Optional<User> findUserByEmail(String email);
+    Optional<User> findByEmail(String email);
 
     User fromUserDTO(UserDTO userDTO);
 
-    Optional<User> findUserByUsername(String username);
+    Optional<User> findByUsername(String username);
 }

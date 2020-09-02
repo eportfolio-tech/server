@@ -23,27 +23,37 @@ import tech.eportfolio.server.model.UserPrincipal;
 import tech.eportfolio.server.repository.UserRepository;
 import tech.eportfolio.server.service.UserService;
 
-import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 
 @Service
-@Transactional
 @Qualifier("UserDetailsService")
 public class UserServiceImpl implements UserService, UserDetailsService {
     private final Logger LOGGER = LoggerFactory.getLogger(getClass());
 
     private final Random random = new Random(System.currentTimeMillis());
 
-    @Autowired
-    BoundMapperFacade<UserDTO, User> boundMapper;
+    private BoundMapperFacade<UserDTO, User> boundMapper;
 
-    @Autowired
     private UserRepository userRepository;
 
-    @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
+
+    @Autowired
+    public void setBoundMapper(BoundMapperFacade<UserDTO, User> boundMapper) {
+        this.boundMapper = boundMapper;
+    }
+
+    @Autowired
+    public void setUserRepository(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
+
+    @Autowired
+    public void setbCryptPasswordEncoder(BCryptPasswordEncoder bCryptPasswordEncoder) {
+        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
+    }
 
     @Bean
     public BoundMapperFacade<UserDTO, User> boundMapperFacade() {
@@ -51,10 +61,9 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         return mapperFactory.getMapperFacade(UserDTO.class, User.class);
     }
 
-
     @Override
     public User register(User user) {
-        Optional<User> emailResult = findUserByEmail(user.getEmail());
+        Optional<User> emailResult = findByEmail(user.getEmail());
         if (emailResult.isPresent()) {
             throw new EmailExistException(user.getEmail());
         }
@@ -63,7 +72,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             user.setUsername(user.getFirstName() + user.getLastName() + random.nextInt());
         }
 
-        Optional<User> userNameResult = findUserByUsername(user.getUsername());
+        Optional<User> userNameResult = findByUsername(user.getUsername());
         if (userNameResult.isPresent()) {
             throw new UsernameExistException(user.getUsername());
         }
@@ -85,7 +94,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public Optional<User> findUserByEmail(String email) {
+    public Optional<User> findByEmail(String email) {
         return Optional.ofNullable(userRepository.findByEmail(email));
     }
 
@@ -95,7 +104,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public Optional<User> findUserByUsername(String username) {
+    public Optional<User> findByUsername(String username) {
         return Optional.ofNullable(userRepository.findByUsername(username));
     }
 

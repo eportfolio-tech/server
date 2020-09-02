@@ -9,17 +9,24 @@ import tech.eportfolio.server.service.UserService;
 
 import java.util.Optional;
 
+/**
+ * @author Haswell
+ */
 @RestController
 @CrossOrigin(origins = "*")
 @RequestMapping("/users")
 public class UserController {
-    @Autowired
-    private UserService service;
+    private final UserService service;
+
+    private final UserRepository repository;
 
     @Autowired
-    private UserRepository repository;
+    public UserController(UserService service, UserRepository repository) {
+        this.service = service;
+        this.repository = repository;
+    }
 
-//    @PostMapping("/")
+    //    @PostMapping("/")
 //    public User createOneUser(@RequestBody @Valid UserDTO userDTO) {
 //        Optional<User> user = service.findUserByEmail(userDTO.getEmail());
 //        if (user.isPresent()) {
@@ -31,27 +38,32 @@ public class UserController {
 //        return service.save(service.fromUserDTO(userDTO));
 //    }
 
-    // Single item
-    @GetMapping("/{id}")
-    public User findOneUser(@PathVariable Long id) {
-        Optional<User> user = service.findById(id);
+    /**
+     * Find a user by username
+     *
+     * @param username username
+     * @return User
+     */
+    @GetMapping("/{username}")
+    public User findOneUser(@PathVariable String username) {
+        Optional<User> user = service.findByUsername(username);
         if (user.isEmpty()) {
-            throw new UserNotFoundException(id);
+            throw new UserNotFoundException(username);
         }
         return user.get();
     }
 
-    @PutMapping("/{id}")
-    public User updateOneUser(@RequestBody User changedUser, @PathVariable Long id) {
-        return repository.findById(id)
-                .map(user -> {
-                    user.setFirstName(changedUser.getFirstName());
-                    user.setLastName(changedUser.getLastName());
-                    return repository.save(user);
-                })
-                .orElseGet(() -> {
-                    changedUser.setId(id);
-                    return repository.save(changedUser);
-                });
-    }
+//    @PutMapping("/{username}")
+//    public User updateOneUser(@RequestBody User changedUser, @PathVariable Long id) {
+//        return repository.findById(id)
+//                .map(user -> {
+//                    user.setFirstName(changedUser.getFirstName());
+//                    user.setLastName(changedUser.getLastName());
+//                    return repository.save(user);
+//                })
+//                .orElseGet(() -> {
+//                    changedUser.setId(id);
+//                    return repository.save(changedUser);
+//                });
+//    }
 }

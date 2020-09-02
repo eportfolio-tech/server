@@ -79,7 +79,7 @@ public class JWTTokenProvider {
     public JWTVerifier getJWTVerifier() {
         JWTVerifier jwtVerifier;
         try {
-            Algorithm algorithm = Algorithm.HMAC512(secret);
+            Algorithm algorithm = Algorithm.HMAC512(secret.getBytes());
             jwtVerifier = JWT.require(algorithm).withIssuer(SecurityConstant.ISSUER).build();
         } catch (JWTVerificationException exception) {
             throw new JWTVerificationException(SecurityConstant.TOKEN_CANNOT_BE_VERIFIED);

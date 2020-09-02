@@ -1,6 +1,9 @@
 package tech.eportfolio.server.security;
 
+import org.springframework.beans.factory.annotation.Value;
+
 public class SecurityConstant {
+    @Value("jwt.expire")
     public static final long EXPIRATION_TIME = 432_000_000;
     public static final String TOKEN_HEADER = "Bearer ";
     public static final String JWT_TOKEN_HEADER = "X_JWT_Token";

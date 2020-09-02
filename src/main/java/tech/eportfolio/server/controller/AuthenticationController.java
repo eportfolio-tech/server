@@ -42,10 +42,10 @@ public class AuthenticationController extends AuthenticationExceptionHandler {
         return userService.register(userService.fromUserDTO(userDTO));
     }
 
-    @PostMapping("login")
+    @PostMapping("/login")
     public ResponseEntity<User> login(@RequestParam String username, @RequestParam String password) {
         authenticate(username, password);
-        Optional<User> loginUser = userService.findUserByUsername(username);
+        Optional<User> loginUser = userService.findByUsername(username);
         if (loginUser.isPresent()) {
             UserPrincipal userPrincipal = new UserPrincipal(loginUser.get());
             HttpHeaders jwtHeader = getJwtHeader(userPrincipal);
