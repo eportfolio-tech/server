@@ -44,6 +44,7 @@ public class PathUsernameInterceptor extends HandlerInterceptorAdapter {
             LOGGER.info("PathUsernameInterceptor failed: {} in JWT mismatch with {} in path", SecurityContextHolder.getContext().
                     getAuthentication().getName(), usernameInPath);
             jwtAccessDeniedHandler.handle(request, response, new AccessDeniedException(SecurityConstant.ACCESS_DENIED_MESSAGE));
+            return false;
         }
         return true;
     }
