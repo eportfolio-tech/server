@@ -56,8 +56,8 @@ public class AuthenticationExceptionHandler {
         error.setHttpStatus(HttpStatus.BAD_REQUEST);
         error.setStatus(HttpStatus.BAD_REQUEST.value());
         error.setErrors(ex.getBindingResult().getFieldErrors().stream().map(
-                e -> e.getField() + e.getDefaultMessage()).collect(Collectors.toList()));
-        error.setMessage("Parameter validation failed!");
+                e -> String.format("%s %s", e.getField(), e.getDefaultMessage())).collect(Collectors.toList()));
+        error.setMessage("Parameter validation failed");
         error.setTimeStamp(System.currentTimeMillis());
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
