@@ -20,7 +20,6 @@ import javax.validation.Valid;
 import java.util.Optional;
 
 @RestController
-@CrossOrigin(origins = "*")
 @RequestMapping("/authentication")
 public class AuthenticationController extends AuthenticationExceptionHandler {
 
