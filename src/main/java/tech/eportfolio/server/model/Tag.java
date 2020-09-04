@@ -21,6 +21,7 @@ public class Tag {
     @Column(nullable = false, unique = true)
     private String name;
 
+    private String icon;
     private boolean deleted = false;
 
     @Column(nullable = false, updatable = false)
