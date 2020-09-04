@@ -13,7 +13,6 @@ import tech.eportfolio.server.model.User;
 import tech.eportfolio.server.model.UserTag;
 import tech.eportfolio.server.repository.UserRepository;
 import tech.eportfolio.server.security.SecurityConstant;
-import tech.eportfolio.server.service.TagService;
 import tech.eportfolio.server.service.UserService;
 import tech.eportfolio.server.service.UserTagService;
 
@@ -37,14 +36,11 @@ public class UserController {
 
     private final UserTagService userTagService;
 
-    private final TagService tagService;
-
     @Autowired
-    public UserController(UserService service, UserRepository repository, UserTagService userTagService, TagService tagService) {
+    public UserController(UserService service, UserRepository repository, UserTagService userTagService) {
         this.userService = service;
         this.repository = repository;
         this.userTagService = userTagService;
-        this.tagService = tagService;
     }
 
     /**
@@ -126,5 +122,14 @@ public class UserController {
             throw new UserNotFoundException(username);
         }
         return userTagService.batchAssign(user.get(), tags);
+    }
+
+    @DeleteMapping("/{username}/tags")
+    public List<UserTag> deleteUserTags(@PathVariable String username, @RequestBody List<Tag> tags) {
+        Optional<User> user = userService.findByUsername(username);
+        if (user.isEmpty()) {
+            throw new UserNotFoundException(username);
+        }
+        return userTagService.delete(user.get(), tags);
     }
 }

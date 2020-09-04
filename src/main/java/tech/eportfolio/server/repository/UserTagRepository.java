@@ -8,9 +8,11 @@ import java.util.List;
 public interface UserTagRepository extends CrudRepository<UserTag, Long> {
     UserTag findById(long id);
 
-    List<UserTag> findByUsername(String username);
+    List<UserTag> findByUsernameAndDeleted(String username, boolean deleted);
 
-    List<UserTag> findByUserID(Long userId);
+    List<UserTag> findByUserIDAndDeleted(Long userId, boolean deleted);
 
-    List<UserTag> findByTagId(Long tagId);
+    List<UserTag> findByTagIdAndDeleted(Long tagId, boolean deleted);
+
+    List<UserTag> findByTagIdInAndUsernameAndDeleted(List<Long> tagIds, String username, Boolean delete);
 }

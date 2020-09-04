@@ -25,4 +25,6 @@ public class UserTag {
 
     @NotNull
     private Long tagId;
+
+    private boolean deleted = false;
 }

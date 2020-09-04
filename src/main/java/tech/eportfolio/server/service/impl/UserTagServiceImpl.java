@@ -9,7 +9,6 @@ import tech.eportfolio.server.model.User;
 import tech.eportfolio.server.model.UserTag;
 import tech.eportfolio.server.repository.UserTagRepository;
 import tech.eportfolio.server.service.TagService;
-import tech.eportfolio.server.service.UserService;
 import tech.eportfolio.server.service.UserTagService;
 
 import javax.validation.constraints.NotNull;
@@ -25,7 +24,6 @@ public class UserTagServiceImpl implements UserTagService {
 
     private final UserTagRepository userTagRepository;
     private final TagService tagService;
-    private UserService userService;
 
     public UserTagServiceImpl(UserTagRepository userTagRepository, TagService tagService) {
         this.userTagRepository = userTagRepository;
@@ -34,12 +32,12 @@ public class UserTagServiceImpl implements UserTagService {
 
     @Override
     public List<UserTag> findByUsername(String username) {
-        return userTagRepository.findByUsername(username);
+        return userTagRepository.findByUsernameAndDeleted(username, false);
     }
 
     @Override
     public List<UserTag> findByUserID(Long userID) {
-        return userTagRepository.findByUserID(userID);
+        return userTagRepository.findByUserIDAndDeleted(userID, false);
     }
 
     @Override
@@ -80,4 +78,18 @@ public class UserTagServiceImpl implements UserTagService {
         }
         return saveAll(userTagsBatchInsert);
     }
+
+    @Override
+    public List<UserTag> delete(User user, List<Tag> tag) {
+        List<UserTag> userTags = userTagRepository.
+                findByTagIdInAndUsernameAndDeleted(
+                        tag.stream().map(Tag::getId).collect(Collectors.toList()),
+                        user.getUsername(),
+                        false);
+        userTags.forEach(e -> e.setDeleted(true));
+        userTagRepository.saveAll(userTags);
+        return userTags;
+    }
+
+
 }

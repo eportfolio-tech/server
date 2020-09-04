@@ -18,4 +18,6 @@ public interface UserTagService {
     List<UserTag> saveAll(List<UserTag> userTags);
 
     List<UserTag> batchAssign(User user, List<Tag> tags);
+
+    List<UserTag> delete(User user, List<Tag> tag);
 }
