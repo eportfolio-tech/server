@@ -1,5 +1,7 @@
 package tech.eportfolio.server.controller;
 
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.Authorization;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,6 +52,7 @@ public class UserController {
      * @return User
      */
     @GetMapping("/{username}")
+    @ApiOperation(value = "", authorizations = {@Authorization(value = "JWT")})
     public User findOneUser(@PathVariable String username) {
         Optional<User> user = userService.findByUsername(username);
         if (user.isEmpty()) {
@@ -66,6 +69,7 @@ public class UserController {
      */
     @ResponseStatus(HttpStatus.ACCEPTED)
     @PostMapping("/{username}/password-reset")
+    @ApiOperation(value = "", authorizations = {@Authorization(value = "JWT")})
     public ResponseEntity<Null> passwordReset(@PathVariable String username, @RequestBody @Valid PasswordResetRequestBody passwordResetRequestBody) throws AccessDeniedException {
         Optional<User> userOptional = userService.findByUsername(username);
         if (userOptional.isEmpty()) {
@@ -81,6 +85,7 @@ public class UserController {
     }
 
     @PutMapping("/{username}")
+    @ApiOperation(value = "", authorizations = {@Authorization(value = "JWT")})
     public User updateOneUser(@RequestBody User changedUser, @PathVariable Long id) {
         return repository.findById(id)
                 .map(user -> {
@@ -126,6 +131,7 @@ public class UserController {
     }
 
     @DeleteMapping("/{username}/tags")
+    @ApiOperation(value = "", authorizations = {@Authorization(value = "JWT")})
     public List<UserTag> deleteUserTags(@PathVariable String username, @RequestBody List<Tag> tags) {
         Optional<User> user = userService.findByUsername(username);
         if (user.isEmpty()) {
