@@ -13,6 +13,7 @@ import tech.eportfolio.server.model.User;
 import tech.eportfolio.server.model.UserTag;
 import tech.eportfolio.server.repository.UserRepository;
 import tech.eportfolio.server.security.SecurityConstant;
+import tech.eportfolio.server.service.EmailService;
 import tech.eportfolio.server.service.UserService;
 import tech.eportfolio.server.service.UserTagService;
 
@@ -36,11 +37,14 @@ public class UserController {
 
     private final UserTagService userTagService;
 
+    private final EmailService emailService;
+
     @Autowired
-    public UserController(UserService service, UserRepository repository, UserTagService userTagService) {
+    public UserController(UserService service, UserRepository repository, UserTagService userTagService, EmailService emailService) {
         this.userService = service;
         this.repository = repository;
         this.userTagService = userTagService;
+        this.emailService = emailService;
     }
 
     /**
@@ -55,6 +59,7 @@ public class UserController {
         if (user.isEmpty()) {
             throw new UserNotFoundException(username);
         }
+        emailService.sendSimpleMessage("shuyangf@student.unimelb.edu.au", "test email", "Hello");
         return user.get();
     }
 
@@ -93,6 +98,7 @@ public class UserController {
                     return repository.save(changedUser);
                 });
     }
+
 
     /**
      * Return user's tags

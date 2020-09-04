@@ -37,8 +37,11 @@ public class AuthenticationController extends AuthenticationExceptionHandler {
     }
 
     @PostMapping("/signup")
-    public User signUp(@RequestBody @Valid UserDTO userDTO) {
-        return userService.register(userService.fromUserDTO(userDTO));
+    public ResponseEntity<User> signUp(@RequestBody @Valid UserDTO userDTO) {
+        User user = userService.register(userService.fromUserDTO(userDTO));
+        UserPrincipal userPrincipal = new UserPrincipal(user);
+        HttpHeaders jwtHeader = getJwtHeader(userPrincipal);
+        return new ResponseEntity<>(user, jwtHeader, HttpStatus.OK);
     }
 
     @PostMapping("/login")
