@@ -13,6 +13,7 @@ import tech.eportfolio.server.exception.handler.AuthenticationExceptionHandler;
 import tech.eportfolio.server.model.User;
 import tech.eportfolio.server.model.UserPrincipal;
 import tech.eportfolio.server.security.SecurityConstant;
+import tech.eportfolio.server.service.EmailService;
 import tech.eportfolio.server.service.UserService;
 import tech.eportfolio.server.utility.JWTTokenProvider;
 
@@ -29,11 +30,14 @@ public class AuthenticationController extends AuthenticationExceptionHandler {
 
     private final JWTTokenProvider jwtTokenProvider;
 
+    private final EmailService emailService;
+
     @Autowired
-    public AuthenticationController(UserService userService, AuthenticationManager authenticationManager, JWTTokenProvider jwtTokenProvider) {
+    public AuthenticationController(UserService userService, AuthenticationManager authenticationManager, JWTTokenProvider jwtTokenProvider, EmailService emailService) {
         this.userService = userService;
         this.authenticationManager = authenticationManager;
         this.jwtTokenProvider = jwtTokenProvider;
+        this.emailService = emailService;
     }
 
     @PostMapping("/signup")
@@ -41,6 +45,7 @@ public class AuthenticationController extends AuthenticationExceptionHandler {
         User user = userService.register(userService.fromUserDTO(userDTO));
         UserPrincipal userPrincipal = new UserPrincipal(user);
         HttpHeaders jwtHeader = getJwtHeader(userPrincipal);
+        emailService.sendSimpleMessage(user.getEmail(), "A welcome message from eportfolio.tech", "Welcome! Thank you for joining us. You can set up your e-portfolio to demonstrate your experience and skills");
         return new ResponseEntity<>(user, jwtHeader, HttpStatus.OK);
     }
 

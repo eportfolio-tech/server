@@ -30,7 +30,7 @@ import java.util.Random;
 @Service
 @Qualifier("UserDetailsService")
 public class UserServiceImpl implements UserService, UserDetailsService {
-    private final Logger LOGGER = LoggerFactory.getLogger(getClass());
+    private final Logger Logger = LoggerFactory.getLogger(getClass());
 
     private final Random random = new Random(System.currentTimeMillis());
 
@@ -129,7 +129,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     public UserDetails loadUserByUsername(String username) {
         User user = userRepository.findByUsernameAndDeleted(username, false);
         if (user == null) {
-            LOGGER.error("User not found by username: {}", username);
+            Logger.error("User not found by username: {}", username);
             throw new UserNotFoundException(username);
         } else {
             return new UserPrincipal(user);
