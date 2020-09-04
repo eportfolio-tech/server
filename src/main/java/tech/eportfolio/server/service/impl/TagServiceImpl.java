@@ -7,8 +7,11 @@ import tech.eportfolio.server.model.Tag;
 import tech.eportfolio.server.repository.TagRepository;
 import tech.eportfolio.server.service.TagService;
 
-import java.util.List;
-import java.util.Optional;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 @Service
 public class TagServiceImpl implements TagService {
@@ -37,15 +40,44 @@ public class TagServiceImpl implements TagService {
      * @return
      */
     @Override
-    public Tag createTag(String name) {
-        Tag tag = tagRepository.findFirstByName(name);
-        if (tag != null) {
-            return tag;
-        }
-        tag = new Tag();
+    public Tag create(@NotEmpty @NotNull String name) {
+        Tag tag = new Tag();
         tag.setName(name);
         tag.setCreatedBy(SecurityContextHolder.getContext().getAuthentication().getName());
         tagRepository.save(tag);
         return tag;
+    }
+
+    @Override
+    public List<Tag> saveAll(List<Tag> tags) {
+        Iterable<Tag> iterable = tagRepository.saveAll(tags);
+        return StreamSupport.stream(iterable.spliterator(), false).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Tag> saveAllIfNotExist(List<Tag> tags) {
+        List<Tag> exist = findByNameIn(tags.stream().map(Tag::getName).collect(Collectors.toList()));
+        Set<String> existTagNames = new HashSet<>();
+        exist.forEach(e -> existTagNames.add(e.getName()));
+
+        List<Tag> toCreate = new LinkedList<>();
+        for (Tag t : tags) {
+            if (!existTagNames.contains(t.getName())) {
+                toCreate.add(create(t.getName()));
+            }
+        }
+        exist.addAll(saveAll(toCreate));
+
+        return exist;
+    }
+
+    @Override
+    public List<Tag> findByIdIn(List<Long> ids) {
+        return tagRepository.findByIdIn(ids);
+    }
+
+    @Override
+    public List<Tag> findByNameIn(List<String> name) {
+        return tagRepository.findByNameIn(name);
     }
 }

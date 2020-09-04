@@ -1,19 +1,26 @@
 package tech.eportfolio.server.controller;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import tech.eportfolio.server.dto.PasswordResetRequestBody;
 import tech.eportfolio.server.exception.UserNotFoundException;
+import tech.eportfolio.server.model.Tag;
 import tech.eportfolio.server.model.User;
+import tech.eportfolio.server.model.UserTag;
 import tech.eportfolio.server.repository.UserRepository;
 import tech.eportfolio.server.security.SecurityConstant;
+import tech.eportfolio.server.service.TagService;
 import tech.eportfolio.server.service.UserService;
+import tech.eportfolio.server.service.UserTagService;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Null;
 import java.nio.file.AccessDeniedException;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -22,14 +29,22 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/users")
 public class UserController {
-    private final UserService service;
+    private final Logger LOGGER = LoggerFactory.getLogger(getClass());
+
+    private final UserService userService;
 
     private final UserRepository repository;
 
+    private final UserTagService userTagService;
+
+    private final TagService tagService;
+
     @Autowired
-    public UserController(UserService service, UserRepository repository) {
-        this.service = service;
+    public UserController(UserService service, UserRepository repository, UserTagService userTagService, TagService tagService) {
+        this.userService = service;
         this.repository = repository;
+        this.userTagService = userTagService;
+        this.tagService = tagService;
     }
 
     /**
@@ -40,7 +55,7 @@ public class UserController {
      */
     @GetMapping("/{username}")
     public User findOneUser(@PathVariable String username) {
-        Optional<User> user = service.findByUsername(username);
+        Optional<User> user = userService.findByUsername(username);
         if (user.isEmpty()) {
             throw new UserNotFoundException(username);
         }
@@ -56,13 +71,13 @@ public class UserController {
     @ResponseStatus(HttpStatus.ACCEPTED)
     @PostMapping("/{username}/password-reset")
     public ResponseEntity<Null> passwordReset(@PathVariable String username, @RequestBody @Valid PasswordResetRequestBody passwordResetRequestBody) throws AccessDeniedException {
-        Optional<User> userOptional = service.findByUsername(username);
+        Optional<User> userOptional = userService.findByUsername(username);
         if (userOptional.isEmpty()) {
             throw new UserNotFoundException(username);
         }
         User user = userOptional.get();
-        if (service.verifyPassword(user, passwordResetRequestBody.getOldPassword())) {
-            service.changePassword(user, passwordResetRequestBody.getNewPassword());
+        if (userService.verifyPassword(user, passwordResetRequestBody.getOldPassword())) {
+            userService.changePassword(user, passwordResetRequestBody.getNewPassword());
             return new ResponseEntity<>(HttpStatus.ACCEPTED);
         } else {
             throw new AccessDeniedException(SecurityConstant.ACCESS_DENIED_MESSAGE);
@@ -81,5 +96,35 @@ public class UserController {
                     changedUser.setId(id);
                     return repository.save(changedUser);
                 });
+    }
+
+    /**
+     * Return user's tags
+     *
+     * @param username username
+     * @return User
+     */
+    @GetMapping("/{username}/tags")
+    public List<Tag> getUserTags(@PathVariable String username) {
+        Optional<User> user = userService.findByUsername(username);
+        if (user.isEmpty()) {
+            throw new UserNotFoundException(username);
+        }
+        return userTagService.findTagsByUsername(username);
+    }
+
+    /**
+     * Return user's tags
+     *
+     * @param username username
+     * @return User
+     */
+    @PostMapping("/{username}/tags")
+    public List<UserTag> getUserTags(@PathVariable String username, @RequestBody List<Tag> tags) {
+        Optional<User> user = userService.findByUsername(username);
+        if (user.isEmpty()) {
+            throw new UserNotFoundException(username);
+        }
+        return userTagService.batchAssign(user.get(), tags);
     }
 }

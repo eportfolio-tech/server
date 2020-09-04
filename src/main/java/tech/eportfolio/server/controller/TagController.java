@@ -27,7 +27,7 @@ public class TagController {
 
     @PostMapping("/")
     public Tag createNewTag(@RequestParam String name) {
-        return service.createTag(name);
+        return service.create(name);
     }
 
     // Single item
