@@ -59,7 +59,6 @@ public class UserController {
         if (user.isEmpty()) {
             throw new UserNotFoundException(username);
         }
-        emailService.sendSimpleMessage("shuyangf@student.unimelb.edu.au", "test email", "Hello");
         return user.get();
     }
 
