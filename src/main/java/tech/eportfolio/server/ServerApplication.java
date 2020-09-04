@@ -23,6 +23,12 @@ public class ServerApplication {
         return new BCryptPasswordEncoder();
     }
 
+    /**
+     * Create a JavaMailSender
+     * See https://www.baeldung.com/spring-email
+     *
+     * @return
+     */
     @Bean
     public JavaMailSender getJavaMailSender() {
         JavaMailSenderImpl mailSender = new JavaMailSenderImpl();

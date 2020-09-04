@@ -18,6 +18,14 @@ public class EmailServiceImpl implements EmailService {
     @Autowired
     private JavaMailSender emailSender;
 
+    /**
+     * This method is annotated with @Async to send email asynchronously
+     * See https://stackoverflow.com/questions/58009982/how-to-send-an-asynchrone-email-with-spring-boot
+     *
+     * @param to
+     * @param subject
+     * @param text
+     */
     @Override
     @Async
     public void sendSimpleMessage(String to, String subject, String text) {
