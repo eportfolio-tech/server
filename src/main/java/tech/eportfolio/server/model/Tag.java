@@ -1,13 +1,19 @@
 package tech.eportfolio.server.model;
 
 import lombok.Data;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
+import java.util.Date;
 
 @Data
 @Entity
+@Table(name = "tag",
+        indexes = {
+                @Index(columnList = "name", name = "name_index"),
+        })
 public class Tag {
-
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -15,15 +21,16 @@ public class Tag {
     @Column(nullable = false, unique = true)
     private String name;
 
-    @Column(nullable = false)
-    private String url;
+    private boolean deleted = false;
 
-    @Override
-    public String toString() {
-        return "Tag{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", url='" + url + '\'' +
-                '}';
-    }
+    @Column(nullable = false, updatable = false)
+    private String createdBy;
+
+    @Column(nullable = false, updatable = false)
+    @CreationTimestamp
+    private Date createdAt;
+
+    @Column(nullable = false)
+    @UpdateTimestamp
+    private Date updatedOn;
 }

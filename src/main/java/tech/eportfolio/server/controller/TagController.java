@@ -10,6 +10,8 @@ import tech.eportfolio.server.service.TagService;
 import java.util.List;
 
 @RestController
+@RequestMapping("/tags")
+
 public class TagController {
     @Autowired
     private TagService service;
@@ -18,43 +20,20 @@ public class TagController {
     private TagRepository repository;
 
     // Aggregate root
-
-    @GetMapping("/tags")
+    @GetMapping("/")
     public List<Tag> findAll() {
         return service.findAll();
     }
 
-    @PostMapping("/tags")
+    @PostMapping("/")
     public Tag createNewTag(@RequestBody Tag tag) {
-        return service.save(tag);
+        return service.createTag(tag.getName());
     }
 
     // Single item
-
-    @GetMapping("/tags/{id}")
+    @GetMapping("/{id}")
     public Tag findOneTag(@PathVariable Long id) {
         return repository.findById(id)
                 .orElseThrow(() -> new TagNotFoundException(id));
     }
-
-    @PutMapping("/tags/{id}")
-    public Tag replaceTag(@RequestBody Tag newTag, @PathVariable Long id) {
-
-        return repository.findById(id)
-                .map(tag -> {
-                    tag.setName(newTag.getName());
-                    return repository.save(tag);
-                })
-                .orElseGet(() -> {
-                    newTag.setId(id);
-                    return repository.save(newTag);
-                });
-    }
-
-    @DeleteMapping("/tags/{id}")
-    public void deleteTag(@PathVariable Long id) {
-        repository.deleteById(id);
-    }
-
-
 }

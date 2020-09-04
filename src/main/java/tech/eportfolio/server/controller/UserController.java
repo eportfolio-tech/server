@@ -20,7 +20,6 @@ import java.util.Optional;
  * @author Haswell
  */
 @RestController
-@CrossOrigin(origins = "*")
 @RequestMapping("/users")
 public class UserController {
     private final UserService service;
@@ -32,18 +31,6 @@ public class UserController {
         this.service = service;
         this.repository = repository;
     }
-
-    //    @PostMapping("/")
-//    public User createOneUser(@RequestBody @Valid UserDTO userDTO) {
-//        Optional<User> user = service.findUserByEmail(userDTO.getEmail());
-//        if (user.isPresent()) {
-//            throw new EmailAlreadyInUseException(userDTO.getEmail());
-//        }
-//        if (StringUtils.isEmpty(userDTO.getUsername())) {
-//            userDTO.setUsername(userDTO.getFirstName() + userDTO.getLastName() + random.nextInt());
-//        }
-//        return service.save(service.fromUserDTO(userDTO));
-//    }
 
     /**
      * Find a user by username
@@ -82,17 +69,17 @@ public class UserController {
         }
     }
 
-//    @PutMapping("/{username}")
-//    public User updateOneUser(@RequestBody User changedUser, @PathVariable Long id) {
-//        return repository.findById(id)
-//                .map(user -> {
-//                    user.setFirstName(changedUser.getFirstName());
-//                    user.setLastName(changedUser.getLastName());
-//                    return repository.save(user);
-//                })
-//                .orElseGet(() -> {
-//                    changedUser.setId(id);
-//                    return repository.save(changedUser);
-//                });
-//    }
+    @PutMapping("/{username}")
+    public User updateOneUser(@RequestBody User changedUser, @PathVariable Long id) {
+        return repository.findById(id)
+                .map(user -> {
+                    user.setFirstName(changedUser.getFirstName());
+                    user.setLastName(changedUser.getLastName());
+                    return repository.save(user);
+                })
+                .orElseGet(() -> {
+                    changedUser.setId(id);
+                    return repository.save(changedUser);
+                });
+    }
 }
