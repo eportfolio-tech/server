@@ -6,11 +6,13 @@ import tech.eportfolio.server.model.Tag;
 import java.util.List;
 
 public interface TagRepository extends CrudRepository<Tag, Long> {
-    Tag findById(long id);
+    Tag findByIdAndDeleted(long id, boolean deleted);
 
-    Tag findFirstByName(String name);
+    Tag findFirstByNameAndDeleted(String name, boolean deleted);
 
-    List<Tag> findByIdIn(List<Long> id);
+    List<Tag> findByIdInAndDeleted(List<Long> id, boolean deleted);
 
-    List<Tag> findByNameIn(List<String> name);
+    List<Tag> findByNameInAndDeleted(List<String> name, boolean deleted);
+
+    List<Tag> findByDeleted(boolean deleted);
 }

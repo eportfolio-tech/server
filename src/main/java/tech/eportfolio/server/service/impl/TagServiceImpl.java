@@ -25,19 +25,19 @@ public class TagServiceImpl implements TagService {
 
     @Override
     public Optional<Tag> findById(long id) {
-        return Optional.ofNullable(tagRepository.findById(id));
+        return Optional.ofNullable(tagRepository.findByIdAndDeleted(id, false));
     }
 
     @Override
     public List<Tag> findAll() {
-        return (List<Tag>) tagRepository.findAll();
+        return tagRepository.findByDeleted(false);
     }
 
     /**
      * Create a new tag if given tag is not found
      *
-     * @param name
-     * @return
+     * @param name tag name
+     * @return Tag
      */
     @Override
     public Tag create(@NotEmpty @NotNull String name) {
@@ -73,11 +73,11 @@ public class TagServiceImpl implements TagService {
 
     @Override
     public List<Tag> findByIdIn(List<Long> ids) {
-        return tagRepository.findByIdIn(ids);
+        return tagRepository.findByIdInAndDeleted(ids, false);
     }
 
     @Override
     public List<Tag> findByNameIn(List<String> name) {
-        return tagRepository.findByNameIn(name);
+        return tagRepository.findByNameInAndDeleted(name, false);
     }
 }

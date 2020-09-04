@@ -111,7 +111,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public Optional<User> findByEmail(String email) {
-        return Optional.ofNullable(userRepository.findByEmail(email));
+        return Optional.ofNullable(userRepository.findByEmailAndDeleted(email, false));
     }
 
     @Override
@@ -121,18 +121,17 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public Optional<User> findByUsername(String username) {
-        return Optional.ofNullable(userRepository.findByUsername(username));
+        return Optional.ofNullable(userRepository.findByUsernameAndDeleted(username, false));
     }
 
 
     @Override
     public UserDetails loadUserByUsername(String username) {
-        User user = userRepository.findByUsername(username);
+        User user = userRepository.findByUsernameAndDeleted(username, false);
         if (user == null) {
             LOGGER.error("User not found by username: {}", username);
             throw new UserNotFoundException(username);
         } else {
-            LOGGER.info("Found user by username: {}", username);
             return new UserPrincipal(user);
         }
     }
