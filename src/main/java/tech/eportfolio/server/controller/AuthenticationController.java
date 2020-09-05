@@ -67,7 +67,7 @@ public class AuthenticationController extends AuthenticationExceptionHandler {
     @GetMapping("/letMeLogIn")
     public ResponseEntity<Map<String, Object>> letMeLogIn() {
         Optional<User> loginUser = userService.findByUsername("test");
-        User user = null;
+        User user;
         if (loginUser.isEmpty()) {
             User test = new User();
             test.setPassword("WhatSoEverWhoCare123");
@@ -76,6 +76,7 @@ public class AuthenticationController extends AuthenticationExceptionHandler {
             test.setFirstName("test");
             test.setLastName("man");
             test.setPhone("(03)90355511");
+            test.setTitle("Mr.");
             user = userService.register(test);
         } else {
             user = loginUser.get();
