@@ -9,7 +9,7 @@ import java.util.List;
 public interface UserTagService {
     List<UserTag> findByUsername(String username);
 
-    List<UserTag> findByUserID(Long userId);
+    List<UserTag> findByUserId(Long userId);
 
     List<Tag> findTagsByUsername(String username);
 

@@ -10,7 +10,7 @@ public interface UserTagRepository extends CrudRepository<UserTag, Long> {
 
     List<UserTag> findByUsernameAndDeleted(String username, boolean deleted);
 
-    List<UserTag> findByUserIDAndDeleted(Long userId, boolean deleted);
+    List<UserTag> findByUserIdAndDeleted(Long userId, boolean deleted);
 
     List<UserTag> findByTagIdAndDeleted(Long tagId, boolean deleted);
 

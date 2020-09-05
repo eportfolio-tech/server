@@ -36,8 +36,8 @@ public class UserTagServiceImpl implements UserTagService {
     }
 
     @Override
-    public List<UserTag> findByUserID(Long userID) {
-        return userTagRepository.findByUserIDAndDeleted(userID, false);
+    public List<UserTag> findByUserId(Long userID) {
+        return userTagRepository.findByUserIdAndDeleted(userID, false);
     }
 
     @Override
