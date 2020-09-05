@@ -64,6 +64,20 @@ public class AuthenticationController extends AuthenticationExceptionHandler {
         }
     }
 
+//    @PostMapping("/verify")
+//    public ResponseEntity<User> verify(@RequestParam("token") String token) {
+//        JWTVerifier jwtVerifier = J;
+//        VerificationToken verificationToken = service.getVerificationToken(token);
+//        if (loginUser.isPresent()) {
+//            UserPrincipal userPrincipal = new UserPrincipal(loginUser.get());
+//            HttpHeaders jwtHeader = getJwtHeader(userPrincipal);
+//            return new ResponseEntity<>(loginUser.get(), jwtHeader, HttpStatus.OK);
+//
+//        } else {
+//            throw new EmailVerificationFailException();
+//        }
+//    }
+
     @GetMapping("/letMeLogIn")
     public ResponseEntity<Map<String, Object>> letMeLogIn() {
         Optional<User> loginUser = userService.findByUsername("test");

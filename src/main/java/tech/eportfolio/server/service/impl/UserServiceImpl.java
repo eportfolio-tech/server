@@ -83,8 +83,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         }
 
         user.setPassword(encodePassword(user.getPassword()));
-        user.setRoles(Role.ROLE_USER.name());
-        user.setAuthorities(Role.ROLE_USER.getAuthorities());
+        user.setRoles(Role.ROLE_UNVERIFIED_USER.name());
+        user.setAuthorities(Role.ROLE_UNVERIFIED_USER.getAuthorities());
         return userRepository.save(user);
     }
 

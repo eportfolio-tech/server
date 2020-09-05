@@ -8,6 +8,7 @@ public enum Role {
      *
      */
     ROLE_USER(USER_AUTHORITIES),
+    ROLE_UNVERIFIED_USER(USER_AUTHORITIES),
     ROLE_MODERATOR(MODERATOR_AUTHORITIES);
 
     private final String[] authorities;
