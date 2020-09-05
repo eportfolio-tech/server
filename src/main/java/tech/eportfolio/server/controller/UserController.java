@@ -107,6 +107,7 @@ public class UserController {
      * @return User
      */
     @GetMapping("/{username}/tags")
+    @ApiOperation(value = "", authorizations = {@Authorization(value = "JWT")})
     public List<Tag> getUserTags(@PathVariable String username) {
         Optional<User> user = userService.findByUsername(username);
         if (user.isEmpty()) {
@@ -122,7 +123,8 @@ public class UserController {
      * @return User
      */
     @PostMapping("/{username}/tags")
-    public List<UserTag> getUserTags(@PathVariable String username, @RequestBody List<Tag> tags) {
+    @ApiOperation(value = "", authorizations = {@Authorization(value = "JWT")})
+    public List<UserTag> addUserTag(@PathVariable String username, @RequestBody List<Tag> tags) {
         Optional<User> user = userService.findByUsername(username);
         if (user.isEmpty()) {
             throw new UserNotFoundException(username);
