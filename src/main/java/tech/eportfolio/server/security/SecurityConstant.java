@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Value;
 
 public class SecurityConstant {
     @Value("jwt.expire")
-    public static final long EXPIRATION_TIME = 432_000_000;
+    public static final long EXPIRATION_TIME = 1_800_000; // stands for 30 minutes
     public static final String TOKEN_HEADER = "Bearer ";
     public static final String JWT_TOKEN_HEADER = "X-JWT-Token";
     public static final String TOKEN_CANNOT_BE_VERIFIED = "Token can't be verified";

@@ -1,5 +1,6 @@
 package tech.eportfolio.server.controller;
 
+import com.auth0.jwt.JWTVerifier;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -7,7 +8,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.web.bind.annotation.*;
+import tech.eportfolio.server.constant.Role;
 import tech.eportfolio.server.dto.UserDTO;
+import tech.eportfolio.server.exception.EmailVerificationFailException;
 import tech.eportfolio.server.exception.UserNotFoundException;
 import tech.eportfolio.server.exception.handler.AuthenticationExceptionHandler;
 import tech.eportfolio.server.model.User;
@@ -64,19 +67,21 @@ public class AuthenticationController extends AuthenticationExceptionHandler {
         }
     }
 
-//    @PostMapping("/verify")
-//    public ResponseEntity<User> verify(@RequestParam("token") String token) {
-//        JWTVerifier jwtVerifier = J;
-//        VerificationToken verificationToken = service.getVerificationToken(token);
-//        if (loginUser.isPresent()) {
-//            UserPrincipal userPrincipal = new UserPrincipal(loginUser.get());
-//            HttpHeaders jwtHeader = getJwtHeader(userPrincipal);
-//            return new ResponseEntity<>(loginUser.get(), jwtHeader, HttpStatus.OK);
-//
-//        } else {
-//            throw new EmailVerificationFailException();
-//        }
-//    }
+    @PostMapping("/verify")
+    public ResponseEntity<User> verify(@RequestParam("token") String token) {
+        JWTVerifier jwtVerifier = jwtTokenProvider.getJWTVerifier();
+        String username = jwtVerifier.verify(token).getSubject();
+        Optional<User> verifyUser = userService.findByUsername(username);
+        if (verifyUser.isPresent() && jwtTokenProvider.isTokenValid(username, token)) {
+            UserPrincipal userPrincipal = new UserPrincipal(verifyUser.get());
+            HttpHeaders jwtHeader = getJwtHeader(userPrincipal);
+            verifyUser.get().setRoles(Role.ROLE_VERIFIED_USER.name());
+            verifyUser.get().setAuthorities(Role.ROLE_VERIFIED_USER.getAuthorities());
+            return new ResponseEntity<>(verifyUser.get(), jwtHeader, HttpStatus.OK);
+        } else {
+            throw new EmailVerificationFailException();
+        }
+    }
 
     @GetMapping("/letMeLogIn")
     public ResponseEntity<Map<String, Object>> letMeLogIn() {
