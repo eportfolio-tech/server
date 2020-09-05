@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import tech.eportfolio.server.constant.Role;
 import tech.eportfolio.server.dto.UserDTO;
@@ -21,6 +22,7 @@ import tech.eportfolio.server.service.UserService;
 import tech.eportfolio.server.utility.JWTTokenProvider;
 
 import javax.validation.Valid;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -67,6 +69,7 @@ public class AuthenticationController extends AuthenticationExceptionHandler {
         }
     }
 
+    @Transactional
     @PostMapping("/verify")
     public ResponseEntity<User> verify(@RequestParam("token") String token) {
         JWTVerifier jwtVerifier = jwtTokenProvider.getJWTVerifier();
@@ -77,6 +80,8 @@ public class AuthenticationController extends AuthenticationExceptionHandler {
             HttpHeaders jwtHeader = getJwtHeader(userPrincipal);
             verifyUser.get().setRoles(Role.ROLE_VERIFIED_USER.name());
             verifyUser.get().setAuthorities(Role.ROLE_VERIFIED_USER.getAuthorities());
+            verifyUser.get().setUpdatedOn(new Date());
+
             return new ResponseEntity<>(verifyUser.get(), jwtHeader, HttpStatus.OK);
         } else {
             throw new EmailVerificationFailException();
