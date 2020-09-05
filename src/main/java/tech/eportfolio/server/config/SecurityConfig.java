@@ -3,6 +3,7 @@ package tech.eportfolio.server.config;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -50,10 +51,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.csrf().disable().cors().and()
                 // Don't keep track of session
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                // permit access to public path
-                .and().authorizeRequests().antMatchers(SecurityConstant.PUBLIC_PATH).permitAll()
+                // permit access to API doc
+                .and().authorizeRequests().antMatchers(SecurityConstant.API_DOC).permitAll()
+                // permit access to authentication endpoints
+                .and().authorizeRequests().antMatchers(SecurityConstant.AUTHENTICATION).permitAll()
+                // permit access to endpoint like GET /tags/
+                .and().authorizeRequests().antMatchers(HttpMethod.GET, SecurityConstant.GET_ONLY).permitAll().
                 // require authorization for other paths
-                .anyRequest().authenticated().and().authorizeRequests().and().
+                        anyRequest().authenticated().and().authorizeRequests().and().
                 exceptionHandling().accessDeniedHandler(jwtAccessDeniedHandler)
                 .authenticationEntryPoint(jwtAuthenticationEntryPoint).and().
                 addFilterBefore(jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class);
