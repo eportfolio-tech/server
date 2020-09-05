@@ -50,7 +50,7 @@ public class UserTagServiceImpl implements UserTagService {
     public UserTag create(User user, Tag tag) {
         UserTag userTag = new UserTag();
         userTag.setTagId(tag.getId());
-        userTag.setUserID(user.getId());
+        userTag.setUserId(user.getId());
         userTag.setUsername(user.getUsername());
         return userTag;
     }

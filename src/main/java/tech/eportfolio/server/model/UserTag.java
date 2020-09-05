@@ -21,7 +21,7 @@ public class UserTag {
     private String username;
 
     @NotNull
-    private Long userID;
+    private Long userId;
 
     @NotNull
     private Long tagId;
