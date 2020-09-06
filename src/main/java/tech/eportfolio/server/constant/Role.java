@@ -1,14 +1,13 @@
 package tech.eportfolio.server.constant;
 
-import static tech.eportfolio.server.constant.Authority.MODERATOR_AUTHORITIES;
-import static tech.eportfolio.server.constant.Authority.USER_AUTHORITIES;
+import static tech.eportfolio.server.constant.Authority.*;
 
 public enum Role {
     /**
      *
      */
-    ROLE_VERIFIED_USER(USER_AUTHORITIES),
-    ROLE_UNVERIFIED_USER(USER_AUTHORITIES),
+    ROLE_VERIFIED_USER(VERIFIED_USER_AUTHORITIES),
+    ROLE_UNVERIFIED_USER(UNVERIFIED_USER_AUTHORITIES),
     ROLE_MODERATOR(MODERATOR_AUTHORITIES);
 
     private final String[] authorities;
