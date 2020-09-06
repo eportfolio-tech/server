@@ -1,10 +1,7 @@
 package tech.eportfolio.server.controller;
 
-import com.auth0.jwt.JWTVerifier;
-import com.auth0.jwt.exceptions.JWTVerificationException;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.Authorization;
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +17,6 @@ import tech.eportfolio.server.repository.UserRepository;
 import tech.eportfolio.server.security.SecurityConstant;
 import tech.eportfolio.server.service.UserService;
 import tech.eportfolio.server.service.UserTagService;
-import tech.eportfolio.server.utility.JWTTokenProvider;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Null;
@@ -34,7 +30,7 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/users")
 public class UserController {
-    private final Logger LOGGER = LoggerFactory.getLogger(getClass());
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
     private final UserService userService;
 
@@ -42,14 +38,11 @@ public class UserController {
 
     private final UserTagService userTagService;
 
-    private final JWTTokenProvider jwtTokenProvider;
-
     @Autowired
-    public UserController(UserService service, UserRepository repository, UserTagService userTagService, JWTTokenProvider jwtTokenProvider) {
+    public UserController(UserService service, UserRepository repository, UserTagService userTagService) {
         this.userService = service;
         this.repository = repository;
         this.userTagService = userTagService;
-        this.jwtTokenProvider = jwtTokenProvider;
     }
 
     /**
@@ -109,13 +102,7 @@ public class UserController {
     @GetMapping("/{username}/verify")
     public User verify(@RequestParam("token") String token, @PathVariable String username) {
         User user = userService.findByUsername(username).orElseThrow(() -> new UserNotFoundException(username));
-        jwtTokenProvider.setSecret(user.getUsername() + user.getCreatedAt());
-        JWTVerifier jwtVerifier = jwtTokenProvider.getJWTVerifier();
-        if (jwtTokenProvider.isTokenValid(username, token) && StringUtils.equals(jwtVerifier.verify(token).getSubject(), username)) {
-            return userService.verify(user);
-        } else {
-            throw new JWTVerificationException("JWT is invalid");
-        }
+        return userService.verify(user, token);
     }
 
 

@@ -40,7 +40,6 @@ public class AuthenticationController extends AuthenticationExceptionHandler {
         this.authenticationManager = authenticationManager;
         this.jwtTokenProvider = jwtTokenProvider;
         this.emailService = emailService;
-        jwtTokenProvider.setSecret(SecurityConstant.SECRET);
     }
 
     @PostMapping("/signup")
@@ -86,13 +85,13 @@ public class AuthenticationController extends AuthenticationExceptionHandler {
         HttpHeaders jwtHeader = getJwtHeader(userPrincipal);
         Map<String, Object> response = new HashMap<>();
         response.put("user", user);
-        response.put("token", "Bearer " + jwtTokenProvider.generateJWTToken(userPrincipal));
+        response.put("token", "Bearer " + jwtTokenProvider.generateJWTToken(userPrincipal, SecurityConstant.SECRET));
         return new ResponseEntity<>(response, jwtHeader, HttpStatus.OK);
     }
 
     private HttpHeaders getJwtHeader(UserPrincipal userPrincipal) {
         HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.add(SecurityConstant.JWT_TOKEN_HEADER, jwtTokenProvider.generateJWTToken(userPrincipal));
+        httpHeaders.add(SecurityConstant.JWT_TOKEN_HEADER, jwtTokenProvider.generateJWTToken(userPrincipal, SecurityConstant.SECRET));
         return httpHeaders;
     }
 

@@ -22,14 +22,12 @@ import java.util.List;
 @Component
 public class JWTAuthorizationFilter extends OncePerRequestFilter {
 
-    private final Logger LOGGER = LoggerFactory.getLogger(getClass());
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
     private final JWTTokenProvider jwtTokenProvider;
 
     public JWTAuthorizationFilter(JWTTokenProvider tokenProvider) {
         this.jwtTokenProvider = tokenProvider;
-        // Set secret for JWT
-        jwtTokenProvider.setSecret(SecurityConstant.SECRET);
     }
 
     @Override
@@ -47,10 +45,11 @@ public class JWTAuthorizationFilter extends OncePerRequestFilter {
             // Remove bearer from authentication header
             String token = authorizationHeader.substring(SecurityConstant.TOKEN_HEADER.length());
             // Retrieve username from JWT
-            String username = jwtTokenProvider.getSubject(token);
+            String secret = SecurityConstant.SECRET;
+            String username = jwtTokenProvider.getSubject(token, secret);
             // Set SecurityContext if JWT token is valid and there is no authentication in SecurityContext
-            if (jwtTokenProvider.isTokenValid(username, token) && SecurityContextHolder.getContext().getAuthentication() == null) {
-                List<GrantedAuthority> authorityList = jwtTokenProvider.getAuthorities(token);
+            if (jwtTokenProvider.isTokenValid(username, token, secret) && SecurityContextHolder.getContext().getAuthentication() == null) {
+                List<GrantedAuthority> authorityList = jwtTokenProvider.getAuthorities(token, secret);
                 Authentication authentication = jwtTokenProvider.getAuthentication(username, authorityList, request);
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             } else {
