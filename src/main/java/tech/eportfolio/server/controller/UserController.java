@@ -30,7 +30,7 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/users")
 public class UserController {
-    private final Logger logger = LoggerFactory.getLogger(getClass());
+    private final Logger LOGGER = LoggerFactory.getLogger(getClass());
 
     private final UserService userService;
 
@@ -115,11 +115,8 @@ public class UserController {
     @GetMapping("/{username}/tags")
     @ApiOperation(value = "", authorizations = {@Authorization(value = "JWT")})
     public List<Tag> getUserTags(@PathVariable String username) {
-        Optional<User> user = userService.findByUsername(username);
-        if (user.isEmpty()) {
-            throw new UserNotFoundException(username);
-        }
-        return userTagService.findTagsByUsername(username);
+        User user = userService.findByUsername(username).orElseThrow(() -> (new UserNotFoundException(username)));
+        return userTagService.findTagsByUser(user);
     }
 
     /**
@@ -131,20 +128,14 @@ public class UserController {
     @PostMapping("/{username}/tags")
     @ApiOperation(value = "", authorizations = {@Authorization(value = "JWT")})
     public List<UserTag> addUserTag(@PathVariable String username, @RequestBody List<Tag> tags) {
-        Optional<User> user = userService.findByUsername(username);
-        if (user.isEmpty()) {
-            throw new UserNotFoundException(username);
-        }
-        return userTagService.batchAssign(user.get(), tags);
+        User user = userService.findByUsername(username).orElseThrow(() -> (new UserNotFoundException(username)));
+        return userTagService.batchAssign(user, tags);
     }
 
     @DeleteMapping("/{username}/tags")
     @ApiOperation(value = "", authorizations = {@Authorization(value = "JWT")})
     public List<UserTag> deleteUserTags(@PathVariable String username, @RequestBody List<Tag> tags) {
-        Optional<User> user = userService.findByUsername(username);
-        if (user.isEmpty()) {
-            throw new UserNotFoundException(username);
-        }
-        return userTagService.delete(user.get(), tags);
+        User user = userService.findByUsername(username).orElseThrow(() -> (new UserNotFoundException(username)));
+        return userTagService.delete(user, tags);
     }
 }
