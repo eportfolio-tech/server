@@ -1,6 +1,5 @@
 package tech.eportfolio.server.controller;
 
-import com.auth0.jwt.JWTVerifier;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -9,7 +8,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.web.bind.annotation.*;
 import tech.eportfolio.server.dto.UserDTO;
-import tech.eportfolio.server.exception.EmailVerificationFailException;
 import tech.eportfolio.server.exception.UserNotFoundException;
 import tech.eportfolio.server.exception.handler.AuthenticationExceptionHandler;
 import tech.eportfolio.server.model.User;
@@ -32,9 +30,9 @@ public class AuthenticationController extends AuthenticationExceptionHandler {
 
     private final AuthenticationManager authenticationManager;
 
-    private final JWTTokenProvider jwtTokenProvider;
-
     private final EmailService emailService;
+
+    private final JWTTokenProvider jwtTokenProvider;
 
     @Autowired
     public AuthenticationController(UserService userService, AuthenticationManager authenticationManager, JWTTokenProvider jwtTokenProvider, EmailService emailService) {
@@ -42,6 +40,7 @@ public class AuthenticationController extends AuthenticationExceptionHandler {
         this.authenticationManager = authenticationManager;
         this.jwtTokenProvider = jwtTokenProvider;
         this.emailService = emailService;
+        jwtTokenProvider.setSecret(SecurityConstant.SECRET);
     }
 
     @PostMapping("/signup")
@@ -63,21 +62,6 @@ public class AuthenticationController extends AuthenticationExceptionHandler {
             return new ResponseEntity<>(loginUser.get(), jwtHeader, HttpStatus.OK);
         } else {
             throw new UserNotFoundException(username);
-        }
-    }
-
-    @PostMapping("/verify")
-    public ResponseEntity<User> verify(@RequestParam("token") String token) {
-        JWTVerifier jwtVerifier = jwtTokenProvider.getJWTVerifier();
-        String username = jwtVerifier.verify(token).getSubject();
-        Optional<User> verifyUser = userService.findByUsername(username);
-        if (verifyUser.isPresent() && jwtTokenProvider.isTokenValid(username, token)) {
-            UserPrincipal userPrincipal = new UserPrincipal(verifyUser.get());
-            HttpHeaders jwtHeader = getJwtHeader(userPrincipal);
-            userService.verify(verifyUser.get());
-            return new ResponseEntity<>(verifyUser.get(), jwtHeader, HttpStatus.OK);
-        } else {
-            throw new EmailVerificationFailException();
         }
     }
 

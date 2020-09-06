@@ -3,6 +3,7 @@ package tech.eportfolio.server.service.impl;
 import ma.glasnost.orika.BoundMapperFacade;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.impl.DefaultMapperFactory;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +13,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
+import tech.eportfolio.server.constant.Authority;
 import tech.eportfolio.server.constant.Role;
 import tech.eportfolio.server.dto.UserDTO;
 import tech.eportfolio.server.exception.EmailExistException;
@@ -23,7 +24,7 @@ import tech.eportfolio.server.model.UserPrincipal;
 import tech.eportfolio.server.repository.UserRepository;
 import tech.eportfolio.server.service.UserService;
 
-import java.util.Date;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
@@ -101,11 +102,15 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public User verify(User user) {
+    public User verify(@NotNull User user) {
+        if (StringUtils.equals(user.getRoles(), Role.ROLE_VERIFIED_USER.name())) {
+            // TODO: Create an UserVerificationException
+            throw new RuntimeException("User already verified");
+        }
         user.setRoles(Role.ROLE_VERIFIED_USER.name());
-        user.setAuthorities(Role.ROLE_VERIFIED_USER.getAuthorities());
-        user.setUpdatedOn(new Date());
-        return userRepository.save(user);
+        user.setAuthorities(Authority.VERIFIED_USER_AUTHORITIES);
+        user = userRepository.save(user);
+        return user;
     }
 
     @Override

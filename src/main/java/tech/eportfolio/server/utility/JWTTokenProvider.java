@@ -5,6 +5,7 @@ import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.context.annotation.Scope;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -21,9 +22,13 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
+@Scope("prototype")
 public class JWTTokenProvider {
-//    @Value("jwt.secret")
     private String secret;
+
+    public void setSecret(String secret) {
+        this.secret = secret;
+    }
 
     public String generateJWTToken(UserPrincipal userPrincipal) {
         String[] claims = getClaimsFromUser(userPrincipal);
@@ -39,8 +44,6 @@ public class JWTTokenProvider {
 
     public String[] getClaimsFromUser(UserPrincipal userPrincipal) {
         List<String> authorities = userPrincipal.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList());
-        Date date = new Date();
-        secret = userPrincipal.getUsername() + date.getTime();
         return authorities.toArray(new String[0]);
     }
 

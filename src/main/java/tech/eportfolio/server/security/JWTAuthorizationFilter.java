@@ -28,6 +28,8 @@ public class JWTAuthorizationFilter extends OncePerRequestFilter {
 
     public JWTAuthorizationFilter(JWTTokenProvider tokenProvider) {
         this.jwtTokenProvider = tokenProvider;
+        // Set secret for JWT
+        jwtTokenProvider.setSecret(SecurityConstant.SECRET);
     }
 
     @Override
