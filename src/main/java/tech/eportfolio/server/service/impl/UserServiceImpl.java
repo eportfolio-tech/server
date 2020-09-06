@@ -23,6 +23,7 @@ import tech.eportfolio.server.model.UserPrincipal;
 import tech.eportfolio.server.repository.UserRepository;
 import tech.eportfolio.server.service.UserService;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
@@ -96,6 +97,14 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     public User changePassword(User user, String password) {
         user.setPassword(this.encodePassword(password));
+        return userRepository.save(user);
+    }
+
+    @Override
+    public User verify(User user) {
+        user.setRoles(Role.ROLE_VERIFIED_USER.name());
+        user.setAuthorities(Role.ROLE_VERIFIED_USER.getAuthorities());
+        user.setUpdatedOn(new Date());
         return userRepository.save(user);
     }
 

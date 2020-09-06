@@ -25,4 +25,6 @@ public interface UserService {
 
     User changePassword(User user, String password);
 
+    User verify(User user);
+
 }
