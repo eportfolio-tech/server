@@ -11,7 +11,7 @@ public interface UserTagService {
 
     List<UserTag> findByUserId(Long userId);
 
-    List<Tag> findTagsByUsername(String username);
+    List<Tag> findTagsByUser(User user);
 
     UserTag create(User user, Tag tag);
 

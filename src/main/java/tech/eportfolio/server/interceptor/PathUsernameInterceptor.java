@@ -24,7 +24,7 @@ import java.util.Map;
  */
 @Component
 public class PathUsernameInterceptor extends HandlerInterceptorAdapter {
-    private final Logger LOGGER = LoggerFactory.getLogger(getClass());
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws IOException {
@@ -49,7 +49,7 @@ public class PathUsernameInterceptor extends HandlerInterceptorAdapter {
             // exceptionHandler defined in @ControllerAdvice
             // See https://stackoverflow.com/questions/22062311/how-to-use-exceptionhandler-in-spring-interceptor
             JwtAccessDeniedHandler jwtAccessDeniedHandler = new JwtAccessDeniedHandler();
-            LOGGER.info("PathUsernameInterceptor failed: {} in JWT mismatch with {} in path", SecurityContextHolder.getContext().
+            logger.error("PathUsernameInterceptor failed: {} in JWT mismatch with {} in path", SecurityContextHolder.getContext().
                     getAuthentication().getName(), usernameInPath);
             jwtAccessDeniedHandler.handle(request, response, new AccessDeniedException(SecurityConstant.ACCESS_DENIED_MESSAGE +
                     "PathUsernameInterceptor failed: {} in JWT mismatch with {} in path"));

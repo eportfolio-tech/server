@@ -12,9 +12,7 @@ import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 import tech.eportfolio.server.exception.UserNotFoundException;
 import tech.eportfolio.server.model.User;
-import tech.eportfolio.server.model.UserPrincipal;
 import tech.eportfolio.server.service.UserService;
-import tech.eportfolio.server.utility.JWTTokenProvider;
 
 import java.net.InetAddress;
 
@@ -24,14 +22,11 @@ public class VerificationController {
 
     private final UserService userService;
 
-    private final JWTTokenProvider jwtTokenProvider;
-
     private final Environment environment;
 
     @Autowired
-    public VerificationController(UserService userService, JWTTokenProvider jwtTokenProvider, Environment environment) {
+    public VerificationController(UserService userService, Environment environment) {
         this.userService = userService;
-        this.jwtTokenProvider = jwtTokenProvider;
         this.environment = environment;
     }
 
@@ -40,14 +35,14 @@ public class VerificationController {
     public String generateLink() {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = userService.findByUsername(username).orElseThrow(() -> new UserNotFoundException(username));
-        jwtTokenProvider.setSecret(user.getUsername() + user.getCreatedAt());
+        String verificationToken = userService.generateVerificationToken(user);
         // TODO: Use Spring application properties to use https on staging and production
         String port = environment.getProperty("server.port");
         String hostname = InetAddress.getLoopbackAddress().getHostName();
         // TODO: Use Something like Path Variable to replace string formatter
         UriComponents uriComponents = UriComponentsBuilder.newInstance()
                 .scheme("http").host(hostname).path(String.format("/users/%s/verify", username)).port(port).
-                        queryParam("token", jwtTokenProvider.generateJWTToken(new UserPrincipal(user))).build();
+                        queryParam("token", verificationToken).build();
         return uriComponents.toUriString();
     }
 
@@ -56,7 +51,6 @@ public class VerificationController {
     public String generateToken() {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = userService.findByUsername(username).orElseThrow(() -> new UserNotFoundException(username));
-        jwtTokenProvider.setSecret(user.getUsername() + user.getCreatedAt());
-        return jwtTokenProvider.generateJWTToken(new UserPrincipal(user));
+        return userService.generateVerificationToken(user);
     }
 }

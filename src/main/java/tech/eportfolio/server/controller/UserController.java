@@ -1,10 +1,7 @@
 package tech.eportfolio.server.controller;
 
-import com.auth0.jwt.JWTVerifier;
-import com.auth0.jwt.exceptions.JWTVerificationException;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.Authorization;
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +17,6 @@ import tech.eportfolio.server.repository.UserRepository;
 import tech.eportfolio.server.security.SecurityConstant;
 import tech.eportfolio.server.service.UserService;
 import tech.eportfolio.server.service.UserTagService;
-import tech.eportfolio.server.utility.JWTTokenProvider;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Null;
@@ -42,14 +38,11 @@ public class UserController {
 
     private final UserTagService userTagService;
 
-    private final JWTTokenProvider jwtTokenProvider;
-
     @Autowired
-    public UserController(UserService service, UserRepository repository, UserTagService userTagService, JWTTokenProvider jwtTokenProvider) {
+    public UserController(UserService service, UserRepository repository, UserTagService userTagService) {
         this.userService = service;
         this.repository = repository;
         this.userTagService = userTagService;
-        this.jwtTokenProvider = jwtTokenProvider;
     }
 
     /**
@@ -109,13 +102,7 @@ public class UserController {
     @GetMapping("/{username}/verify")
     public User verify(@RequestParam("token") String token, @PathVariable String username) {
         User user = userService.findByUsername(username).orElseThrow(() -> new UserNotFoundException(username));
-        jwtTokenProvider.setSecret(user.getUsername() + user.getCreatedAt());
-        JWTVerifier jwtVerifier = jwtTokenProvider.getJWTVerifier();
-        if (jwtTokenProvider.isTokenValid(username, token) && StringUtils.equals(jwtVerifier.verify(token).getSubject(), username)) {
-            return userService.verify(user);
-        } else {
-            throw new JWTVerificationException("JWT is invalid");
-        }
+        return userService.verify(user, token);
     }
 
 
@@ -128,11 +115,8 @@ public class UserController {
     @GetMapping("/{username}/tags")
     @ApiOperation(value = "", authorizations = {@Authorization(value = "JWT")})
     public List<Tag> getUserTags(@PathVariable String username) {
-        Optional<User> user = userService.findByUsername(username);
-        if (user.isEmpty()) {
-            throw new UserNotFoundException(username);
-        }
-        return userTagService.findTagsByUsername(username);
+        User user = userService.findByUsername(username).orElseThrow(() -> (new UserNotFoundException(username)));
+        return userTagService.findTagsByUser(user);
     }
 
     /**
@@ -144,20 +128,14 @@ public class UserController {
     @PostMapping("/{username}/tags")
     @ApiOperation(value = "", authorizations = {@Authorization(value = "JWT")})
     public List<UserTag> addUserTag(@PathVariable String username, @RequestBody List<Tag> tags) {
-        Optional<User> user = userService.findByUsername(username);
-        if (user.isEmpty()) {
-            throw new UserNotFoundException(username);
-        }
-        return userTagService.batchAssign(user.get(), tags);
+        User user = userService.findByUsername(username).orElseThrow(() -> (new UserNotFoundException(username)));
+        return userTagService.batchAssign(user, tags);
     }
 
     @DeleteMapping("/{username}/tags")
     @ApiOperation(value = "", authorizations = {@Authorization(value = "JWT")})
     public List<UserTag> deleteUserTags(@PathVariable String username, @RequestBody List<Tag> tags) {
-        Optional<User> user = userService.findByUsername(username);
-        if (user.isEmpty()) {
-            throw new UserNotFoundException(username);
-        }
-        return userTagService.delete(user.get(), tags);
+        User user = userService.findByUsername(username).orElseThrow(() -> (new UserNotFoundException(username)));
+        return userTagService.delete(user, tags);
     }
 }
