@@ -3,6 +3,7 @@ package tech.eportfolio.server.model;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import tech.eportfolio.server.constant.Visibility;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -26,8 +27,7 @@ public class Portfolio {
 
     private String content;
 
-    @Column(nullable = false)
-    private boolean visibility = true;
+    private Visibility visibility = Visibility.PUBLIC;
 
     private boolean deleted = false;
 
