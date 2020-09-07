@@ -99,13 +99,6 @@ public class UserController {
                 });
     }
 
-    @GetMapping("/{username}/verify")
-    public User verify(@RequestParam("token") String token, @PathVariable String username) {
-        User user = userService.findByUsername(username).orElseThrow(() -> new UserNotFoundException(username));
-        return userService.verify(user, token);
-    }
-
-
     /**
      * Return user's tags
      *

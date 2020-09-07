@@ -20,7 +20,7 @@ public class SecurityConstant {
     public static final String ACCESS_DENIED_MESSAGE = "You do not have permission to access this resource";
     // Swagger resources
     public static final String[] API_DOC = {"/swagger-ui.html", "/v2/api-docs", "/configuration/ui", "/swagger-resources/**", "/configuration/**", "/webjars/**"};
-    public static final String USER_VERIFICATION = "/users/{username}/verify";
+    public static final String USER_VERIFICATION = "/verification/verify";
 
     public static final String[] GET_ONLY = {"/tags/"};
     // TODO: Move JWT secret to properties file

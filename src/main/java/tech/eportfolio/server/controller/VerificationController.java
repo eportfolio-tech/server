@@ -5,16 +5,12 @@ import io.swagger.annotations.Authorization;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 import tech.eportfolio.server.exception.UserNotFoundException;
 import tech.eportfolio.server.model.User;
 import tech.eportfolio.server.service.UserService;
-
-import java.net.InetAddress;
 
 @RestController
 @RequestMapping("/verification")
@@ -35,14 +31,13 @@ public class VerificationController {
     public String generateLink() {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = userService.findByUsername(username).orElseThrow(() -> new UserNotFoundException(username));
+        // Generate a verification token for current user
         String verificationToken = userService.generateVerificationToken(user);
-        // TODO: Use Spring application properties to use https on staging and production
-        String port = environment.getProperty("server.port");
-        String hostname = InetAddress.getLoopbackAddress().getHostName();
-        // TODO: Use Something like Path Variable to replace string formatter
+        // Generate URI to be embedded into email
         UriComponents uriComponents = UriComponentsBuilder.newInstance()
-                .scheme("http").host(hostname).path(String.format("/users/%s/verify", username)).port(port).
-                        queryParam("token", verificationToken).build();
+                .scheme("https").host("dev.eportfolio.tech").path("/verify").
+                        queryParam("token", verificationToken).
+                        queryParam("username", username).build();
         return uriComponents.toUriString();
     }
 
@@ -53,4 +48,11 @@ public class VerificationController {
         User user = userService.findByUsername(username).orElseThrow(() -> new UserNotFoundException(username));
         return userService.generateVerificationToken(user);
     }
+
+    @PostMapping("/verify")
+    public User verify(@RequestParam("token") String token, @RequestParam String username) {
+        User user = userService.findByUsername(username).orElseThrow(() -> new UserNotFoundException(username));
+        return userService.verify(user, token);
+    }
+
 }
