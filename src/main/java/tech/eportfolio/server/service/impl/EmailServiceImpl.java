@@ -7,10 +7,10 @@ import org.springframework.mail.MailException;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.scheduling.annotation.Async;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import tech.eportfolio.server.service.EmailService;
 
-@Component
+@Service
 public class EmailServiceImpl implements EmailService {
 
     private final Logger Logger = LoggerFactory.getLogger(getClass());
