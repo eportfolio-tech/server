@@ -65,10 +65,9 @@ dependencyManagement {
     }
 }
 
-def profiles = 'prod'
+def profiles = System.getenv('PROFILE')
 
 bootRun {
-
     args = ["--spring.profiles.active=" + profiles]
 }
 
