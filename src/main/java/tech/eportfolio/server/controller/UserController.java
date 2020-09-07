@@ -61,7 +61,6 @@ public class UserController {
         return user.get();
     }
 
-
     /**
      * Reset password of an given user
      *
@@ -100,6 +99,12 @@ public class UserController {
                 });
     }
 
+    @GetMapping("/{username}/verify")
+    public User verify(@RequestParam("token") String token, @PathVariable String username) {
+        User user = userService.findByUsername(username).orElseThrow(() -> new UserNotFoundException(username));
+        return userService.verify(user, token);
+    }
+
 
     /**
      * Return user's tags
@@ -110,11 +115,8 @@ public class UserController {
     @GetMapping("/{username}/tags")
     @ApiOperation(value = "", authorizations = {@Authorization(value = "JWT")})
     public List<Tag> getUserTags(@PathVariable String username) {
-        Optional<User> user = userService.findByUsername(username);
-        if (user.isEmpty()) {
-            throw new UserNotFoundException(username);
-        }
-        return userTagService.findTagsByUsername(username);
+        User user = userService.findByUsername(username).orElseThrow(() -> (new UserNotFoundException(username)));
+        return userTagService.findTagsByUser(user);
     }
 
     /**
@@ -126,20 +128,14 @@ public class UserController {
     @PostMapping("/{username}/tags")
     @ApiOperation(value = "", authorizations = {@Authorization(value = "JWT")})
     public List<UserTag> addUserTag(@PathVariable String username, @RequestBody List<Tag> tags) {
-        Optional<User> user = userService.findByUsername(username);
-        if (user.isEmpty()) {
-            throw new UserNotFoundException(username);
-        }
-        return userTagService.batchAssign(user.get(), tags);
+        User user = userService.findByUsername(username).orElseThrow(() -> (new UserNotFoundException(username)));
+        return userTagService.batchAssign(user, tags);
     }
 
     @DeleteMapping("/{username}/tags")
     @ApiOperation(value = "", authorizations = {@Authorization(value = "JWT")})
     public List<UserTag> deleteUserTags(@PathVariable String username, @RequestBody List<Tag> tags) {
-        Optional<User> user = userService.findByUsername(username);
-        if (user.isEmpty()) {
-            throw new UserNotFoundException(username);
-        }
-        return userTagService.delete(user.get(), tags);
+        User user = userService.findByUsername(username).orElseThrow(() -> (new UserNotFoundException(username)));
+        return userTagService.delete(user, tags);
     }
 }

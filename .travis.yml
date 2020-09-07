@@ -2,27 +2,29 @@ language: java
 jdk: oraclejdk11
 dist: xenial
 os: linux
+env:
+  - PROFILE=dev
 services:
-- docker
+  - docker
 before_install:
-- chmod +x gradlew
+  - chmod +x gradlew
 install:
-- "./gradlew build"
+  - "./gradlew build"
 after_success:
-- docker login https://docker.pkg.github.com -u haswf -p $DOCKER_TOKEN
-- export TAG=`if [ "$TRAVIS_BRANCH" == "master" ]; then echo "latest"; else echo $TRAVIS_BRANCH; fi`
-- export IMAGE_NAME=docker.pkg.github.com/haswf/comp30022backenddev/eportfolio-server-docker
-- echo $COMMIT
-- docker build --build-arg JAR_FILE=build/libs/*.jar -t $IMAGE_NAME:$TAG .
-- docker tag $IMAGE_NAME:$TAG
-- docker push $IMAGE_NAME
+  - docker login https://docker.pkg.github.com -u haswf -p $DOCKER_TOKEN
+  - export TAG=`if [ "$TRAVIS_BRANCH" == "master" ]; then echo "latest"; else echo $TRAVIS_BRANCH; fi`
+  - export IMAGE_NAME=docker.pkg.github.com/haswf/comp30022backenddev/eportfolio-server-docker
+  - echo $COMMIT
+  - docker build --build-arg JAR_FILE=build/libs/*.jar -t $IMAGE_NAME:$TAG .
+  - docker tag $IMAGE_NAME:$TAG
+  - docker push $IMAGE_NAME
 before_cache:
-- rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
-- rm -fr $HOME/.gradle/caches/*/plugin-resolution/
+  - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
+  - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
 cache:
   directories:
-  - "$HOME/.gradle/caches/"
-  - "$HOME/.gradle/wrapper/"
+    - "$HOME/.gradle/caches/"
+    - "$HOME/.gradle/wrapper/"
 notifications:
   slack:
     secure: h6rh19RcccnWS/oRFEBzrimAGz+waWrWanuQ+PRali8coQCgk+qYLtVr9hSML9TZmnpRAmnlazrk5rQ2yNoUBq5vunOvoOF9YDkUBqmL69Oo7zKcP+AzXMkFF0UsT7wZJLpIV/mS4ZlZtrKgdAcfHoNNg1vvtSMgSk0HIxWJZwyiEKYLpKOw54iarzVFyKgg7fZmZMgOrdea1P3YGsRrHBVgegIAj4oXJeN/lFNKaqa60pjyULptXnKMKZQ2S1q/sIjjvX8RHHmItFo6djufhI083uh2T216k+FuCitrjZEUo5nFLgwQNlizr3aMqL+WBpnY0TUWIqXX1V/vvuYd0UtWQmS7QWwww7CTSE10lsXa7EzzVy3ySyvsS9NEz425gcA+Mbx/wgP0DrD4TgyESnapTiMsxLFVhlweHVt5QoASX3N695qW0IuXKYjoBVXNt4uMhSA16cZ4QX9+MMpJbOIv47JiHl6xlF/IsEkzEGyomJRiYRIJ4WJ2pzAH3DJ1paSOhTnk9sC9F55wewcoZcLlYJJf7YGADGJNg6jR1xVEwv+Oy1SOIUuMMjcVwEBfz5gfaxw3Yd6YGiZJkv1DNGEZ8I587H7k6rJHHEinNDINAXrcF353sVY+5PYB7h1/sA9vPOaOmZURZc2qktS54ANWwdVbIKFBWJUWpeVmbUc=

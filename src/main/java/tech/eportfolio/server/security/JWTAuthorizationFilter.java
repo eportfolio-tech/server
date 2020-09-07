@@ -45,13 +45,15 @@ public class JWTAuthorizationFilter extends OncePerRequestFilter {
             // Remove bearer from authentication header
             String token = authorizationHeader.substring(SecurityConstant.TOKEN_HEADER.length());
             // Retrieve username from JWT
-            String username = jwtTokenProvider.getSubject(token);
+            final String secret = SecurityConstant.SECRET;
+            String username = jwtTokenProvider.getSubject(token, secret);
             // Set SecurityContext if JWT token is valid and there is no authentication in SecurityContext
-            if (jwtTokenProvider.isTokenValid(username, token) && SecurityContextHolder.getContext().getAuthentication() == null) {
-                List<GrantedAuthority> authorityList = jwtTokenProvider.getAuthorities(token);
+            if (jwtTokenProvider.isTokenValid(username, token, secret) && SecurityContextHolder.getContext().getAuthentication() == null) {
+                List<GrantedAuthority> authorityList = jwtTokenProvider.getAuthorities(token, secret);
                 Authentication authentication = jwtTokenProvider.getAuthentication(username, authorityList, request);
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             } else {
+                LOGGER.error("JWT verification failed: {} {}", username, token);
                 // otherwise clean up SecurityContext
                 SecurityContextHolder.clearContext();
             }

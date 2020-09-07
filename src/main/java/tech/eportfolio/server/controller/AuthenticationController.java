@@ -30,9 +30,9 @@ public class AuthenticationController extends AuthenticationExceptionHandler {
 
     private final AuthenticationManager authenticationManager;
 
-    private final JWTTokenProvider jwtTokenProvider;
-
     private final EmailService emailService;
+
+    private final JWTTokenProvider jwtTokenProvider;
 
     @Autowired
     public AuthenticationController(UserService userService, AuthenticationManager authenticationManager, JWTTokenProvider jwtTokenProvider, EmailService emailService) {
@@ -85,13 +85,13 @@ public class AuthenticationController extends AuthenticationExceptionHandler {
         HttpHeaders jwtHeader = getJwtHeader(userPrincipal);
         Map<String, Object> response = new HashMap<>();
         response.put("user", user);
-        response.put("token", "Bearer " + jwtTokenProvider.generateJWTToken(userPrincipal));
+        response.put("token", "Bearer " + jwtTokenProvider.generateJWTToken(userPrincipal, SecurityConstant.SECRET));
         return new ResponseEntity<>(response, jwtHeader, HttpStatus.OK);
     }
 
     private HttpHeaders getJwtHeader(UserPrincipal userPrincipal) {
         HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.add(SecurityConstant.JWT_TOKEN_HEADER, jwtTokenProvider.generateJWTToken(userPrincipal));
+        httpHeaders.add(SecurityConstant.JWT_TOKEN_HEADER, jwtTokenProvider.generateJWTToken(userPrincipal, SecurityConstant.SECRET));
         return httpHeaders;
     }
 

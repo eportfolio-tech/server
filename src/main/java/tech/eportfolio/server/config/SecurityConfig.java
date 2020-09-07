@@ -56,7 +56,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 // permit access to authentication endpoints
                 .and().authorizeRequests().antMatchers(SecurityConstant.AUTHENTICATION).permitAll()
                 // permit access to endpoint like GET /tags/
-                .and().authorizeRequests().antMatchers(HttpMethod.GET, SecurityConstant.GET_ONLY).permitAll().
+                .and().authorizeRequests().antMatchers(HttpMethod.GET, SecurityConstant.GET_ONLY).permitAll()
+
+                .and().authorizeRequests().antMatchers(HttpMethod.GET, SecurityConstant.USER_VERIFICATION).permitAll().
                 // require authorization for other paths
                         anyRequest().authenticated().and().authorizeRequests().and().
                 exceptionHandling().accessDeniedHandler(jwtAccessDeniedHandler)

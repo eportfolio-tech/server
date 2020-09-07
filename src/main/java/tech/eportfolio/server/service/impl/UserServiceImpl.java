@@ -1,8 +1,11 @@
 package tech.eportfolio.server.service.impl;
 
+import com.auth0.jwt.JWTVerifier;
+import com.auth0.jwt.exceptions.JWTVerificationException;
 import ma.glasnost.orika.BoundMapperFacade;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.impl.DefaultMapperFactory;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +15,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
+import tech.eportfolio.server.constant.Authority;
 import tech.eportfolio.server.constant.Role;
 import tech.eportfolio.server.dto.UserDTO;
 import tech.eportfolio.server.exception.EmailExistException;
@@ -22,7 +25,10 @@ import tech.eportfolio.server.model.User;
 import tech.eportfolio.server.model.UserPrincipal;
 import tech.eportfolio.server.repository.UserRepository;
 import tech.eportfolio.server.service.UserService;
+import tech.eportfolio.server.utility.JWTTokenProvider;
 
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
@@ -30,7 +36,7 @@ import java.util.Random;
 @Service
 @Qualifier("UserDetailsService")
 public class UserServiceImpl implements UserService, UserDetailsService {
-    private final Logger Logger = LoggerFactory.getLogger(getClass());
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
     private final Random random = new Random(System.currentTimeMillis());
 
@@ -39,6 +45,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     private UserRepository userRepository;
 
     private BCryptPasswordEncoder bCryptPasswordEncoder;
+
+    private JWTTokenProvider verificationTokenProvider;
 
     @Autowired
     public void setBoundMapper(BoundMapperFacade<UserDTO, User> boundMapper) {
@@ -53,6 +61,11 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Autowired
     public void setbCryptPasswordEncoder(BCryptPasswordEncoder bCryptPasswordEncoder) {
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
+    }
+
+    @Autowired
+    public void setVerificationTokenProvider(JWTTokenProvider verificationTokenProvider) {
+        this.verificationTokenProvider = verificationTokenProvider;
     }
 
     @Bean
@@ -83,8 +96,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         }
 
         user.setPassword(encodePassword(user.getPassword()));
-        user.setRoles(Role.ROLE_USER.name());
-        user.setAuthorities(Role.ROLE_USER.getAuthorities());
+        user.setRoles(Role.ROLE_UNVERIFIED_USER.name());
+        user.setAuthorities(Role.ROLE_UNVERIFIED_USER.getAuthorities());
         return userRepository.save(user);
     }
 
@@ -97,6 +110,35 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     public User changePassword(User user, String password) {
         user.setPassword(this.encodePassword(password));
         return userRepository.save(user);
+    }
+
+    @Override
+    public User verify(@NotNull User user, @NotEmpty String token) {
+        if (StringUtils.equals(user.getRoles(), Role.ROLE_VERIFIED_USER.name())) {
+            // TODO: Create an UserVerificationException
+            throw new RuntimeException("User already verified");
+        }
+        String secret = getVerificationSecret(user);
+        JWTVerifier jwtVerifier = verificationTokenProvider.getJWTVerifier(secret);
+        if (verificationTokenProvider.isTokenValid(user.getUsername(), token, secret)
+                && StringUtils.equals(jwtVerifier.verify(token).getSubject(), user.getUsername())) {
+            user.setRoles(Role.ROLE_VERIFIED_USER.name());
+            user.setAuthorities(Authority.VERIFIED_USER_AUTHORITIES);
+            user = userRepository.save(user);
+            return user;
+        } else {
+            throw new JWTVerificationException("JWT is invalid");
+        }
+    }
+
+    @Override
+    public String generateVerificationToken(User user) {
+        return verificationTokenProvider.generateJWTToken(new UserPrincipal(user), getVerificationSecret(user));
+    }
+
+    @Override
+    public String getVerificationSecret(@NotNull User user) {
+        return user.getUsername() + user.getCreatedAt();
     }
 
     @Override
@@ -129,7 +171,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     public UserDetails loadUserByUsername(String username) {
         User user = userRepository.findByUsernameAndDeleted(username, false);
         if (user == null) {
-            Logger.error("User not found by username: {}", username);
+            logger.error("User not found by username: {}", username);
             throw new UserNotFoundException(username);
         } else {
             return new UserPrincipal(user);

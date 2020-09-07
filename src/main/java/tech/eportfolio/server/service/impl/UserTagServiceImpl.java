@@ -41,8 +41,8 @@ public class UserTagServiceImpl implements UserTagService {
     }
 
     @Override
-    public List<Tag> findTagsByUsername(String username) {
-        List<UserTag> userTags = findByUsername(username);
+    public List<Tag> findTagsByUser(@NotNull User user) {
+        List<UserTag> userTags = findByUsername(user.getUsername());
         return tagService.findByIdIn(userTags.stream().map(UserTag::getTagId).collect(Collectors.toList()));
     }
 
