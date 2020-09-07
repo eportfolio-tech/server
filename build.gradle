@@ -71,6 +71,10 @@ bootRun {
     args = ["--spring.profiles.active=" + profiles]
 }
 
+build {
+}
+
 test {
+    systemProperty "spring.profiles.active", "dev"
     useJUnitPlatform()
 }

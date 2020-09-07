@@ -7,4 +7,4 @@ USER spring:spring
 ARG JAR_FILE=target/*.jar
 COPY ${JAR_FILE} app.jar
 ENV PROFILE=dev
-ENTRYPOINT ["java", "-jar","/app.jar"]
+ENTRYPOINT ["java", "-jar","-Dspring.profiles.active=${PROFILE}", "/app.jar"]
