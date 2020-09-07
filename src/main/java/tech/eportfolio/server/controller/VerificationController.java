@@ -8,6 +8,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
+import tech.eportfolio.server.constant.VerificationConstant;
 import tech.eportfolio.server.exception.UserNotFoundException;
 import tech.eportfolio.server.model.User;
 import tech.eportfolio.server.service.UserService;
@@ -35,7 +36,8 @@ public class VerificationController {
         String verificationToken = userService.generateVerificationToken(user);
         // Generate URI to be embedded into email
         UriComponents uriComponents = UriComponentsBuilder.newInstance()
-                .scheme("https").host("dev.eportfolio.tech").path("/verify").
+                .scheme(VerificationConstant.SCHEME_HTTPS).
+                        host(VerificationConstant.HOST).path(VerificationConstant.PATH).
                         queryParam("token", verificationToken).
                         queryParam("username", username).build();
         return uriComponents.toUriString();

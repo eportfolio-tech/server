@@ -1,4 +1,4 @@
-package tech.eportfolio.server.security;
+package tech.eportfolio.server.constant;
 
 import org.springframework.beans.factory.annotation.Value;
 

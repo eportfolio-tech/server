@@ -10,6 +10,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
+import tech.eportfolio.server.constant.SecurityConstant;
 import tech.eportfolio.server.utility.JWTTokenProvider;
 
 import javax.servlet.FilterChain;

@@ -13,10 +13,10 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import tech.eportfolio.server.constant.SecurityConstant;
 import tech.eportfolio.server.security.JWTAuthorizationFilter;
 import tech.eportfolio.server.security.JwtAccessDeniedHandler;
 import tech.eportfolio.server.security.JwtAuthenticationEntryPoint;
-import tech.eportfolio.server.security.SecurityConstant;
 import tech.eportfolio.server.service.impl.UserServiceImpl;
 
 @Configuration

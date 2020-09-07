@@ -8,13 +8,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import tech.eportfolio.server.constant.SecurityConstant;
 import tech.eportfolio.server.dto.PasswordResetRequestBody;
 import tech.eportfolio.server.exception.UserNotFoundException;
 import tech.eportfolio.server.model.Tag;
 import tech.eportfolio.server.model.User;
 import tech.eportfolio.server.model.UserTag;
 import tech.eportfolio.server.repository.UserRepository;
-import tech.eportfolio.server.security.SecurityConstant;
 import tech.eportfolio.server.service.UserService;
 import tech.eportfolio.server.service.UserTagService;
 
