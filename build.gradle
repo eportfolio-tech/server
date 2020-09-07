@@ -65,15 +65,10 @@ dependencyManagement {
     }
 }
 
+def profiles = 'prod'
 
 bootRun {
-    println "Please enter the property you want to choose: "
-    def profiles = System.in.newReader().readLine()
 
-
-    if (profiles != "prod") {
-        profiles = "dev"
-    }
     args = ["--spring.profiles.active=" + profiles]
 }
 
