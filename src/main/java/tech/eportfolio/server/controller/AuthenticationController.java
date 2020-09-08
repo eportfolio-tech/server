@@ -7,7 +7,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponents;
+import org.springframework.web.util.UriComponentsBuilder;
 import tech.eportfolio.server.constant.SecurityConstant;
+import tech.eportfolio.server.constant.VerificationConstant;
+import tech.eportfolio.server.dto.PasswordRecoveryRequestBody;
 import tech.eportfolio.server.dto.UserDTO;
 import tech.eportfolio.server.exception.UserNotFoundException;
 import tech.eportfolio.server.exception.handler.AuthenticationExceptionHandler;
@@ -92,6 +96,34 @@ public class AuthenticationController extends AuthenticationExceptionHandler {
         response.put("user", user);
         response.put("token", "Bearer " + jwtTokenProvider.generateJWTToken(userPrincipal, SecurityConstant.SECRET));
         return new ResponseEntity<>(response, jwtHeader, HttpStatus.OK);
+    }
+
+    @GetMapping("/recovery-link")
+    public String generatePasswordRecoveryLink(@RequestParam String username) {
+        User user = userService.findByUsername(username).orElseThrow(() -> new UserNotFoundException(username));
+        // Generate a verification token for current user
+        String verificationToken = userService.generatePasswordRecoveryToken(user);
+        // Generate URI to be embedded into email
+        UriComponents uriComponents = UriComponentsBuilder.newInstance()
+                .scheme(VerificationConstant.SCHEME_HTTPS).
+                        host(VerificationConstant.HOST).path(VerificationConstant.PATH).
+                        queryParam("token", verificationToken).
+                        queryParam("username", username).build();
+        return uriComponents.toUriString();
+    }
+
+    @GetMapping("/recovery-token")
+    public String generatePasswordRecoveryToken(@RequestParam String username) {
+        User user = userService.findByUsername(username).orElseThrow(() -> new UserNotFoundException(username));
+        return userService.generatePasswordRecoveryToken(user);
+    }
+
+    @PostMapping("/password-recovery")
+    public User verifyPasswordReset(@RequestParam String username, @RequestBody @Valid PasswordRecoveryRequestBody passwordRecoveryRequestBody) {
+
+        User user = userService.findByUsername(username).orElseThrow(() -> new UserNotFoundException(username));
+        return userService.passwordRecovery(user, passwordRecoveryRequestBody.getToken(), passwordRecoveryRequestBody.getNewPassword());
+
     }
 
     private HttpHeaders getJwtHeader(UserPrincipal userPrincipal) {

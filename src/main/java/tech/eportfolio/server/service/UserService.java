@@ -25,5 +25,11 @@ public interface UserService {
 
     User changePassword(User user, String password);
 
+    User passwordRecovery(@NotNull User user, @NotEmpty String token, String newPassword);
+
+    String generatePasswordRecoveryToken(User user);
+
+    String getPasswordRecoverySecret(User user);
+  
     User save(User user);
 }

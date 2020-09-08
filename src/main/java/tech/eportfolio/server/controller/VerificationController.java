@@ -17,16 +17,11 @@ import javax.validation.constraints.Null;
 @RestController
 @RequestMapping("/verification")
 public class VerificationController {
-
+    @Autowired
     private UserService userService;
 
-    private VerificationService verificationService;
-
     @Autowired
-    public void setUserService(UserService userService) {
-        this.userService = userService;
-    }
-
+    private VerificationService verificationService;
 
     @GetMapping("/link")
     @ApiOperation(value = "", authorizations = {@Authorization(value = "JWT")})
@@ -52,7 +47,7 @@ public class VerificationController {
         User user = userService.findByUsername(username).orElseThrow(() -> new UserNotFoundException(username));
         return verificationService.verify(user, token);
     }
-
+  
     @PostMapping("/resend")
     @ApiOperation(value = "", authorizations = {@Authorization(value = "JWT")})
     public ResponseEntity<Null> resend(@RequestParam String username) {
@@ -60,6 +55,4 @@ public class VerificationController {
         verificationService.sendVerificationEmail(user);
         return new ResponseEntity<>(HttpStatus.ACCEPTED);
     }
-
-
 }

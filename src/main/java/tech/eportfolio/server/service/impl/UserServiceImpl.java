@@ -40,6 +40,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
+    private JWTTokenProvider tokenProvider;
 
     @Autowired
     public void setBoundMapper(BoundMapperFacade<UserDTO, User> boundMapper) {
@@ -52,10 +53,15 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Autowired
-    public void setbCryptPasswordEncoder(BCryptPasswordEncoder bCryptPasswordEncoder) {
+    public void setBcryptPasswordEncoder(BCryptPasswordEncoder bCryptPasswordEncoder) {
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
 
+    @Autowired
+    public void setTokenProvider(JWTTokenProvider tokenProvider) {
+        this.tokenProvider = tokenProvider;
+    }
+  
     @Bean
     public BoundMapperFacade<UserDTO, User> boundMapperFacade() {
         MapperFactory mapperFactory = new DefaultMapperFactory.Builder().build();
@@ -101,8 +107,29 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
+    public User passwordRecovery(@NotNull User user, @NotEmpty String token, String newPassword) {
+        String secret = getPasswordRecoverySecret(user);
+        JWTVerifier jwtVerifier = tokenProvider.getJWTVerifier(secret);
+        if (tokenProvider.isTokenValid(user.getUsername(), token, secret)
+                && StringUtils.equals(jwtVerifier.verify(token).getSubject(), user.getUsername())) {
+            return changePassword(user, newPassword);
+        } else {
+            throw new JWTVerificationException("JWT is invalid");
+        }
+    }
+
+    @Override
+    public String generatePasswordRecoveryToken(@NotNull User user) {
+        return tokenProvider.generateJWTToken(new UserPrincipal(user), getPasswordRecoverySecret(user));
+    }
+
     public User save(User user) {
         return userRepository.save(user);
+    }
+
+    @Override
+    public String getPasswordRecoverySecret(@NotNull User user) {
+        return user.getPassword();
     }
 
     @Override

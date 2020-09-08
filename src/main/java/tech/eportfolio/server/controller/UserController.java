@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.*;
 import tech.eportfolio.server.constant.SecurityConstant;
 import tech.eportfolio.server.dto.PasswordResetRequestBody;
@@ -20,7 +21,6 @@ import tech.eportfolio.server.service.UserTagService;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Null;
-import java.nio.file.AccessDeniedException;
 import java.util.List;
 import java.util.Optional;
 
@@ -54,11 +54,7 @@ public class UserController {
     @GetMapping("/{username}")
     @ApiOperation(value = "", authorizations = {@Authorization(value = "JWT")})
     public User findOneUser(@PathVariable String username) {
-        Optional<User> user = userService.findByUsername(username);
-        if (user.isEmpty()) {
-            throw new UserNotFoundException(username);
-        }
-        return user.get();
+        return userService.findByUsername(username).orElseThrow(() -> (new UserNotFoundException(username)));
     }
 
     /**
