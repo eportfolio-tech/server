@@ -11,7 +11,7 @@ import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 import tech.eportfolio.server.constant.SecurityConstant;
 import tech.eportfolio.server.constant.VerificationConstant;
-import tech.eportfolio.server.dto.PasswordRecoveryRequestBody;
+import tech.eportfolio.server.constraint.ValidPassword;
 import tech.eportfolio.server.dto.UserDTO;
 import tech.eportfolio.server.exception.UserNotFoundException;
 import tech.eportfolio.server.exception.handler.AuthenticationExceptionHandler;
@@ -119,10 +119,10 @@ public class AuthenticationController extends AuthenticationExceptionHandler {
     }
 
     @PostMapping("/password-recovery")
-    public User verifyPasswordReset(@RequestParam String username, @RequestBody @Valid PasswordRecoveryRequestBody passwordRecoveryRequestBody) {
+    public User verifyPasswordReset(@RequestParam String username, @RequestParam String token, @RequestParam @ValidPassword String password) {
 
         User user = userService.findByUsername(username).orElseThrow(() -> new UserNotFoundException(username));
-        return userService.passwordRecovery(user, passwordRecoveryRequestBody.getToken(), passwordRecoveryRequestBody.getNewPassword());
+        return userService.passwordRecovery(user, token, password);
 
     }
 
