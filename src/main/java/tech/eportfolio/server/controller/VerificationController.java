@@ -2,7 +2,6 @@ package tech.eportfolio.server.controller;
 
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.Authorization;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -17,11 +16,15 @@ import javax.validation.constraints.Null;
 @RestController
 @RequestMapping("/verification")
 public class VerificationController {
-    @Autowired
-    private UserService userService;
 
-    @Autowired
-    private VerificationService verificationService;
+    private final UserService userService;
+
+    private final VerificationService verificationService;
+
+    public VerificationController(UserService userService, VerificationService verificationService) {
+        this.userService = userService;
+        this.verificationService = verificationService;
+    }
 
     @GetMapping("/link")
     @ApiOperation(value = "", authorizations = {@Authorization(value = "JWT")})

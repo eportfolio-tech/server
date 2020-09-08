@@ -1,5 +1,7 @@
 package tech.eportfolio.server.service.impl;
 
+import com.auth0.jwt.JWTVerifier;
+import com.auth0.jwt.exceptions.JWTVerificationException;
 import ma.glasnost.orika.BoundMapperFacade;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.impl.DefaultMapperFactory;
@@ -22,7 +24,10 @@ import tech.eportfolio.server.model.User;
 import tech.eportfolio.server.model.UserPrincipal;
 import tech.eportfolio.server.repository.UserRepository;
 import tech.eportfolio.server.service.UserService;
+import tech.eportfolio.server.utility.JWTTokenProvider;
 
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;

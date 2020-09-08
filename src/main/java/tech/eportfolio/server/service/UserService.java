@@ -3,6 +3,8 @@ package tech.eportfolio.server.service;
 import tech.eportfolio.server.dto.UserDTO;
 import tech.eportfolio.server.model.User;
 
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.Optional;
 
