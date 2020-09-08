@@ -121,7 +121,7 @@ public class UserController {
         return userTagService.batchAssign(user, tags);
     }
 
-    @DeleteMapping("/{username}/tags")
+    @PostMapping("/{username}/deleteTags")
     @ApiOperation(value = "", authorizations = {@Authorization(value = "JWT")})
     public List<UserTag> deleteUserTags(@PathVariable String username, @RequestBody List<Tag> tags) {
         User user = userService.findByUsername(username).orElseThrow(() -> (new UserNotFoundException(username)));

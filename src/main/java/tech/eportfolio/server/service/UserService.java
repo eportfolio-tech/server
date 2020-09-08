@@ -3,8 +3,6 @@ package tech.eportfolio.server.service;
 import tech.eportfolio.server.dto.UserDTO;
 import tech.eportfolio.server.model.User;
 
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.Optional;
 
@@ -27,15 +25,11 @@ public interface UserService {
 
     User changePassword(User user, String password);
 
-    User verify(@NotNull User user, @NotEmpty String token);
-
     User passwordRecovery(@NotNull User user, @NotEmpty String token, String newPassword);
-
-    String generateVerificationToken(User user);
 
     String generatePasswordRecoveryToken(User user);
 
-    String getVerificationSecret(User user);
-
     String getPasswordRecoverySecret(User user);
+  
+    User save(User user);
 }

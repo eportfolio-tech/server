@@ -17,8 +17,8 @@ import tech.eportfolio.server.exception.UserNotFoundException;
 import tech.eportfolio.server.exception.handler.AuthenticationExceptionHandler;
 import tech.eportfolio.server.model.User;
 import tech.eportfolio.server.model.UserPrincipal;
-import tech.eportfolio.server.service.EmailService;
 import tech.eportfolio.server.service.UserService;
+import tech.eportfolio.server.service.VerificationService;
 import tech.eportfolio.server.utility.JWTTokenProvider;
 
 import javax.validation.Valid;
@@ -34,16 +34,16 @@ public class AuthenticationController extends AuthenticationExceptionHandler {
 
     private final AuthenticationManager authenticationManager;
 
-    private final EmailService emailService;
+    private final VerificationService verificationService;
 
     private final JWTTokenProvider jwtTokenProvider;
 
     @Autowired
-    public AuthenticationController(UserService userService, AuthenticationManager authenticationManager, JWTTokenProvider jwtTokenProvider, EmailService emailService) {
+    public AuthenticationController(UserService userService, AuthenticationManager authenticationManager, JWTTokenProvider jwtTokenProvider, VerificationService verificationService) {
         this.userService = userService;
         this.authenticationManager = authenticationManager;
         this.jwtTokenProvider = jwtTokenProvider;
-        this.emailService = emailService;
+        this.verificationService = verificationService;
     }
 
     @PostMapping("/signup")
@@ -51,7 +51,7 @@ public class AuthenticationController extends AuthenticationExceptionHandler {
         User user = userService.register(userService.fromUserDTO(userDTO));
         UserPrincipal userPrincipal = new UserPrincipal(user);
         HttpHeaders jwtHeader = getJwtHeader(userPrincipal);
-        emailService.sendSimpleMessage(user.getEmail(), "A welcome message from eportfolio.tech", "Welcome! Thank you for joining us. You can set up your e-portfolio to demonstrate your experience and skills");
+        verificationService.sendVerificationEmail(user);
         return new ResponseEntity<>(user, jwtHeader, HttpStatus.OK);
     }
 
@@ -66,6 +66,11 @@ public class AuthenticationController extends AuthenticationExceptionHandler {
         } else {
             throw new UserNotFoundException(username);
         }
+    }
+
+    @DeleteMapping("/")
+    public ResponseEntity<String> canYouDelete(@RequestBody String content) {
+        return new ResponseEntity<>(content, null, HttpStatus.OK);
     }
 
     @GetMapping("/letMeLogIn")
