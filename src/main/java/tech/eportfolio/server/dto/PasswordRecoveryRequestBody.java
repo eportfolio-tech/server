@@ -6,10 +6,10 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
 @Data
-public class PasswordResetRequestBody {
+public class PasswordRecoveryRequestBody {
     @NotNull
     @NotEmpty
-    private String oldPassword;
+    private String token;
     @NotNull
     @NotEmpty
     private String newPassword;

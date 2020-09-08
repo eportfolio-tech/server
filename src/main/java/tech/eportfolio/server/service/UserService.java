@@ -29,7 +29,13 @@ public interface UserService {
 
     User verify(@NotNull User user, @NotEmpty String token);
 
+    User passwordRecovery(@NotNull User user, @NotEmpty String token, String newPassword);
+
     String generateVerificationToken(User user);
 
+    String generatePasswordRecoveryToken(User user);
+
     String getVerificationSecret(User user);
+
+    String getPasswordRecoverySecret(User user);
 }

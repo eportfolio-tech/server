@@ -5,22 +5,24 @@ import io.swagger.annotations.Authorization;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.*;
 import tech.eportfolio.server.constant.SecurityConstant;
+import tech.eportfolio.server.dto.PasswordResetRequestBody;
 import tech.eportfolio.server.exception.UserNotFoundException;
 import tech.eportfolio.server.model.Tag;
 import tech.eportfolio.server.model.User;
-import tech.eportfolio.server.model.UserPrincipal;
 import tech.eportfolio.server.model.UserTag;
 import tech.eportfolio.server.repository.UserRepository;
 import tech.eportfolio.server.service.UserService;
 import tech.eportfolio.server.service.UserTagService;
-import tech.eportfolio.server.utility.JWTTokenProvider;
 
+import javax.validation.Valid;
+import javax.validation.constraints.Null;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author Haswell
@@ -36,14 +38,11 @@ public class UserController {
 
     private final UserTagService userTagService;
 
-    private final JWTTokenProvider jwtTokenProvider;
-
     @Autowired
-    public UserController(UserService service, UserRepository repository, UserTagService userTagService, JWTTokenProvider jwtTokenProvider) {
+    public UserController(UserService service, UserRepository repository, UserTagService userTagService) {
         this.userService = service;
         this.repository = repository;
         this.userTagService = userTagService;
-        this.jwtTokenProvider = jwtTokenProvider;
     }
 
     /**
@@ -67,11 +66,18 @@ public class UserController {
     @ResponseStatus(HttpStatus.ACCEPTED)
     @PostMapping("/{username}/password-reset")
     @ApiOperation(value = "", authorizations = {@Authorization(value = "JWT")})
-    public ResponseEntity<User> passwordReset(@PathVariable String username) {
-        User user = userService.findByUsername(username).orElseThrow(() -> (new UserNotFoundException(username)));
-        UserPrincipal userPrincipal = new UserPrincipal(user);
-        HttpHeaders jwtHeader = getJwtHeader(userPrincipal);
-        return new ResponseEntity<>(user, jwtHeader, HttpStatus.OK);
+    public ResponseEntity<Null> passwordReset(@PathVariable String username, @RequestBody @Valid PasswordResetRequestBody passwordResetRequestBody) throws AccessDeniedException {
+        Optional<User> userOptional = userService.findByUsername(username);
+        if (userOptional.isEmpty()) {
+            throw new UserNotFoundException(username);
+        }
+        User user = userOptional.get();
+        if (userService.verifyPassword(user, passwordResetRequestBody.getOldPassword())) {
+            userService.changePassword(user, passwordResetRequestBody.getNewPassword());
+            return new ResponseEntity<>(HttpStatus.ACCEPTED);
+        } else {
+            throw new AccessDeniedException(SecurityConstant.ACCESS_DENIED_MESSAGE);
+        }
     }
 
     @PutMapping("/{username}")
@@ -120,11 +126,5 @@ public class UserController {
     public List<UserTag> deleteUserTags(@PathVariable String username, @RequestBody List<Tag> tags) {
         User user = userService.findByUsername(username).orElseThrow(() -> (new UserNotFoundException(username)));
         return userTagService.delete(user, tags);
-    }
-
-    private HttpHeaders getJwtHeader(UserPrincipal userPrincipal) {
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.add(SecurityConstant.JWT_TOKEN_HEADER, jwtTokenProvider.generateJWTToken(userPrincipal, SecurityConstant.SECRET));
-        return httpHeaders;
     }
 }

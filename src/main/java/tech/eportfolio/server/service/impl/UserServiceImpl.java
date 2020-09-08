@@ -124,8 +124,19 @@ public class UserServiceImpl implements UserService, UserDetailsService {
                 && StringUtils.equals(jwtVerifier.verify(token).getSubject(), user.getUsername())) {
             user.setRoles(Role.ROLE_VERIFIED_USER.name());
             user.setAuthorities(Authority.VERIFIED_USER_AUTHORITIES);
-            user = userRepository.save(user);
-            return user;
+            return userRepository.save(user);
+        } else {
+            throw new JWTVerificationException("JWT is invalid");
+        }
+    }
+
+    @Override
+    public User passwordRecovery(@NotNull User user, @NotEmpty String token, String newPassword) {
+        String secret = getPasswordRecoverySecret(user);
+        JWTVerifier jwtVerifier = verificationTokenProvider.getJWTVerifier(secret);
+        if (verificationTokenProvider.isTokenValid(user.getUsername(), token, secret)
+                && StringUtils.equals(jwtVerifier.verify(token).getSubject(), user.getUsername())) {
+            return changePassword(user, newPassword);
         } else {
             throw new JWTVerificationException("JWT is invalid");
         }
@@ -137,8 +148,18 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
+    public String generatePasswordRecoveryToken(User user) {
+        return verificationTokenProvider.generateJWTToken(new UserPrincipal(user), getPasswordRecoverySecret(user));
+    }
+
+    @Override
     public String getVerificationSecret(@NotNull User user) {
         return user.getUsername() + user.getCreatedAt();
+    }
+
+    @Override
+    public String getPasswordRecoverySecret(User user) {
+        return user.getPassword();
     }
 
     @Override
