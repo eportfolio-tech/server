@@ -22,9 +22,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.Null;
 import java.nio.file.AccessDeniedException;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 /**
  * @author Haswell
@@ -127,10 +125,10 @@ public class UserController {
         return userTagService.batchAssign(user, tags);
     }
 
-    @DeleteMapping("/{username}/tags")
+    @PostMapping("/{username}/deleteTags")
     @ApiOperation(value = "", authorizations = {@Authorization(value = "JWT")})
     public List<UserTag> deleteUserTags(@PathVariable String username, @RequestBody List<Tag> tags) {
         User user = userService.findByUsername(username).orElseThrow(() -> (new UserNotFoundException(username)));
-        return userTagService.delete(user, tags.stream().filter(Objects::nonNull).collect(Collectors.toList()));
+        return userTagService.delete(user, tags);
     }
 }
