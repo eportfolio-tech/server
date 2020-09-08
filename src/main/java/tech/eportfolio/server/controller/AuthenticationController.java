@@ -64,6 +64,11 @@ public class AuthenticationController extends AuthenticationExceptionHandler {
         }
     }
 
+    @DeleteMapping("/")
+    public ResponseEntity<String> canYouDelete(@RequestBody String content) {
+        return new ResponseEntity<>(content, null, HttpStatus.OK);
+    }
+
     @GetMapping("/letMeLogIn")
     public ResponseEntity<Map<String, Object>> letMeLogIn() {
         Optional<User> loginUser = userService.findByUsername("test");
