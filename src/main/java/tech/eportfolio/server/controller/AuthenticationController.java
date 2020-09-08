@@ -93,7 +93,7 @@ public class AuthenticationController extends AuthenticationExceptionHandler {
         return new ResponseEntity<>(response, jwtHeader, HttpStatus.OK);
     }
 
-    @GetMapping("/link")
+    @GetMapping("/recovery-link")
     public String generatePasswordRecoveryLink(@RequestParam String username) {
         User user = userService.findByUsername(username).orElseThrow(() -> new UserNotFoundException(username));
         // Generate a verification token for current user
@@ -107,13 +107,13 @@ public class AuthenticationController extends AuthenticationExceptionHandler {
         return uriComponents.toUriString();
     }
 
-    @GetMapping("/token")
+    @GetMapping("/recovery-token")
     public String generatePasswordRecoveryToken(@RequestParam String username) {
         User user = userService.findByUsername(username).orElseThrow(() -> new UserNotFoundException(username));
         return userService.generatePasswordRecoveryToken(user);
     }
 
-    @PostMapping("/verify")
+    @PostMapping("/password-recovery")
     public User verifyPasswordReset(@RequestParam String username, @RequestBody @Valid PasswordRecoveryRequestBody passwordRecoveryRequestBody) {
 
         User user = userService.findByUsername(username).orElseThrow(() -> new UserNotFoundException(username));

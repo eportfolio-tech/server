@@ -46,7 +46,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
-    private JWTTokenProvider verificationTokenProvider;
+    private JWTTokenProvider tokenProvider;
 
     @Autowired
     public void setBoundMapper(BoundMapperFacade<UserDTO, User> boundMapper) {
@@ -59,13 +59,13 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Autowired
-    public void setbCryptPasswordEncoder(BCryptPasswordEncoder bCryptPasswordEncoder) {
+    public void setBcryptPasswordEncoder(BCryptPasswordEncoder bCryptPasswordEncoder) {
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
 
     @Autowired
-    public void setVerificationTokenProvider(JWTTokenProvider verificationTokenProvider) {
-        this.verificationTokenProvider = verificationTokenProvider;
+    public void setVerificationTokenProvider(JWTTokenProvider tokenProvider) {
+        this.tokenProvider = tokenProvider;
     }
 
     @Bean
@@ -119,8 +119,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             throw new RuntimeException("User already verified");
         }
         String secret = getVerificationSecret(user);
-        JWTVerifier jwtVerifier = verificationTokenProvider.getJWTVerifier(secret);
-        if (verificationTokenProvider.isTokenValid(user.getUsername(), token, secret)
+        JWTVerifier jwtVerifier = tokenProvider.getJWTVerifier(secret);
+        if (tokenProvider.isTokenValid(user.getUsername(), token, secret)
                 && StringUtils.equals(jwtVerifier.verify(token).getSubject(), user.getUsername())) {
             user.setRoles(Role.ROLE_VERIFIED_USER.name());
             user.setAuthorities(Authority.VERIFIED_USER_AUTHORITIES);
@@ -133,8 +133,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     public User passwordRecovery(@NotNull User user, @NotEmpty String token, String newPassword) {
         String secret = getPasswordRecoverySecret(user);
-        JWTVerifier jwtVerifier = verificationTokenProvider.getJWTVerifier(secret);
-        if (verificationTokenProvider.isTokenValid(user.getUsername(), token, secret)
+        JWTVerifier jwtVerifier = tokenProvider.getJWTVerifier(secret);
+        if (tokenProvider.isTokenValid(user.getUsername(), token, secret)
                 && StringUtils.equals(jwtVerifier.verify(token).getSubject(), user.getUsername())) {
             return changePassword(user, newPassword);
         } else {
@@ -143,13 +143,13 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public String generateVerificationToken(User user) {
-        return verificationTokenProvider.generateJWTToken(new UserPrincipal(user), getVerificationSecret(user));
+    public String generateVerificationToken(@NotNull User user) {
+        return tokenProvider.generateJWTToken(new UserPrincipal(user), getVerificationSecret(user));
     }
 
     @Override
-    public String generatePasswordRecoveryToken(User user) {
-        return verificationTokenProvider.generateJWTToken(new UserPrincipal(user), getPasswordRecoverySecret(user));
+    public String generatePasswordRecoveryToken(@NotNull User user) {
+        return tokenProvider.generateJWTToken(new UserPrincipal(user), getPasswordRecoverySecret(user));
     }
 
     @Override
@@ -158,7 +158,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public String getPasswordRecoverySecret(User user) {
+    public String getPasswordRecoverySecret(@NotNull User user) {
         return user.getPassword();
     }
 
