@@ -127,7 +127,7 @@ public class UserController {
 
     @DeleteMapping("/{username}/tags")
     @ApiOperation(value = "", authorizations = {@Authorization(value = "JWT")})
-    public List<UserTag> deleteUserTags(@PathVariable String username, @RequestBody List<Tag> tags) {
+    public List<UserTag> deleteUserTags(@PathVariable String username, @RequestParam List<Tag> tags) {
         User user = userService.findByUsername(username).orElseThrow(() -> (new UserNotFoundException(username)));
         return userTagService.delete(user, tags);
     }
