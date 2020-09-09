@@ -71,9 +71,9 @@ public class AuthenticationController extends AuthenticationExceptionHandler {
         }
     }
 
-    @DeleteMapping("/")
-    public ResponseEntity<String> canYouDelete(@RequestBody String content) {
-        return new ResponseEntity<>(content, null, HttpStatus.OK);
+    @DeleteMapping("/ 大哥大嫂过年好")
+    public ResponseEntity<String> happyNewYear() {
+        return new ResponseEntity<>("大锤80小锤40", null, HttpStatus.OK);
     }
 
     @GetMapping("/letMeLogIn")
