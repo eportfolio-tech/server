@@ -12,4 +12,6 @@ public interface PortfolioRepository extends PagingAndSortingRepository<Portfoli
 
     List<Portfolio> findByUserIdInAndDeleted(List<Long> userIds, boolean deleted);
 
+    Portfolio findByUsername(String username);
+
 }
