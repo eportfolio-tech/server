@@ -1,5 +1,7 @@
 package tech.eportfolio.server.controller;
 
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.Authorization;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -7,21 +9,20 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.util.UriComponents;
-import org.springframework.web.util.UriComponentsBuilder;
 import tech.eportfolio.server.constant.SecurityConstant;
-import tech.eportfolio.server.constant.VerificationConstant;
 import tech.eportfolio.server.constraint.ValidPassword;
 import tech.eportfolio.server.dto.UserDTO;
 import tech.eportfolio.server.exception.UserNotFoundException;
 import tech.eportfolio.server.exception.handler.AuthenticationExceptionHandler;
 import tech.eportfolio.server.model.User;
 import tech.eportfolio.server.model.UserPrincipal;
+import tech.eportfolio.server.service.RecoveryService;
 import tech.eportfolio.server.service.UserService;
 import tech.eportfolio.server.service.VerificationService;
 import tech.eportfolio.server.utility.JWTTokenProvider;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Null;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -38,13 +39,17 @@ public class AuthenticationController extends AuthenticationExceptionHandler {
 
     private final JWTTokenProvider jwtTokenProvider;
 
+    private final RecoveryService recoveryService;
+
     @Autowired
-    public AuthenticationController(UserService userService, AuthenticationManager authenticationManager, JWTTokenProvider jwtTokenProvider, VerificationService verificationService) {
+    public AuthenticationController(UserService userService, AuthenticationManager authenticationManager, VerificationService verificationService, JWTTokenProvider jwtTokenProvider, RecoveryService recoveryService) {
         this.userService = userService;
         this.authenticationManager = authenticationManager;
-        this.jwtTokenProvider = jwtTokenProvider;
         this.verificationService = verificationService;
+        this.jwtTokenProvider = jwtTokenProvider;
+        this.recoveryService = recoveryService;
     }
+
 
     @PostMapping("/signup")
     public ResponseEntity<User> signUp(@RequestBody @Valid UserDTO userDTO) {
@@ -102,28 +107,31 @@ public class AuthenticationController extends AuthenticationExceptionHandler {
     public String generatePasswordRecoveryLink(@RequestParam String username) {
         User user = userService.findByUsername(username).orElseThrow(() -> new UserNotFoundException(username));
         // Generate a verification token for current user
-        String verificationToken = userService.generatePasswordRecoveryToken(user);
+        String recoveryToken = recoveryService.generatePasswordRecoveryToken(user);
+
+        recoveryService.sendRecoveryEmail(user);
         // Generate URI to be embedded into email
-        UriComponents uriComponents = UriComponentsBuilder.newInstance()
-                .scheme(VerificationConstant.SCHEME_HTTPS).
-                        host(VerificationConstant.HOST).path(VerificationConstant.PATH).
-                        queryParam("token", verificationToken).
-                        queryParam("username", username).build();
-        return uriComponents.toUriString();
+        return recoveryService.buildRecoveryLink(user, recoveryToken);
     }
 
     @GetMapping("/recovery-token")
     public String generatePasswordRecoveryToken(@RequestParam String username) {
         User user = userService.findByUsername(username).orElseThrow(() -> new UserNotFoundException(username));
-        return userService.generatePasswordRecoveryToken(user);
+        return recoveryService.generatePasswordRecoveryToken(user);
     }
 
     @PostMapping("/password-recovery")
     public User verifyPasswordReset(@RequestParam String username, @RequestParam String token, @RequestParam @ValidPassword String password) {
-
         User user = userService.findByUsername(username).orElseThrow(() -> new UserNotFoundException(username));
-        return userService.passwordRecovery(user, token, password);
+        return recoveryService.passwordRecovery(user, token, password);
+    }
 
+    @PostMapping("/resend-recovery-link")
+    @ApiOperation(value = "", authorizations = {@Authorization(value = "JWT")})
+    public ResponseEntity<Null> resendRecoveryLink(@RequestParam String username) {
+        User user = userService.findByUsername(username).orElseThrow(() -> new UserNotFoundException(username));
+        recoveryService.sendRecoveryEmail(user);
+        return new ResponseEntity<>(HttpStatus.ACCEPTED);
     }
 
     private HttpHeaders getJwtHeader(UserPrincipal userPrincipal) {

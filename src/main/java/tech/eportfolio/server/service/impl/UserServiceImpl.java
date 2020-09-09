@@ -1,7 +1,5 @@
 package tech.eportfolio.server.service.impl;
 
-import com.auth0.jwt.JWTVerifier;
-import com.auth0.jwt.exceptions.JWTVerificationException;
 import ma.glasnost.orika.BoundMapperFacade;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.impl.DefaultMapperFactory;
@@ -24,10 +22,7 @@ import tech.eportfolio.server.model.User;
 import tech.eportfolio.server.model.UserPrincipal;
 import tech.eportfolio.server.repository.UserRepository;
 import tech.eportfolio.server.service.UserService;
-import tech.eportfolio.server.utility.JWTTokenProvider;
 
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
@@ -45,8 +40,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
-    private JWTTokenProvider tokenProvider;
-
     @Autowired
     public void setBoundMapper(BoundMapperFacade<UserDTO, User> boundMapper) {
         this.boundMapper = boundMapper;
@@ -62,11 +55,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
 
-    @Autowired
-    public void setTokenProvider(JWTTokenProvider tokenProvider) {
-        this.tokenProvider = tokenProvider;
-    }
-  
     @Bean
     public BoundMapperFacade<UserDTO, User> boundMapperFacade() {
         MapperFactory mapperFactory = new DefaultMapperFactory.Builder().build();
@@ -111,30 +99,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         return userRepository.save(user);
     }
 
-    @Override
-    public User passwordRecovery(@NotNull User user, @NotEmpty String token, String newPassword) {
-        String secret = getPasswordRecoverySecret(user);
-        JWTVerifier jwtVerifier = tokenProvider.getJWTVerifier(secret);
-        if (tokenProvider.isTokenValid(user.getUsername(), token, secret)
-                && StringUtils.equals(jwtVerifier.verify(token).getSubject(), user.getUsername())) {
-            return changePassword(user, newPassword);
-        } else {
-            throw new JWTVerificationException("JWT is invalid");
-        }
-    }
-
-    @Override
-    public String generatePasswordRecoveryToken(@NotNull User user) {
-        return tokenProvider.generateJWTToken(new UserPrincipal(user), getPasswordRecoverySecret(user));
-    }
-
     public User save(User user) {
         return userRepository.save(user);
-    }
-
-    @Override
-    public String getPasswordRecoverySecret(@NotNull User user) {
-        return user.getPassword();
     }
 
     @Override
