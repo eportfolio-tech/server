@@ -21,6 +21,7 @@ import tech.eportfolio.server.service.VerificationService;
 import tech.eportfolio.server.utility.JWTTokenProvider;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Null;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -106,8 +107,6 @@ public class AuthenticationController extends AuthenticationExceptionHandler {
         User user = userService.findByEmail(email).orElseThrow(() -> new EmailNotFoundException(email));
         // Generate a verification token for current user
         String recoveryToken = recoveryService.generatePasswordRecoveryToken(user);
-
-        recoveryService.sendRecoveryEmail(user);
         // Generate URI to be embedded into email
         return recoveryService.buildRecoveryLink(user, recoveryToken);
     }
@@ -116,6 +115,13 @@ public class AuthenticationController extends AuthenticationExceptionHandler {
     public String generatePasswordRecoveryToken(@RequestParam String username) {
         User user = userService.findByUsername(username).orElseThrow(() -> new UserNotFoundException(username));
         return recoveryService.generatePasswordRecoveryToken(user);
+    }
+
+    @PostMapping("/send-recovery-link")
+    public ResponseEntity<Null> sendPasswordRecoveryToken(@RequestParam String email) {
+        User user = userService.findByEmail(email).orElseThrow(() -> new EmailNotFoundException(email));
+        recoveryService.sendRecoveryEmail(user);
+        return new ResponseEntity<>(HttpStatus.ACCEPTED);
     }
 
     @PostMapping("/password-recovery")
