@@ -98,7 +98,7 @@ public class AuthenticationController extends AuthenticationExceptionHandler {
         HttpHeaders jwtHeader = getJwtHeader(userPrincipal);
         Map<String, Object> response = new HashMap<>();
         response.put("user", user);
-        response.put("token", "Bearer " + jwtTokenProvider.generateJWTToken(userPrincipal, SecurityConstant.SECRET));
+        response.put("token", "Bearer " + jwtTokenProvider.generateJWTToken(userPrincipal, SecurityConstant.AUTHENTICATION_SECRET));
         return new ResponseEntity<>(response, jwtHeader, HttpStatus.OK);
     }
 
@@ -132,7 +132,7 @@ public class AuthenticationController extends AuthenticationExceptionHandler {
 
     private HttpHeaders getJwtHeader(UserPrincipal userPrincipal) {
         HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.add(SecurityConstant.JWT_TOKEN_HEADER, jwtTokenProvider.generateJWTToken(userPrincipal, SecurityConstant.SECRET));
+        httpHeaders.add(SecurityConstant.JWT_TOKEN_HEADER, jwtTokenProvider.generateJWTToken(userPrincipal, SecurityConstant.AUTHENTICATION_SECRET));
         return httpHeaders;
     }
 
