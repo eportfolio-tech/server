@@ -1,7 +1,5 @@
 package tech.eportfolio.server.controller;
 
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.Authorization;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -127,7 +125,6 @@ public class AuthenticationController extends AuthenticationExceptionHandler {
     }
 
     @PostMapping("/resend-recovery-link")
-    @ApiOperation(value = "", authorizations = {@Authorization(value = "JWT")})
     public ResponseEntity<Null> resendRecoveryLink(@RequestParam String username) {
         User user = userService.findByUsername(username).orElseThrow(() -> new UserNotFoundException(username));
         recoveryService.sendRecoveryEmail(user);
