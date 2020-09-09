@@ -16,7 +16,7 @@ public class RecoveryConstant {
             "\n" +
             "%s\n" +
             "\n" +
-            "This password reset is only valid for the next 30 minutes.\n" +
+            "For security reasons, this link will expire in 30 minutes from original datetime of this request.\n" +
             " \n" +
             "\n" +
             "Need help?\n" +
