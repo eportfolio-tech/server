@@ -2,7 +2,9 @@ package tech.eportfolio.server;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.Bean;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.scheduling.annotation.EnableAsync;
@@ -12,6 +14,8 @@ import java.util.Properties;
 
 @SpringBootApplication
 @EnableAsync
+@EntityScan(basePackages = {"tech.eportfolio.server.model"})
+@EnableJpaRepositories(basePackages = {"tech.eportfolio.server.repository"})
 public class ServerApplication {
 
     public static void main(String[] args) {
