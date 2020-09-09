@@ -60,6 +60,7 @@ public class PortfolioServiceImpl implements PortfolioService {
         return findByUserId(user.getId());
     }
 
+
     @SuppressWarnings("unchecked")
     @Transactional
     public List<Portfolio> search(String text) {
@@ -71,7 +72,7 @@ public class PortfolioServiceImpl implements PortfolioService {
         Query query = queryBuilder
                 .keyword()
                 .fuzzy()
-                .withEditDistanceUpTo(2)
+                .withEditDistanceUpTo(5)
                 .withPrefixLength(0)
                 .onFields("description", "title", "content", "createdBy")
                 .matching(text)
