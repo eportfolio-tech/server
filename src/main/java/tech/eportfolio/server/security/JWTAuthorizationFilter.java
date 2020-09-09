@@ -46,7 +46,7 @@ public class JWTAuthorizationFilter extends OncePerRequestFilter {
             // Remove bearer from authentication header
             String token = authorizationHeader.substring(SecurityConstant.TOKEN_HEADER.length());
             // Retrieve username from JWT
-            final String secret = SecurityConstant.SECRET;
+            final String secret = SecurityConstant.AUTHENTICATION_SECRET;
             String username = jwtTokenProvider.getSubject(token, secret);
             // Set SecurityContext if JWT token is valid and there is no authentication in SecurityContext
             if (jwtTokenProvider.isTokenValid(username, token, secret) && SecurityContextHolder.getContext().getAuthentication() == null) {

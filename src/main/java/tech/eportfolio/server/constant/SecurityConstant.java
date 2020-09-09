@@ -22,9 +22,9 @@ public class SecurityConstant {
     public static final String[] API_DOC = {"/swagger-ui.html", "/v2/api-docs", "/configuration/ui", "/swagger-resources/**", "/configuration/**", "/webjars/**"};
     public static final String USER_VERIFICATION = "/verification/verify";
 
-    public static final String[] GET_ONLY = {"/tags/"};
+    public static final String[] GET_ONLY = {"/tags/", "/portfolio/search/**"};
     // TODO: Move JWT secret to properties file
-    public static String SECRET = "This is a JWT secret";
+    public static final String AUTHENTICATION_SECRET = "This is a JWT secret";
 
     private SecurityConstant() {
         throw new IllegalStateException("SecurityConstant is an Utility class");
