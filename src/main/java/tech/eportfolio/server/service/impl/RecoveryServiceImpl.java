@@ -46,12 +46,15 @@ public class RecoveryServiceImpl implements RecoveryService {
     public User passwordRecovery(@NotNull User user, @NotEmpty String token, String newPassword) {
         String secret = getPasswordRecoverySecret(user);
         JWTVerifier jwtVerifier = recoveryTokenProvider.getJWTVerifier(secret);
-        if (recoveryTokenProvider.isTokenValid(user.getUsername(), token, secret)
-                && StringUtils.equals(jwtVerifier.verify(token).getSubject(), user.getUsername())) {
-            return userService.changePassword(user, newPassword);
-        } else {
-            throw new JWTVerificationException("JWT is invalid");
+        try {
+            if (recoveryTokenProvider.isTokenValid(user.getUsername(), token, secret)
+                    && StringUtils.equals(jwtVerifier.verify(token).getSubject(), user.getUsername())) {
+                return userService.changePassword(user, newPassword);
+            }
+        } catch (JWTVerificationException e) {
+            throw new JWTVerificationException("Password recovery token is invalid or expired");
         }
+        return user;
     }
 
     @Override
