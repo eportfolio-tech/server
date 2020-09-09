@@ -15,7 +15,7 @@ import java.util.Date;
 @Indexed
 @Table(name = "portfolio",
         indexes = {
-                @Index(columnList = "userId", name = "user_id_index"),
+                @Index(columnList = "username", name = "username_index"),
         })
 public class Portfolio {
     @Id
@@ -26,12 +26,12 @@ public class Portfolio {
     @Column(nullable = false)
     private String title;
 
-    @Column(nullable = false, updatable = false, unique = true)
-    private Long userId;
-
     @Field
     @Column(nullable = false, updatable = false, unique = true)
-    private String createdBy;
+    private String username;
+
+    @Column(nullable = false, updatable = false, unique = true)
+    private long userId;
 
     @Field
     private String content;

@@ -42,8 +42,7 @@ public class PortfolioController {
         toCreate.setDescription(portfolio.getDescription());
         toCreate.setTitle(portfolio.getTitle());
         toCreate.setVisibility(portfolio.getVisibility());
-        toCreate.setCreatedBy(user.getUsername());
-        toCreate.setUserId(user.getId());
+        toCreate.setUsername(user.getUsername());
         return portfolioService.save(toCreate);
     }
 

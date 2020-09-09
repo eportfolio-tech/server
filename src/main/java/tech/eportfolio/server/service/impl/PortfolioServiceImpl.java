@@ -10,9 +10,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import tech.eportfolio.server.exception.UserNotFoundException;
 import tech.eportfolio.server.model.Portfolio;
-import tech.eportfolio.server.model.User;
 import tech.eportfolio.server.repository.PortfolioRepository;
 import tech.eportfolio.server.service.PortfolioService;
 import tech.eportfolio.server.service.UserService;
@@ -56,8 +54,7 @@ public class PortfolioServiceImpl implements PortfolioService {
 
     @Override
     public Optional<Portfolio> findByUsername(String username) {
-        User user = userService.findByUsername(username).orElseThrow(() -> new UserNotFoundException(username));
-        return findByUserId(user.getId());
+        return Optional.ofNullable(portfolioRepository.findByUsername(username));
     }
 
 
@@ -72,9 +69,9 @@ public class PortfolioServiceImpl implements PortfolioService {
         Query query = queryBuilder
                 .keyword()
                 .fuzzy()
-                .withEditDistanceUpTo(5)
+                .withEditDistanceUpTo(2)
                 .withPrefixLength(0)
-                .onFields("description", "title", "content", "createdBy")
+                .onFields("description", "title", "content", "username")
                 .matching(text)
                 .createQuery();
 
@@ -97,10 +94,10 @@ public class PortfolioServiceImpl implements PortfolioService {
                 .keyword()
                 .fuzzy()
                 // Allow max 5 edit distance
-                .withEditDistanceUpTo(5)
+                .withEditDistanceUpTo(2)
                 .withPrefixLength(0)
                 // search these fields on Portfolio
-                .onFields("description", "title", "content", "createdBy")
+                .onFields("description", "title", "content", "username")
                 .matching(text)
                 .createQuery();
 
