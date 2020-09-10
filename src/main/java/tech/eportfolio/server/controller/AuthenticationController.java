@@ -118,7 +118,7 @@ public class AuthenticationController extends AuthenticationExceptionHandler {
     }
 
     @PostMapping("/send-recovery-link")
-    public ResponseEntity<Null> sendPasswordRecoveryToken(@RequestParam String email) {
+    public ResponseEntity<Null> sendPasswordRecoveryLink(@RequestParam String email) {
         User user = userService.findByEmail(email).orElseThrow(() -> new EmailNotFoundException(email));
         recoveryService.sendRecoveryEmail(user);
         return new ResponseEntity<>(HttpStatus.ACCEPTED);
