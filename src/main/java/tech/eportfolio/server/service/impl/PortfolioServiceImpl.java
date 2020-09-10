@@ -58,6 +58,7 @@ public class PortfolioServiceImpl implements PortfolioService {
     }
 
 
+    @Override
     @SuppressWarnings("unchecked")
     @Transactional
     public List<Portfolio> search(String text) {
@@ -71,7 +72,7 @@ public class PortfolioServiceImpl implements PortfolioService {
                 .fuzzy()
                 .withEditDistanceUpTo(2)
                 .withPrefixLength(0)
-                .onFields("description", "title", "content", "username")
+                .onFields("description", "title", "username")
                 .matching(text)
                 .createQuery();
 
@@ -80,6 +81,7 @@ public class PortfolioServiceImpl implements PortfolioService {
         return jpaQuery.getResultList();
     }
 
+    @Override
     @Transactional
     public Page<Portfolio> searchWithPagination(String text, Pageable pageable) {
         FullTextEntityManager fullTextEntityManager = Search.getFullTextEntityManager(entityManager);
@@ -97,7 +99,7 @@ public class PortfolioServiceImpl implements PortfolioService {
                 .withEditDistanceUpTo(2)
                 .withPrefixLength(0)
                 // search these fields on Portfolio
-                .onFields("description", "title", "content", "username")
+                .onFields("description", "title", "username")
                 .matching(text)
                 .createQuery();
 

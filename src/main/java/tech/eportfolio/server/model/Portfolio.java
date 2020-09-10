@@ -34,10 +34,10 @@ public class Portfolio {
     private long userId;
 
     @Field
-    private String content;
+    private String description;
 
     @Field
-    private String description;
+    private String jsonUrl;
 
     private Visibility visibility = Visibility.PUBLIC;
 

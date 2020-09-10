@@ -38,7 +38,6 @@ public class PortfolioController {
         }
         // Set attributes for eportfolio
         Portfolio toCreate = new Portfolio();
-        toCreate.setContent(portfolio.getContent());
         toCreate.setDescription(portfolio.getDescription());
         toCreate.setTitle(portfolio.getTitle());
         toCreate.setVisibility(portfolio.getVisibility());
