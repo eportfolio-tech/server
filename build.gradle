@@ -61,7 +61,6 @@ dependencies {
     testImplementation('org.springframework.boot:spring-boot-starter-test') {
         exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
     }
-    implementation 'com.microsoft.azure:azure-cosmosdb-spring-boot-starter:2.3.3'
 }
 
 dependencyManagement {
