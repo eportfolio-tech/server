@@ -23,7 +23,7 @@ public class JwtAccessDeniedHandler implements AccessDeniedHandler {
                 status(HttpStatus.UNAUTHORIZED.value()).
                 httpStatus(HttpStatus.UNAUTHORIZED).
                 message(HttpStatus.UNAUTHORIZED.getReasonPhrase().toLowerCase()).
-                timeStamp(System.currentTimeMillis()).
+                timestamp(System.currentTimeMillis()).
                 errors(Collections.singletonList(SecurityConstant.ACCESS_DENIED_MESSAGE)).build();
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setStatus(HttpStatus.UNAUTHORIZED.value());

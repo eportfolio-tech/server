@@ -16,6 +16,6 @@ public class HttpResponse {
     private HttpStatus httpStatus;
     private String message;
     private int status;
-    private long timeStamp;
+    private long timestamp;
     private List<String> errors;
 }
