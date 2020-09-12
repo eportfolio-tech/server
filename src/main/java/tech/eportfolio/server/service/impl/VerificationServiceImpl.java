@@ -93,7 +93,7 @@ public class VerificationServiceImpl implements VerificationService {
     }
 
     public String getVerificationSecret(@NotNull User user) {
-        return user.getUsername() + user.getCreatedAt();
+        return user.getEmail();
     }
 
 }
