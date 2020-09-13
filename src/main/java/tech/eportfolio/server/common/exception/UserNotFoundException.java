@@ -1,4 +1,4 @@
-package tech.eportfolio.server.exception;
+package tech.eportfolio.server.common.exception;
 
 public class UserNotFoundException extends RuntimeException {
     public static final String PROMPT = "User doesn't exist: ";

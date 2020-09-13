@@ -1,6 +1,6 @@
-package tech.eportfolio.server.validator;
+package tech.eportfolio.server.common.validator;
 
-import tech.eportfolio.server.constraint.ValidEmail;
+import tech.eportfolio.server.common.constraint.ValidEmail;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;

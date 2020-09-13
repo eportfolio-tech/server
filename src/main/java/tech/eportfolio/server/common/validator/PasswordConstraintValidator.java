@@ -1,8 +1,8 @@
-package tech.eportfolio.server.validator;
+package tech.eportfolio.server.common.validator;
 
 import com.google.common.base.Joiner;
 import org.passay.*;
-import tech.eportfolio.server.constraint.ValidPassword;
+import tech.eportfolio.server.common.constraint.ValidPassword;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;

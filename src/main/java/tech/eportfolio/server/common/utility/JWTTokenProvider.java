@@ -1,4 +1,4 @@
-package tech.eportfolio.server.utility;
+package tech.eportfolio.server.common.utility;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
@@ -11,7 +11,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
-import tech.eportfolio.server.constant.SecurityConstant;
+import tech.eportfolio.server.common.constant.SecurityConstant;
 import tech.eportfolio.server.model.UserPrincipal;
 
 import javax.servlet.http.HttpServletRequest;

@@ -1,4 +1,4 @@
-package tech.eportfolio.server.exception;
+package tech.eportfolio.server.common.exception;
 
 public class UsernameExistException extends RuntimeException {
     public static final String SUBJECT = "username";

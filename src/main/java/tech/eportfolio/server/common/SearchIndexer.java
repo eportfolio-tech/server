@@ -1,4 +1,4 @@
-package tech.eportfolio.server;
+package tech.eportfolio.server.common;
 
 import org.hibernate.search.jpa.FullTextEntityManager;
 import org.hibernate.search.jpa.Search;

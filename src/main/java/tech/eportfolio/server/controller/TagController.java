@@ -5,8 +5,8 @@ import io.swagger.annotations.Authorization;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import tech.eportfolio.server.common.exception.TagNotFoundException;
 import tech.eportfolio.server.common.jsend.SuccessResponse;
-import tech.eportfolio.server.exception.TagNotFoundException;
 import tech.eportfolio.server.model.Tag;
 import tech.eportfolio.server.service.TagService;
 

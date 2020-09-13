@@ -1,6 +1,6 @@
-package tech.eportfolio.server.constant;
+package tech.eportfolio.server.common.constant;
 
-import static tech.eportfolio.server.constant.Authority.*;
+import static tech.eportfolio.server.common.constant.Authority.*;
 
 public enum Role {
     /**

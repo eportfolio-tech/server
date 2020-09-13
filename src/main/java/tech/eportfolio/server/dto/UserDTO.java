@@ -1,8 +1,8 @@
 package tech.eportfolio.server.dto;
 
 import lombok.Data;
-import tech.eportfolio.server.constraint.ValidEmail;
-import tech.eportfolio.server.constraint.ValidPassword;
+import tech.eportfolio.server.common.constraint.ValidEmail;
+import tech.eportfolio.server.common.constraint.ValidPassword;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;

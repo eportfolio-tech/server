@@ -1,6 +1,6 @@
-package tech.eportfolio.server.constraint;
+package tech.eportfolio.server.common.constraint;
 
-import tech.eportfolio.server.validator.PasswordConstraintValidator;
+import tech.eportfolio.server.common.validator.PasswordConstraintValidator;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;

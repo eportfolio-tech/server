@@ -1,15 +1,15 @@
-package tech.eportfolio.server.exception.handler;
+package tech.eportfolio.server.common.exception.handler;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import tech.eportfolio.server.common.exception.EmailExistException;
+import tech.eportfolio.server.common.exception.UserNotFoundException;
+import tech.eportfolio.server.common.exception.UsernameExistException;
 import tech.eportfolio.server.common.jsend.ErrorResponse;
 import tech.eportfolio.server.common.jsend.FailResponse;
-import tech.eportfolio.server.exception.EmailExistException;
-import tech.eportfolio.server.exception.UserNotFoundException;
-import tech.eportfolio.server.exception.UsernameExistException;
 
 import java.nio.file.AccessDeniedException;
 import java.util.stream.Collectors;

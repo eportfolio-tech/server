@@ -7,13 +7,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
-import tech.eportfolio.server.constant.RecoveryConstant;
+import tech.eportfolio.server.common.constant.RecoveryConstant;
+import tech.eportfolio.server.common.utility.JWTTokenProvider;
 import tech.eportfolio.server.model.User;
 import tech.eportfolio.server.model.UserPrincipal;
 import tech.eportfolio.server.service.EmailService;
 import tech.eportfolio.server.service.RecoveryService;
 import tech.eportfolio.server.service.UserService;
-import tech.eportfolio.server.utility.JWTTokenProvider;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;

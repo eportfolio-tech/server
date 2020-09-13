@@ -9,7 +9,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerMapping;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
-import tech.eportfolio.server.constant.SecurityConstant;
+import tech.eportfolio.server.common.constant.SecurityConstant;
 import tech.eportfolio.server.security.JwtAccessDeniedHandler;
 
 import javax.servlet.http.HttpServletRequest;

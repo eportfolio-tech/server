@@ -1,4 +1,4 @@
-package tech.eportfolio.server.constant;
+package tech.eportfolio.server.common.constant;
 
 public class Authority {
     public static final String[] UNVERIFIED_USER_AUTHORITIES = {"user:read", "user:create"};

@@ -1,4 +1,4 @@
-package tech.eportfolio.server.exception.handler;
+package tech.eportfolio.server.common.exception.handler;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;

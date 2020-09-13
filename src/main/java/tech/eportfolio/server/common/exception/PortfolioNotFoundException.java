@@ -1,4 +1,4 @@
-package tech.eportfolio.server.exception;
+package tech.eportfolio.server.common.exception;
 
 public class PortfolioNotFoundException extends RuntimeException {
     public static final String PROMPT = "Portfolio doesn't exist: ";
