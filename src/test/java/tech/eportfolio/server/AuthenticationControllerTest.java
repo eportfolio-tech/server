@@ -13,7 +13,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import tech.eportfolio.server.dto.UserDTO;
-import tech.eportfolio.server.exception.UserNotFoundException;
 import tech.eportfolio.server.service.UserService;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -44,9 +43,7 @@ public class AuthenticationControllerTest {
                 .param("password", password)
         ).andDo(print())
                 .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.errors").isArray())
-                .andExpect(jsonPath("$.message").value(new UserNotFoundException(username).getMessage()))
-                .andExpect(jsonPath("$.timestamp").isNotEmpty());
+                .andExpect(jsonPath("$.status").value("error"));
     }
 
     //    Test for successfully sign up only for the "test" User
