@@ -14,6 +14,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
@@ -32,6 +33,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @RunWith(SpringRunner.class)
 @ActiveProfiles("test")
 @AutoConfigureMockMvc
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @AutoConfigureTestDatabase(connection = EmbeddedDatabaseConnection.H2)
 public class UserControllerTest {
 
@@ -92,7 +94,7 @@ public class UserControllerTest {
 
     @Test
     @WithMockUser(username = "test")
-    public void ifNewPasswordIsInValidThenShouldReturn400() throws Exception {
+    public void ifNewPasswordIsInvalidThenShouldReturn400() throws Exception {
         String newPassword = MockNeat.threadLocal().passwords().weak().val();
         PasswordResetRequestBody passwordResetRequestBody = PasswordResetRequestBody.builder()
                 .oldPassword(testUserDTO.getPassword())
@@ -109,7 +111,7 @@ public class UserControllerTest {
 
     @Test
     @WithMockUser(username = "test")
-    public void ifOldPasswordIsIncorrectThenShouldReturn403() throws Exception {
+    public void ifOldPasswordIsIncorrectThenShouldReturn500() throws Exception {
         // Create a strong new password
         String newPassword = MockNeat.threadLocal().passwords().strong().val() + "Aa1";
         PasswordResetRequestBody passwordResetRequestBody = PasswordResetRequestBody.builder()
@@ -122,7 +124,7 @@ public class UserControllerTest {
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
                 .content(body)
         ).andDo(print())
-                .andExpect(status().isForbidden())
-                .andExpect(jsonPath("$.status").value("fail"));
+                .andExpect(status().isInternalServerError())
+                .andExpect(jsonPath("$.status").value("error"));
     }
 }
