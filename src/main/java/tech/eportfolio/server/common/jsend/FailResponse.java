@@ -32,6 +32,10 @@ public class FailResponse {
         return new ResponseEntity<>(this, null, HttpStatus.UNAUTHORIZED);
     }
 
+    public ResponseEntity<FailResponse> toForbidden() {
+        return new ResponseEntity<>(this, null, HttpStatus.FORBIDDEN);
+    }
+
 }
 
 

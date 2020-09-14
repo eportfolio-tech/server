@@ -52,7 +52,7 @@ public class UserController {
     public ResponseEntity<SuccessResponse<User>> findOneUser(@PathVariable String username) {
         User user = userService.findByUsername(username).
                 orElseThrow(() -> (new UserNotFoundException(username)));
-        return new SuccessResponse<User>("user", user).toCreated();
+        return new SuccessResponse<User>("user", user).toOk();
     }
 
     /**

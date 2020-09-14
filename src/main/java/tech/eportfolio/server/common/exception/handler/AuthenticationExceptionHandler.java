@@ -1,6 +1,7 @@
 package tech.eportfolio.server.common.exception.handler;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -34,7 +35,7 @@ public class AuthenticationExceptionHandler {
 
     @ExceptionHandler(AccessDeniedException.class)
     public ResponseEntity<FailResponse> handleException(AccessDeniedException ex) {
-        return new FailResponse("authorization", ex.getMessage()).toUnauthorised();
+        return new FailResponse("authentication", ex.getMessage()).toUnauthorised();
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -43,6 +44,11 @@ public class AuthenticationExceptionHandler {
         failResponse.setData(ex.getBindingResult().getFieldErrors().stream().collect(Collectors.toMap(FieldError::getField,
                 FieldError::getDefaultMessage)));
         return failResponse.toBadRequest();
+    }
+
+    @ExceptionHandler(AuthenticationException.class)
+    public ResponseEntity<FailResponse> handleException(AuthenticationException ex) {
+        return new FailResponse("authentication", ex.getMessage()).toUnauthorised();
     }
 
 
