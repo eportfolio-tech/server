@@ -13,11 +13,11 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import tech.eportfolio.server.constant.Role;
+import tech.eportfolio.server.common.constant.Role;
+import tech.eportfolio.server.common.exception.EmailExistException;
+import tech.eportfolio.server.common.exception.UserNotFoundException;
+import tech.eportfolio.server.common.exception.UsernameExistException;
 import tech.eportfolio.server.dto.UserDTO;
-import tech.eportfolio.server.exception.EmailExistException;
-import tech.eportfolio.server.exception.UserNotFoundException;
-import tech.eportfolio.server.exception.UsernameExistException;
 import tech.eportfolio.server.model.User;
 import tech.eportfolio.server.model.UserPrincipal;
 import tech.eportfolio.server.repository.UserRepository;
@@ -99,6 +99,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         return userRepository.save(user);
     }
 
+    @Override
     public User save(User user) {
         return userRepository.save(user);
     }

@@ -6,30 +6,24 @@ import org.springframework.http.MediaType;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.stereotype.Component;
-import tech.eportfolio.server.constant.SecurityConstant;
-import tech.eportfolio.server.exception.response.HttpResponse;
+import tech.eportfolio.server.common.constant.SecurityConstant;
+import tech.eportfolio.server.common.jsend.FailResponse;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.Collections;
 
 @Component
 public class JwtAccessDeniedHandler implements AccessDeniedHandler {
     @Override
     public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException) throws IOException {
-        HttpResponse customResponse = HttpResponse.builder().
-                status(HttpStatus.UNAUTHORIZED.value()).
-                httpStatus(HttpStatus.UNAUTHORIZED).
-                message(HttpStatus.UNAUTHORIZED.getReasonPhrase().toLowerCase()).
-                timestamp(System.currentTimeMillis()).
-                errors(Collections.singletonList(SecurityConstant.ACCESS_DENIED_MESSAGE)).build();
+        FailResponse failResponse = new FailResponse("authorization", SecurityConstant.ACCESS_DENIED_MESSAGE);
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setStatus(HttpStatus.UNAUTHORIZED.value());
         OutputStream outputStream = response.getOutputStream();
         ObjectMapper mapper = new ObjectMapper();
-        mapper.writeValue(outputStream, customResponse);
+        mapper.writeValue(outputStream, failResponse);
         outputStream.flush();
     }
 }

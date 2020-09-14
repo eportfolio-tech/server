@@ -2,26 +2,25 @@ package tech.eportfolio.server.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.web.bind.annotation.*;
-import tech.eportfolio.server.constant.SecurityConstant;
-import tech.eportfolio.server.constraint.ValidPassword;
+import tech.eportfolio.server.common.constant.SecurityConstant;
+import tech.eportfolio.server.common.constraint.ValidPassword;
+import tech.eportfolio.server.common.exception.EmailNotFoundException;
+import tech.eportfolio.server.common.exception.UserNotFoundException;
+import tech.eportfolio.server.common.exception.handler.AuthenticationExceptionHandler;
+import tech.eportfolio.server.common.jsend.SuccessResponse;
+import tech.eportfolio.server.common.utility.JWTTokenProvider;
 import tech.eportfolio.server.dto.UserDTO;
-import tech.eportfolio.server.exception.EmailNotFoundException;
-import tech.eportfolio.server.exception.UserNotFoundException;
-import tech.eportfolio.server.exception.handler.AuthenticationExceptionHandler;
 import tech.eportfolio.server.model.User;
 import tech.eportfolio.server.model.UserPrincipal;
 import tech.eportfolio.server.service.RecoveryService;
 import tech.eportfolio.server.service.UserService;
 import tech.eportfolio.server.service.VerificationService;
-import tech.eportfolio.server.utility.JWTTokenProvider;
 
 import javax.validation.Valid;
-import javax.validation.constraints.Null;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -51,34 +50,30 @@ public class AuthenticationController extends AuthenticationExceptionHandler {
 
 
     @PostMapping("/signup")
-    public ResponseEntity<User> signUp(@RequestBody @Valid UserDTO userDTO) {
+    public ResponseEntity<SuccessResponse<User>> signUp(@RequestBody @Valid UserDTO userDTO) {
         User user = userService.register(userService.fromUserDTO(userDTO));
         UserPrincipal userPrincipal = new UserPrincipal(user);
         HttpHeaders jwtHeader = getJwtHeader(userPrincipal);
         verificationService.sendVerificationEmail(user);
-        return new ResponseEntity<>(user, jwtHeader, HttpStatus.OK);
+        return new SuccessResponse<>("user", user).toOk(jwtHeader);
     }
 
     @PostMapping("/login")
-    public ResponseEntity<User> login(@RequestParam String username, @RequestParam String password) {
+    public ResponseEntity<SuccessResponse<User>> login(@RequestParam String username, @RequestParam String password) {
         authenticate(username, password);
-        Optional<User> loginUser = userService.findByUsername(username);
-        if (loginUser.isPresent()) {
-            UserPrincipal userPrincipal = new UserPrincipal(loginUser.get());
-            HttpHeaders jwtHeader = getJwtHeader(userPrincipal);
-            return new ResponseEntity<>(loginUser.get(), jwtHeader, HttpStatus.OK);
-        } else {
-            throw new UserNotFoundException(username);
-        }
+        User loginUser = userService.findByUsername(username).orElseThrow(() -> new UserNotFoundException(username));
+        UserPrincipal userPrincipal = new UserPrincipal(loginUser);
+        HttpHeaders jwtHeader = getJwtHeader(userPrincipal);
+        return new SuccessResponse<>("user", loginUser).toOk(jwtHeader);
     }
 
     @DeleteMapping("/ 大哥大嫂过年好")
-    public ResponseEntity<String> happyNewYear() {
-        return new ResponseEntity<>("大锤80小锤40", null, HttpStatus.OK);
+    public ResponseEntity<SuccessResponse<String>> happyNewYear() {
+        return new SuccessResponse<>("price", "大锤80小锤40").toOk();
     }
 
     @GetMapping("/letMeLogIn")
-    public ResponseEntity<Map<String, Object>> letMeLogIn() {
+    public ResponseEntity<SuccessResponse<Object>> letMeLogIn() {
         Optional<User> loginUser = userService.findByUsername("test");
         User user;
         if (loginUser.isEmpty()) {
@@ -99,35 +94,36 @@ public class AuthenticationController extends AuthenticationExceptionHandler {
         Map<String, Object> response = new HashMap<>();
         response.put("user", user);
         response.put("token", "Bearer " + jwtTokenProvider.generateJWTToken(userPrincipal, SecurityConstant.AUTHENTICATION_SECRET));
-        return new ResponseEntity<>(response, jwtHeader, HttpStatus.OK);
+        return new SuccessResponse<>(response).toOk(jwtHeader);
     }
 
     @GetMapping("/recovery-link")
-    public String generatePasswordRecoveryLink(@RequestParam String email) {
+    public ResponseEntity<SuccessResponse<String>> generatePasswordRecoveryLink(@RequestParam String email) {
         User user = userService.findByEmail(email).orElseThrow(() -> new EmailNotFoundException(email));
         // Generate a verification token for current user
         String recoveryToken = recoveryService.generatePasswordRecoveryToken(user);
         // Generate URI to be embedded into email
-        return recoveryService.buildRecoveryLink(user, recoveryToken);
+        return new SuccessResponse<>("recovery-link", recoveryService.buildRecoveryLink(user, recoveryToken)).toOk();
     }
 
     @GetMapping("/recovery-token")
-    public String generatePasswordRecoveryToken(@RequestParam String username) {
+    public ResponseEntity<SuccessResponse<String>> generatePasswordRecoveryToken(@RequestParam String username) {
         User user = userService.findByUsername(username).orElseThrow(() -> new UserNotFoundException(username));
-        return recoveryService.generatePasswordRecoveryToken(user);
+        return new SuccessResponse<>("recovery-token", recoveryService.generatePasswordRecoveryToken(user)).toOk();
     }
 
     @PostMapping("/send-recovery-link")
-    public ResponseEntity<Null> sendPasswordRecoveryLink(@RequestParam String email) {
+    public ResponseEntity<SuccessResponse<Object>> sendPasswordRecoveryLink(@RequestParam String email) {
         User user = userService.findByEmail(email).orElseThrow(() -> new EmailNotFoundException(email));
         recoveryService.sendRecoveryEmail(user);
-        return new ResponseEntity<>(HttpStatus.ACCEPTED);
+        return new SuccessResponse<>().toOk();
     }
 
     @PostMapping("/password-recovery")
-    public User verifyPasswordReset(@RequestParam String username, @RequestParam String token, @RequestParam @ValidPassword String password) {
+    public ResponseEntity<SuccessResponse<Object>> verifyPasswordReset(@RequestParam String username, @RequestParam String token, @RequestParam @ValidPassword String password) {
         User user = userService.findByUsername(username).orElseThrow(() -> new UserNotFoundException(username));
-        return recoveryService.passwordRecovery(user, token, password);
+        recoveryService.passwordRecovery(user, token, password);
+        return new SuccessResponse<>().toOk();
     }
 
     private HttpHeaders getJwtHeader(UserPrincipal userPrincipal) {

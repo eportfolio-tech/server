@@ -2,11 +2,11 @@ package tech.eportfolio.server.controller;
 
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.Authorization;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
-import tech.eportfolio.server.exception.UserNotFoundException;
+import tech.eportfolio.server.common.exception.UserNotFoundException;
+import tech.eportfolio.server.common.jsend.SuccessResponse;
 import tech.eportfolio.server.model.User;
 import tech.eportfolio.server.service.UserService;
 import tech.eportfolio.server.service.VerificationService;
@@ -28,34 +28,35 @@ public class VerificationController {
 
     @GetMapping("/link")
     @ApiOperation(value = "", authorizations = {@Authorization(value = "JWT")})
-    public String generateLink() {
+    public ResponseEntity<SuccessResponse<String>> generateLink() {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = userService.findByUsername(username).orElseThrow(() -> new UserNotFoundException(username));
         // Generate a verification token for current user
         String verificationToken = verificationService.generateVerificationToken(user);
         // Generate URI to be embedded into email
-        return verificationService.buildLink(user, verificationToken);
+        return new SuccessResponse<>("link", verificationService.buildLink(user, verificationToken)).toOk();
     }
 
     @GetMapping("/token")
     @ApiOperation(value = "", authorizations = {@Authorization(value = "JWT")})
-    public String generateToken() {
+    public ResponseEntity<SuccessResponse<String>> generateToken() {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = userService.findByUsername(username).orElseThrow(() -> new UserNotFoundException(username));
-        return verificationService.generateVerificationToken(user);
+        return new SuccessResponse<>("token", verificationService.generateVerificationToken(user)).toOk();
     }
 
     @PostMapping("/verify")
-    public User verify(@RequestParam("token") String token, @RequestParam String username) {
+    public ResponseEntity<SuccessResponse<Null>> verify(@RequestParam("token") String token, @RequestParam String username) {
         User user = userService.findByUsername(username).orElseThrow(() -> new UserNotFoundException(username));
-        return verificationService.verify(user, token);
+        verificationService.verify(user, token);
+        return new SuccessResponse<Null>().toOk();
     }
-  
+
     @PostMapping("/resend")
     @ApiOperation(value = "", authorizations = {@Authorization(value = "JWT")})
-    public ResponseEntity<Null> resend(@RequestParam String username) {
+    public ResponseEntity<SuccessResponse<Null>> resend(@RequestParam String username) {
         User user = userService.findByUsername(username).orElseThrow(() -> new UserNotFoundException(username));
         verificationService.sendVerificationEmail(user);
-        return new ResponseEntity<>(HttpStatus.ACCEPTED);
+        return new SuccessResponse<Null>().toOk();
     }
 }

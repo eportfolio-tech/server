@@ -5,7 +5,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Indexed;
-import tech.eportfolio.server.constant.Visibility;
+import tech.eportfolio.server.common.constant.Visibility;
 
 import javax.persistence.*;
 import java.util.Date;
