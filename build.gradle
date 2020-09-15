@@ -64,6 +64,7 @@ dependencies {
         exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
     }
     implementation 'org.mockito:mockito-core:3.5.10'
+    implementation 'org.springframework.boot:spring-boot-starter-data-mongodb:2.3.3.RELEASE'
 }
 
 dependencyManagement {
