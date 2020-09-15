@@ -1,4 +1,4 @@
-package tech.eportfolio.server.model;
+package tech.eportfolio.server.model.UserStorageContainer;
 
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;

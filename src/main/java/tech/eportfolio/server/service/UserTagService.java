@@ -1,8 +1,8 @@
 package tech.eportfolio.server.service;
 
-import tech.eportfolio.server.model.Tag;
-import tech.eportfolio.server.model.User;
-import tech.eportfolio.server.model.UserTag;
+import tech.eportfolio.server.model.UserStorageContainer.Tag;
+import tech.eportfolio.server.model.UserStorageContainer.User;
+import tech.eportfolio.server.model.UserStorageContainer.UserTag;
 
 import java.util.List;
 

@@ -13,7 +13,7 @@ import tech.eportfolio.server.service.EmailService;
 @Service
 public class EmailServiceImpl implements EmailService {
 
-    private final Logger Logger = LoggerFactory.getLogger(getClass());
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
     @Autowired
     private JavaMailSender emailSender;
@@ -37,7 +37,7 @@ public class EmailServiceImpl implements EmailService {
         try {
             emailSender.send(message);
         } catch (MailException exception) {
-            Logger.error("Unable to send email to {}{}", exception, to);
+            logger.error("Unable to send email to {}{}", exception, to);
         }
     }
 }

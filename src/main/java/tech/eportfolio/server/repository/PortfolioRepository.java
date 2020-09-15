@@ -1,7 +1,7 @@
 package tech.eportfolio.server.repository;
 
 import org.springframework.data.repository.PagingAndSortingRepository;
-import tech.eportfolio.server.model.Portfolio;
+import tech.eportfolio.server.model.UserStorageContainer.Portfolio;
 
 import java.util.List;
 

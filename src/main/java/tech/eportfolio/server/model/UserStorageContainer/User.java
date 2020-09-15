@@ -1,4 +1,4 @@
-package tech.eportfolio.server.model;
+package tech.eportfolio.server.model.UserStorageContainer;
 
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
@@ -7,6 +7,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.UUID;
 
 @Data
 @Entity
@@ -41,6 +42,10 @@ public class User implements Serializable {
     @Column(nullable = false)
     @UpdateTimestamp
     private Date updatedOn;
+
+    @Column
+    private UUID blobUUID = UUID.randomUUID();
+
 
     private String roles;
     private String[] authorities;

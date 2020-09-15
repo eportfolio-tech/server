@@ -20,7 +20,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import tech.eportfolio.server.dto.PasswordResetRequestBody;
 import tech.eportfolio.server.dto.UserDTO;
-import tech.eportfolio.server.model.User;
+import tech.eportfolio.server.model.UserStorageContainer.User;
 import tech.eportfolio.server.service.UserService;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;

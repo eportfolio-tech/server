@@ -1,4 +1,4 @@
-package tech.eportfolio.server.model;
+package tech.eportfolio.server.model.UserStorageContainer;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

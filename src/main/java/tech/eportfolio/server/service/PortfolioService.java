@@ -2,7 +2,7 @@ package tech.eportfolio.server.service;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import tech.eportfolio.server.model.Portfolio;
+import tech.eportfolio.server.model.UserStorageContainer.Portfolio;
 
 import java.util.List;
 import java.util.Optional;

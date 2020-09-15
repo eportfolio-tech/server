@@ -11,8 +11,8 @@ import tech.eportfolio.server.common.exception.PortfolioExistException;
 import tech.eportfolio.server.common.exception.PortfolioNotFoundException;
 import tech.eportfolio.server.common.exception.UserNotFoundException;
 import tech.eportfolio.server.common.jsend.SuccessResponse;
-import tech.eportfolio.server.model.Portfolio;
-import tech.eportfolio.server.model.User;
+import tech.eportfolio.server.model.UserStorageContainer.Portfolio;
+import tech.eportfolio.server.model.UserStorageContainer.User;
 import tech.eportfolio.server.service.PortfolioService;
 import tech.eportfolio.server.service.UserService;
 

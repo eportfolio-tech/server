@@ -1,7 +1,7 @@
 package tech.eportfolio.server.repository;
 
 import org.springframework.data.repository.CrudRepository;
-import tech.eportfolio.server.model.UserTag;
+import tech.eportfolio.server.model.UserStorageContainer.UserTag;
 
 import java.util.List;
 

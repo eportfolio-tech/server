@@ -14,8 +14,8 @@ import tech.eportfolio.server.common.exception.handler.AuthenticationExceptionHa
 import tech.eportfolio.server.common.jsend.SuccessResponse;
 import tech.eportfolio.server.common.utility.JWTTokenProvider;
 import tech.eportfolio.server.dto.UserDTO;
-import tech.eportfolio.server.model.User;
-import tech.eportfolio.server.model.UserPrincipal;
+import tech.eportfolio.server.model.UserStorageContainer.User;
+import tech.eportfolio.server.model.UserStorageContainer.UserPrincipal;
 import tech.eportfolio.server.service.RecoveryService;
 import tech.eportfolio.server.service.UserService;
 import tech.eportfolio.server.service.VerificationService;
