@@ -49,4 +49,5 @@ public class SuccessResponse<T> {
     public ResponseEntity<SuccessResponse<T>> toCreated() {
         return new ResponseEntity<>(this, null, HttpStatus.CREATED);
     }
+
 }
