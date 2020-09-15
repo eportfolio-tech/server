@@ -7,12 +7,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import tech.eportfolio.server.common.exception.PortfolioExistException;
 import tech.eportfolio.server.common.exception.PortfolioNotFoundException;
 import tech.eportfolio.server.common.exception.UserNotFoundException;
 import tech.eportfolio.server.common.jsend.SuccessResponse;
 import tech.eportfolio.server.model.Portfolio;
 import tech.eportfolio.server.model.User;
+import tech.eportfolio.server.repository.mongodb.PortfolioRepository;
 import tech.eportfolio.server.service.PortfolioService;
 import tech.eportfolio.server.service.UserService;
 
@@ -29,28 +29,47 @@ public class PortfolioController {
 
     private final ObjectMapper objectMapper;
 
-    public PortfolioController(PortfolioService portfolioService, UserService userService, ObjectMapper objectMapper) {
+    private final PortfolioRepository portfolioRepositoryNew;
+
+    public PortfolioController(PortfolioService portfolioService, UserService userService, ObjectMapper objectMapper, PortfolioRepository portfolioRepositoryNew) {
         this.portfolioService = portfolioService;
         this.userService = userService;
         this.objectMapper = objectMapper;
+        this.portfolioRepositoryNew = portfolioRepositoryNew;
     }
 
     @PostMapping("/{username}")
     @ApiOperation(value = "", authorizations = {@Authorization(value = "JWT")})
-    public ResponseEntity<SuccessResponse<Portfolio>> createNewPortfolio(@PathVariable String username, @RequestBody Portfolio portfolio) {
+    public ResponseEntity<SuccessResponse<Object>> createNewPortfolio(@PathVariable String username, @RequestBody Portfolio portfolio) {
         User user = userService.findByUsername(username).orElseThrow(() -> new UserNotFoundException(username));
         // Throw exception if user has already created an eportfolio
-        if (portfolioService.findByUsername(username).isPresent()) {
-            throw new PortfolioExistException(username);
-        }
+//        if (portfolioService.findByUsername(username).isPresent()) {
+//            throw new PortfolioExistException(username);
+//        }
         // Set attributes for eportfolio
         Portfolio toCreate = new Portfolio();
         toCreate.setDescription(portfolio.getDescription());
         toCreate.setTitle(portfolio.getTitle());
         toCreate.setVisibility(portfolio.getVisibility());
         toCreate.setUsername(user.getUsername());
-        return new SuccessResponse<>("portfolio", portfolioService.save(toCreate)).toOk();
+        portfolioRepositoryNew.save(toCreate);
+        return new SuccessResponse<>().toOk();
     }
+
+//    public ResponseEntity<SuccessResponse<Portfolio>> createNewPortfolio(@PathVariable String username, @RequestBody Portfolio portfolio) {
+//        User user = userService.findByUsername(username).orElseThrow(() -> new UserNotFoundException(username));
+//        // Throw exception if user has already created an eportfolio
+//        if (portfolioService.findByUsername(username).isPresent()) {
+//            throw new PortfolioExistException(username);
+//        }
+//        // Set attributes for eportfolio
+//        Portfolio toCreate = new Portfolio();
+//        toCreate.setDescription(portfolio.getDescription());
+//        toCreate.setTitle(portfolio.getTitle());
+//        toCreate.setVisibility(portfolio.getVisibility());
+//        toCreate.setUsername(user.getUsername());
+//        return new SuccessResponse<>("portfolio", portfolioService.save(toCreate)).toOk();
+//    }
 
     // Find portfolio by username
     @GetMapping("/{username}")

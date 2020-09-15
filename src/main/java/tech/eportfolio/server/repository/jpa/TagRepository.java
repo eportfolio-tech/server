@@ -1,4 +1,4 @@
-package tech.eportfolio.server.repository;
+package tech.eportfolio.server.repository.jpa;
 
 import org.springframework.data.repository.CrudRepository;
 import tech.eportfolio.server.model.Tag;

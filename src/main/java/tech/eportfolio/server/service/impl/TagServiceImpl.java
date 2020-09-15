@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import tech.eportfolio.server.model.Tag;
-import tech.eportfolio.server.repository.TagRepository;
+import tech.eportfolio.server.repository.jpa.TagRepository;
 import tech.eportfolio.server.service.TagService;
 
 import javax.validation.constraints.NotEmpty;

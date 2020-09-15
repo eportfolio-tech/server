@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import tech.eportfolio.server.model.Tag;
 import tech.eportfolio.server.model.User;
 import tech.eportfolio.server.model.UserTag;
-import tech.eportfolio.server.repository.UserTagRepository;
+import tech.eportfolio.server.repository.jpa.UserTagRepository;
 import tech.eportfolio.server.service.TagService;
 import tech.eportfolio.server.service.UserTagService;
 

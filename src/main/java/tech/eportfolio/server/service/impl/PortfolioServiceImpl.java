@@ -11,7 +11,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import tech.eportfolio.server.model.Portfolio;
-import tech.eportfolio.server.repository.PortfolioRepository;
+import tech.eportfolio.server.repository.mongodb.PortfolioRepository;
 import tech.eportfolio.server.service.PortfolioService;
 import tech.eportfolio.server.service.UserService;
 
@@ -38,13 +38,13 @@ public class PortfolioServiceImpl implements PortfolioService {
     }
 
     @Override
-    public Optional<Portfolio> findById(long id) {
+    public Optional<Portfolio> findById(String id) {
         return Optional.ofNullable(portfolioRepository.findByIdAndDeleted(id, false));
     }
 
     @Override
     public Optional<Portfolio> findByUserId(Long userId) {
-        return Optional.ofNullable(portfolioRepository.findByIdAndDeleted(userId, false));
+        return Optional.ofNullable(portfolioRepository.findByUserIdAndDeleted(userId, false));
     }
 
     @Override
