@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import tech.eportfolio.server.common.exception.UserNotFoundException;
 import tech.eportfolio.server.common.jsend.SuccessResponse;
 import tech.eportfolio.server.dto.PasswordResetRequestBody;
+import tech.eportfolio.server.dto.UserPatchRequestBody;
 import tech.eportfolio.server.model.Tag;
 import tech.eportfolio.server.model.User;
 import tech.eportfolio.server.model.UserTag;
@@ -52,6 +53,43 @@ public class UserController {
                 orElseThrow(() -> (new UserNotFoundException(username)));
         return new SuccessResponse<User>("user", user).toOk();
     }
+
+
+    /**
+     * Patch user's profile
+     *
+     * @param username             username to update
+     * @param userPatchRequestBody new user information
+     * @return updated user
+     */
+    @PatchMapping("/{username}")
+    @ApiOperation(value = "", authorizations = {@Authorization(value = "JWT")})
+    public ResponseEntity<SuccessResponse<User>> updateUser(@Valid @PathVariable String username,
+                                                            @RequestBody UserPatchRequestBody userPatchRequestBody) {
+        User user = userService.findByUsername(username).orElseThrow(() -> new UserNotFoundException(username));
+
+        if (userPatchRequestBody.getFirstName() != null) {
+            user.setFirstName(userPatchRequestBody.getFirstName());
+        }
+        if (userPatchRequestBody.getLastName() != null) {
+            user.setLastName(userPatchRequestBody.getLastName());
+        }
+        if (userPatchRequestBody.getPhone() != null) {
+            user.setPhone(userPatchRequestBody.getPhone());
+        }
+
+        if (userPatchRequestBody.getEmail() != null) {
+            user.setEmail(userPatchRequestBody.getEmail());
+        }
+        if (userPatchRequestBody.getTitle() != null) {
+            user.setTitle(userPatchRequestBody.getTitle());
+        }
+
+        user = userService.save(user);
+
+        return new SuccessResponse<>("user", user).toOk();
+    }
+
 
     /**
      * Reset password of an given user

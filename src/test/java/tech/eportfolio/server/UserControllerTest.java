@@ -20,11 +20,11 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import tech.eportfolio.server.dto.PasswordResetRequestBody;
 import tech.eportfolio.server.dto.UserDTO;
+import tech.eportfolio.server.dto.UserPatchRequestBody;
 import tech.eportfolio.server.model.User;
 import tech.eportfolio.server.service.UserService;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -73,6 +73,22 @@ public class UserControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.status").value("success"))
                 .andExpect(jsonPath("$.data.user.username").value("test"));
+    }
+
+    @Test
+    @WithMockUser(username = "test")
+    public void ifSuccessThenPatchUserShouldReturn200() throws Exception {
+        UserPatchRequestBody userPatchRequestBody = UserPatchRequestBody.builder().title("Miss").build();
+        String body = (new ObjectMapper()).valueToTree(userPatchRequestBody).toString();
+
+        this.mockMvc.perform(patch("/users/test/")
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
+                .content(body)
+        ).andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value("success"))
+                .andExpect(jsonPath("$.data.user.title").value("Miss"));
+
     }
 
     @Test
