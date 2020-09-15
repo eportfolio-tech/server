@@ -25,12 +25,11 @@ public class MongoConfig extends AbstractMongoClientConfiguration {
         MongoClientSettings mongoClientSettings = MongoClientSettings.builder()
                 .applyConnectionString(connectionString)
                 .build();
-
         return MongoClients.create(mongoClientSettings);
     }
 
     @Override
     public Collection getMappingBasePackages() {
-        return Collections.singleton("com.baeldung");
+        return Collections.singleton("tech.eportfolio.server");
     }
 }
