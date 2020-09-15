@@ -11,7 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 import tech.eportfolio.server.common.exception.UserNotFoundException;
 import tech.eportfolio.server.common.exception.handler.AuthenticationExceptionHandler;
 import tech.eportfolio.server.common.jsend.SuccessResponse;
-import tech.eportfolio.server.model.UserStorageContainer.User;
+import tech.eportfolio.server.model.User;
 import tech.eportfolio.server.service.AzureStorageService;
 import tech.eportfolio.server.service.UserService;
 

@@ -1,7 +1,7 @@
 package tech.eportfolio.server.service;
 
 import tech.eportfolio.server.dto.UserDTO;
-import tech.eportfolio.server.model.UserStorageContainer.User;
+import tech.eportfolio.server.model.User;
 
 import java.util.List;
 import java.util.Optional;

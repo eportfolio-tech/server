@@ -1,4 +1,4 @@
-package tech.eportfolio.server.model.UserStorageContainer;
+package tech.eportfolio.server.model;
 
 import lombok.Data;
 

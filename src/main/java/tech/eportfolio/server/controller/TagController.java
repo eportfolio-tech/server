@@ -7,7 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import tech.eportfolio.server.common.exception.TagNotFoundException;
 import tech.eportfolio.server.common.jsend.SuccessResponse;
-import tech.eportfolio.server.model.UserStorageContainer.Tag;
+import tech.eportfolio.server.model.Tag;
 import tech.eportfolio.server.service.TagService;
 
 import java.util.List;

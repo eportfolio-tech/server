@@ -12,7 +12,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import tech.eportfolio.server.common.constant.SecurityConstant;
-import tech.eportfolio.server.model.UserStorageContainer.UserPrincipal;
+import tech.eportfolio.server.model.UserPrincipal;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Arrays;

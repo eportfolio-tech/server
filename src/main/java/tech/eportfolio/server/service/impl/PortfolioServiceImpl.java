@@ -10,7 +10,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import tech.eportfolio.server.model.UserStorageContainer.Portfolio;
+import tech.eportfolio.server.model.Portfolio;
 import tech.eportfolio.server.repository.PortfolioRepository;
 import tech.eportfolio.server.service.PortfolioService;
 import tech.eportfolio.server.service.UserService;

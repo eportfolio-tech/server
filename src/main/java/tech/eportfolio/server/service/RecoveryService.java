@@ -1,6 +1,6 @@
 package tech.eportfolio.server.service;
 
-import tech.eportfolio.server.model.UserStorageContainer.User;
+import tech.eportfolio.server.model.User;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
