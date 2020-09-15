@@ -5,6 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.scheduling.annotation.EnableAsync;
@@ -14,6 +15,7 @@ import java.util.Properties;
 
 @SpringBootApplication
 @EnableJpaRepositories(basePackages = {"tech.eportfolio.server.repository.jpa"})
+@EnableMongoRepositories(basePackages = "tech.eportfolio.server.repository.mongodb")
 @EnableAsync
 @EntityScan(basePackages = {"tech.eportfolio.server.model"})
 //@EnableJpaRepositories(basePackages = {"tech.eportfolio.server.repository"})

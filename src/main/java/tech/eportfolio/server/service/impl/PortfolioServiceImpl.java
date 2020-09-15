@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 import tech.eportfolio.server.model.Portfolio;
 import tech.eportfolio.server.repository.mongodb.PortfolioRepository;
 import tech.eportfolio.server.service.PortfolioService;
-import tech.eportfolio.server.service.UserService;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -26,15 +25,12 @@ public class PortfolioServiceImpl implements PortfolioService {
 
     private final PortfolioRepository portfolioRepository;
 
-    private final UserService userService;
-
     @PersistenceContext
     private EntityManager entityManager;
 
     @Autowired
-    public PortfolioServiceImpl(PortfolioRepository portfolioRepository, UserService userService) {
+    public PortfolioServiceImpl(PortfolioRepository portfolioRepository) {
         this.portfolioRepository = portfolioRepository;
-        this.userService = userService;
     }
 
     @Override
