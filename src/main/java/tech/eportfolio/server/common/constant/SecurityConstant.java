@@ -20,11 +20,13 @@ public class SecurityConstant {
     public static final String ACCESS_DENIED_MESSAGE = "You do not have permission to access this resource";
     // Swagger resources
     public static final String[] API_DOC = {"/swagger-ui.html", "/v2/api-docs", "/configuration/ui", "/swagger-resources/**", "/configuration/**", "/webjars/**", "/h2-console/**"};
-    public static final String USER_VERIFICATION = "/verification/verify";
 
-    public static final String[] GET_ONLY = {"/tags/", "/portfolio/search/**"};
     // TODO: Move JWT secret to properties file
     public static final String AUTHENTICATION_SECRET = "This is a JWT secret";
+
+    public static final String[] POST_ONLY = {"/blobs/image/**", "/verification/verify/**"};
+    public static final String[] GET_ONLY = {"/tags/", "/portfolio/search/**"};
+
 
     private SecurityConstant() {
         throw new IllegalStateException("SecurityConstant is an Utility class");
