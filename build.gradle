@@ -65,6 +65,9 @@ dependencies {
     }
     implementation 'org.mockito:mockito-core:3.5.10'
     implementation 'org.springframework.boot:spring-boot-starter-data-mongodb:2.3.3.RELEASE'
+    implementation 'com.microsoft.azure:azure-storage:8.6.5'
+    implementation 'commons-io:commons-io:20030203.000550'
+    implementation 'com.google.guava:guava:29.0-jre'
 }
 
 dependencyManagement {
