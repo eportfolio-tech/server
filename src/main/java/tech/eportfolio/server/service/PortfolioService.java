@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface PortfolioService {
-    Optional<Portfolio> findById(long id);
+    Optional<Portfolio> findById(String id);
 
     Optional<Portfolio> findByUserId(Long userId);
 

@@ -20,7 +20,7 @@ import tech.eportfolio.server.common.exception.UsernameExistException;
 import tech.eportfolio.server.dto.UserDTO;
 import tech.eportfolio.server.model.User;
 import tech.eportfolio.server.model.UserPrincipal;
-import tech.eportfolio.server.repository.UserRepository;
+import tech.eportfolio.server.repository.jpa.UserRepository;
 import tech.eportfolio.server.service.UserService;
 
 import java.util.List;

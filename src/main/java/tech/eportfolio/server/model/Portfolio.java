@@ -1,36 +1,29 @@
 package tech.eportfolio.server.model;
 
 import lombok.Data;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Indexed;
+import org.springframework.data.mongodb.core.mapping.Document;
 import tech.eportfolio.server.common.constant.Visibility;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Id;
 import java.util.Date;
 
 @Data
 @Entity
 @Indexed
-@Table(name = "portfolio",
-        indexes = {
-                @Index(columnList = "username", name = "username_index"),
-        })
+@Document
 public class Portfolio {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    private String id;
 
     @Field
-    @Column(nullable = false)
     private String title;
 
     @Field
-    @Column(nullable = false, updatable = false, unique = true)
     private String username;
 
-    @Column(nullable = false, updatable = false, unique = true)
     private long userId;
 
     @Field
@@ -43,11 +36,7 @@ public class Portfolio {
 
     private boolean deleted = false;
 
-    @Column(nullable = false, updatable = false)
-    @CreationTimestamp
-    private Date createdAt;
+    private Date createdAt = new Date();
 
-    @Column(nullable = false)
-    @UpdateTimestamp
-    private Date updatedOn;
+    private Date updatedOn = new Date();
 }
