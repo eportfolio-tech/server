@@ -36,4 +36,5 @@ public class Portfolio {
     private Date createdAt = new Date();
 
     private Date updatedOn = new Date();
+
 }

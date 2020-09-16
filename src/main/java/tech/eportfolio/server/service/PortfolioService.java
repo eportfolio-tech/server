@@ -3,6 +3,7 @@ package tech.eportfolio.server.service;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import tech.eportfolio.server.model.Portfolio;
+import tech.eportfolio.server.model.User;
 
 import java.util.List;
 import java.util.Optional;
@@ -16,7 +17,7 @@ public interface PortfolioService {
 
     Optional<Portfolio> findByUsername(String username);
 
-//    List<Portfolio> search(String text);
+    Portfolio create(User user, Portfolio portfolio);
 
     Page<Portfolio> searchWithPagination(String text, Pageable pageable);
 

@@ -29,13 +29,13 @@ public class PortfolioController {
 
     private final ObjectMapper objectMapper;
 
-    private final PortfolioRepository portfolioRepositoryNew;
+    private final PortfolioRepository portfolioRepository;
 
-    public PortfolioController(PortfolioService portfolioService, UserService userService, ObjectMapper objectMapper, PortfolioRepository portfolioRepositoryNew) {
+    public PortfolioController(PortfolioService portfolioService, UserService userService, ObjectMapper objectMapper, PortfolioRepository portfolioRepository) {
         this.portfolioService = portfolioService;
         this.userService = userService;
         this.objectMapper = objectMapper;
-        this.portfolioRepositoryNew = portfolioRepositoryNew;
+        this.portfolioRepository = portfolioRepository;
     }
 
     @PostMapping("/{username}")
@@ -46,30 +46,9 @@ public class PortfolioController {
 //        if (portfolioService.findByUsername(username).isPresent()) {
 //            throw new PortfolioExistException(username);
 //        }
-        // Set attributes for eportfolio
-        Portfolio toCreate = new Portfolio();
-        toCreate.setDescription(portfolio.getDescription());
-        toCreate.setTitle(portfolio.getTitle());
-        toCreate.setVisibility(portfolio.getVisibility());
-        toCreate.setUsername(user.getUsername());
-        portfolioRepositoryNew.save(toCreate);
+        portfolioService.create(user, portfolio);
         return new SuccessResponse<>().toOk();
     }
-
-//    public ResponseEntity<SuccessResponse<Portfolio>> createNewPortfolio(@PathVariable String username, @RequestBody Portfolio portfolio) {
-//        User user = userService.findByUsername(username).orElseThrow(() -> new UserNotFoundException(username));
-//        // Throw exception if user has already created an eportfolio
-//        if (portfolioService.findByUsername(username).isPresent()) {
-//            throw new PortfolioExistException(username);
-//        }
-//        // Set attributes for eportfolio
-//        Portfolio toCreate = new Portfolio();
-//        toCreate.setDescription(portfolio.getDescription());
-//        toCreate.setTitle(portfolio.getTitle());
-//        toCreate.setVisibility(portfolio.getVisibility());
-//        toCreate.setUsername(user.getUsername());
-//        return new SuccessResponse<>("portfolio", portfolioService.save(toCreate)).toOk();
-//    }
 
     // Find portfolio by username
     @GetMapping("/{username}")

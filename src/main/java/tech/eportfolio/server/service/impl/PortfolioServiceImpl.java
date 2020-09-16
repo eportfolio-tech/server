@@ -9,6 +9,7 @@ import org.springframework.data.mongodb.core.query.TextCriteria;
 import org.springframework.data.mongodb.core.query.TextQuery;
 import org.springframework.stereotype.Service;
 import tech.eportfolio.server.model.Portfolio;
+import tech.eportfolio.server.model.User;
 import tech.eportfolio.server.repository.mongodb.PortfolioRepository;
 import tech.eportfolio.server.service.PortfolioService;
 
@@ -51,6 +52,17 @@ public class PortfolioServiceImpl implements PortfolioService {
     @Override
     public Optional<Portfolio> findByUsername(String username) {
         return Optional.ofNullable(portfolioRepository.findByUsername(username));
+    }
+
+    @Override
+    public Portfolio create(User user, Portfolio portfolio) {
+        // Set attributes for eportfolio
+        Portfolio toCreate = new Portfolio();
+        toCreate.setDescription(portfolio.getDescription());
+        toCreate.setTitle(portfolio.getTitle());
+        toCreate.setVisibility(portfolio.getVisibility());
+        toCreate.setUsername(user.getUsername());
+        return portfolioRepository.save(toCreate);
     }
 
     @Override
