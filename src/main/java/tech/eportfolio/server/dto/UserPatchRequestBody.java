@@ -29,8 +29,9 @@ public class UserPatchRequestBody {
         String firstName = mock.names().last().val();
         String lastName = mock.names().first().val();
         String title = "Mr.";
+        String url = mock.urls().get();
 
         return UserPatchRequestBody.builder().email(email).firstName(firstName).
-                lastName(lastName).title(title).build();
+                lastName(lastName).title(title).avatarUrl(url).build();
     }
 }

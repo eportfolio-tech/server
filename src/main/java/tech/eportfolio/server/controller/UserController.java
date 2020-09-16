@@ -65,7 +65,7 @@ public class UserController {
     @PatchMapping("/{username}")
     @ApiOperation(value = "", authorizations = {@Authorization(value = "JWT")})
     public ResponseEntity<SuccessResponse<User>> updateUser(@Valid @PathVariable String username,
-                                                            @RequestBody UserPatchRequestBody userPatchRequestBody) {
+                                                            @RequestBody @Valid UserPatchRequestBody userPatchRequestBody) {
         User user = userService.findByUsername(username).orElseThrow(() -> new UserNotFoundException(username));
 
         if (userPatchRequestBody.getFirstName() != null) {

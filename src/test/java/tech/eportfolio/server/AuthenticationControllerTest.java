@@ -24,8 +24,7 @@ import tech.eportfolio.server.service.UserService;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
 @RunWith(SpringRunner.class)
@@ -41,12 +40,14 @@ public class AuthenticationControllerTest {
     @Autowired
     private UserService userService;
 
-
     private User existingUser;
+
+    private UserDTO userDTO;
 
     @Before
     public void init() {
-        existingUser = userService.register(userService.fromUserDTO(UserDTO.mock()));
+        userDTO = UserDTO.mock();
+        existingUser = userService.register(userService.fromUserDTO(userDTO));
     }
 
     @Test
@@ -63,7 +64,7 @@ public class AuthenticationControllerTest {
     }
 
     @Test
-    public void ifPasswordIsIncorrectThenLoginShouldReturn401() throws Exception {
+    public void ifCredentialIsIncorrectThenLoginShouldReturn401() throws Exception {
         this.mockMvc.perform(post("/authentication/login")
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
                 .param("username", existingUser.getUsername())
@@ -71,6 +72,19 @@ public class AuthenticationControllerTest {
         ).andDo(print())
                 .andExpect(status().isUnauthorized())
                 .andExpect(jsonPath("$.status").value("fail"));
+    }
+
+    @Test
+    public void ifCredentialIsCorrectThenLoginShouldReturnJWTAndUser() throws Exception {
+        this.mockMvc.perform(post("/authentication/login")
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
+                .param("username", existingUser.getUsername())
+                .param("password", userDTO.getPassword())
+        ).andDo(print())
+                .andExpect(status().isOk()).andExpect(header().exists("x-jwt-token"))
+                .andExpect(jsonPath("$.status").value("success"))
+                .andExpect(jsonPath("$.data.user.username").value(existingUser.getUsername()))
+                .andExpect(jsonPath("$.data.user.email").value(existingUser.getEmail()));
     }
 
     @Test

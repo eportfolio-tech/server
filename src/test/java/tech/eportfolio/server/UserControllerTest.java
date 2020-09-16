@@ -56,7 +56,7 @@ public class UserControllerTest {
 
     @Test
     @WithAnonymousUser
-    public void ifNotLoginInThenShouldReturn403() throws Exception {
+    public void ifNotLoginInThenGetUserShouldReturn403() throws Exception {
         this.mockMvc.perform(post("/users/whatever")
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
         ).andDo(print())
@@ -66,7 +66,7 @@ public class UserControllerTest {
 
     @Test
     @WithMockUser(username = "test")
-    public void ifLoginInThenShouldReturnUser() throws Exception {
+    public void ifLoginInThenGetUserShouldReturnUser() throws Exception {
         this.mockMvc.perform(get("/users/test")
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
         ).andDo(print())
@@ -77,8 +77,8 @@ public class UserControllerTest {
 
     @Test
     @WithMockUser(username = "test")
-    public void ifSuccessThenPatchUserShouldReturn200() throws Exception {
-        UserPatchRequestBody userPatchRequestBody = UserPatchRequestBody.builder().title("Miss").build();
+    public void ifRequestIsCorrectThenPatchUserShouldReturn200() throws Exception {
+        UserPatchRequestBody userPatchRequestBody = UserPatchRequestBody.mock();
         String body = (new ObjectMapper()).valueToTree(userPatchRequestBody).toString();
 
         this.mockMvc.perform(patch("/users/test/")
@@ -87,13 +87,43 @@ public class UserControllerTest {
         ).andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.status").value("success"))
-                .andExpect(jsonPath("$.data.user.title").value("Miss"));
-
+                .andExpect(jsonPath("$.data.user.title").value(userPatchRequestBody.getTitle()))
+                .andExpect(jsonPath("$.data.user.email").value(userPatchRequestBody.getEmail()))
+                .andExpect(jsonPath("$.data.user.avatarUrl").value(userPatchRequestBody.getAvatarUrl()))
+                .andExpect(jsonPath("$.data.user.firstName").value(userPatchRequestBody.getFirstName()))
+                .andExpect(jsonPath("$.data.user.lastName").value(userPatchRequestBody.getLastName()));
     }
 
     @Test
     @WithMockUser(username = "test")
-    public void ifNewPasswordIsValidThenShouldChangePassword() throws Exception {
+    public void ifAvatarUrlIsTooShortThenPatchUserShouldReturn400() throws Exception {
+        UserPatchRequestBody userPatchRequestBody = UserPatchRequestBody.mock();
+        userPatchRequestBody.setAvatarUrl("");
+        String body = (new ObjectMapper()).valueToTree(userPatchRequestBody).toString();
+
+        this.mockMvc.perform(patch("/users/test/")
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
+                .content(body)
+        ).andDo(print())
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.status").value("fail"))
+                .andExpect(jsonPath("$.data.avatarUrl").value("size must be between 10 and 2147483647"));
+    }
+
+    @Test
+    @WithAnonymousUser
+    public void ifNotLoginInThenPatchUserShouldReturn403() throws Exception {
+        this.mockMvc.perform(patch("/users/test")
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
+        ).andDo(print())
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.status").value("fail"));
+    }
+
+
+    @Test
+    @WithMockUser(username = "test")
+    public void ifNewPasswordIsValidThenPasswordResetShouldChangePassword() throws Exception {
         String newPassword = MockNeat.threadLocal().passwords().strong().val() + "Aa1";
         PasswordResetRequestBody passwordResetRequestBody = PasswordResetRequestBody.builder()
                 .oldPassword(testUserDTO.getPassword())
@@ -110,7 +140,7 @@ public class UserControllerTest {
 
     @Test
     @WithMockUser(username = "test")
-    public void ifNewPasswordIsInvalidThenShouldReturn400() throws Exception {
+    public void ifNewPasswordIsInvalidThenPasswordResetShouldReturn400() throws Exception {
         String newPassword = MockNeat.threadLocal().passwords().weak().val();
         PasswordResetRequestBody passwordResetRequestBody = PasswordResetRequestBody.builder()
                 .oldPassword(testUserDTO.getPassword())
@@ -127,7 +157,7 @@ public class UserControllerTest {
 
     @Test
     @WithMockUser(username = "test")
-    public void ifOldPasswordIsIncorrectThenShouldReturn500() throws Exception {
+    public void ifOldPasswordIsIncorrectThenPasswordResetShouldReturn500() throws Exception {
         // Create a strong new password
         String newPassword = MockNeat.threadLocal().passwords().strong().val() + "Aa1";
         PasswordResetRequestBody passwordResetRequestBody = PasswordResetRequestBody.builder()
