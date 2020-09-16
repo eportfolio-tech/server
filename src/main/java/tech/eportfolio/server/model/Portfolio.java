@@ -1,8 +1,7 @@
 package tech.eportfolio.server.model;
 
 import lombok.Data;
-import org.hibernate.search.annotations.Field;
-import org.hibernate.search.annotations.Indexed;
+import org.springframework.data.mongodb.core.index.TextIndexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import tech.eportfolio.server.common.constant.Visibility;
 
@@ -12,24 +11,22 @@ import java.util.Date;
 
 @Data
 @Entity
-@Indexed
 @Document
 public class Portfolio {
     @Id
     private String id;
 
-    @Field
+    @TextIndexed
     private String title;
 
-    @Field
+    @TextIndexed
     private String username;
 
     private long userId;
 
-    @Field
+    @TextIndexed
     private String description;
 
-    @Field
     private String jsonUrl;
 
     private Visibility visibility = Visibility.PUBLIC;
