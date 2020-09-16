@@ -84,7 +84,9 @@ public class UserController {
         if (userPatchRequestBody.getTitle() != null) {
             user.setTitle(userPatchRequestBody.getTitle());
         }
-
+        if (userPatchRequestBody.getAvatarUrl() != null) {
+            user.setAvatarUrl(userPatchRequestBody.getAvatarUrl());
+        }
         user = userService.save(user);
 
         return new SuccessResponse<>("user", user).toOk();
