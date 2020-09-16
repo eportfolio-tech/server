@@ -1,14 +1,12 @@
 package tech.eportfolio.server.service.impl;
 
-import org.apache.lucene.search.Query;
-import org.hibernate.search.jpa.FullTextEntityManager;
-import org.hibernate.search.jpa.FullTextQuery;
-import org.hibernate.search.jpa.Search;
-import org.hibernate.search.query.dsl.QueryBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.mongodb.core.MongoOperations;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 import tech.eportfolio.server.model.Portfolio;
 import tech.eportfolio.server.repository.mongodb.PortfolioRepository;
@@ -16,7 +14,6 @@ import tech.eportfolio.server.service.PortfolioService;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,6 +21,9 @@ import java.util.Optional;
 public class PortfolioServiceImpl implements PortfolioService {
 
     private final PortfolioRepository portfolioRepository;
+
+    @Autowired
+    private MongoOperations mongoOperations;
 
     @PersistenceContext
     private EntityManager entityManager;
@@ -53,60 +53,18 @@ public class PortfolioServiceImpl implements PortfolioService {
         return Optional.ofNullable(portfolioRepository.findByUsername(username));
     }
 
-
     @Override
-    @SuppressWarnings("unchecked")
-    @Transactional
-    public List<Portfolio> search(String text) {
-        FullTextEntityManager fullTextEntityManager = Search.getFullTextEntityManager(entityManager);
-
-        QueryBuilder queryBuilder = fullTextEntityManager.getSearchFactory().buildQueryBuilder()
-                .forEntity(Portfolio.class).get();
-
-        Query query = queryBuilder
-                .keyword()
-                .fuzzy()
-                .withEditDistanceUpTo(2)
-                .withPrefixLength(0)
-                .onFields("description", "title", "username")
-                .matching(text)
-                .createQuery();
-
-
-        FullTextQuery jpaQuery = fullTextEntityManager.createFullTextQuery(query, Portfolio.class);
-        return jpaQuery.getResultList();
-    }
-
-    @Override
-    @Transactional
     public Page<Portfolio> searchWithPagination(String text, Pageable pageable) {
-        FullTextEntityManager fullTextEntityManager = Search.getFullTextEntityManager(entityManager);
-
-        /*
-        Build a query builder from entityManager
-         */
-        QueryBuilder queryBuilder = fullTextEntityManager.getSearchFactory().buildQueryBuilder()
-                .forEntity(Portfolio.class).get();
-
-        Query query = queryBuilder
-                .keyword()
-                .fuzzy()
-                // Allow max 5 edit distance
-                .withEditDistanceUpTo(2)
-                .withPrefixLength(0)
-                // search these fields on Portfolio
-                .onFields("description", "title", "username")
-                .matching(text)
-                .createQuery();
-
-        FullTextQuery jpaQuery = fullTextEntityManager.createFullTextQuery(query, Portfolio.class);
-        // Apply pagination to result
-        jpaQuery.setFirstResult(pageable.getPageSize() * pageable.getPageNumber())
-                .setMaxResults(pageable.getPageSize());
-
-        @SuppressWarnings("unchecked")
-        List<Portfolio> result = jpaQuery.getResultList();
-        return new PageImpl<>(result, pageable, jpaQuery.getResultSize());
+        Query query = new Query();
+        query.with(pageable);
+        // find the text pattern in certain fields
+        Criteria c1 = Criteria.where("title").regex(".*" + text + ".*");
+        Criteria c2 = Criteria.where("username").regex(".*" + text + ".*");
+        Criteria c3 = Criteria.where("description").regex(".*" + text + ".*");
+        query.addCriteria(new Criteria().orOperator(c1, c2, c3));
+        List<Portfolio> list = mongoOperations.find(query, Portfolio.class);
+        long count = mongoOperations.count(query, Portfolio.class);
+        return new PageImpl<>(list, pageable, count);
     }
 
     @Override

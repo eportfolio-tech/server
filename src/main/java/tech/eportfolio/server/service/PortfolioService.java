@@ -16,7 +16,7 @@ public interface PortfolioService {
 
     Optional<Portfolio> findByUsername(String username);
 
-    List<Portfolio> search(String text);
+//    List<Portfolio> search(String text);
 
     Page<Portfolio> searchWithPagination(String text, Pageable pageable);
 
