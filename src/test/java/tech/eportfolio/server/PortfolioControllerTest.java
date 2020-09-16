@@ -15,6 +15,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import tech.eportfolio.server.dto.PortfolioDTO;
 import tech.eportfolio.server.dto.UserDTO;
 import tech.eportfolio.server.model.Portfolio;
 import tech.eportfolio.server.model.User;
@@ -44,6 +45,7 @@ public class PortfolioControllerTest {
     private PortfolioService portfolioService;
 
     private UserDTO userDTO;
+    private PortfolioDTO portfolioDTO;
 
     private User testUser;
 
@@ -53,13 +55,12 @@ public class PortfolioControllerTest {
     public void init() {
         userDTO = UserDTO.mock();
         testUser = userService.register(userService.fromUserDTO(userDTO));
-        Portfolio portfolio = new Portfolio();
-        portfolio.setDescription(RandomStringUtils.randomAlphabetic(8));
-        testPortfolio = portfolioService.create(testUser, portfolio);
+        portfolioDTO = PortfolioDTO.mock();
+        testPortfolio = portfolioService.create(testUser, portfolioService.fromPortfolioDTO(portfolioDTO));
     }
 
     @Test
-    public void ifSearchSucceedThenReturn200AndExpectNotEmpty() throws Exception {
+    public void ifSearchSomethingThenReturn200AndExpectNotEmpty() throws Exception {
         String query = testPortfolio.getDescription();
         this.mockMvc.perform(get("/portfolio/search")
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
@@ -73,7 +74,7 @@ public class PortfolioControllerTest {
     }
 
     @Test
-    public void ifSearchFailThenReturn200AndExpectEmpty() throws Exception {
+    public void ifSearchNothingThenReturn200AndExpectEmpty() throws Exception {
         String query = RandomStringUtils.randomAlphabetic(8);
         this.mockMvc.perform(get("/portfolio/search")
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)

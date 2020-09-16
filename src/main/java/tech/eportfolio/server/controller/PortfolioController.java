@@ -7,9 +7,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import tech.eportfolio.server.common.exception.PortfolioExistException;
 import tech.eportfolio.server.common.exception.PortfolioNotFoundException;
 import tech.eportfolio.server.common.exception.UserNotFoundException;
 import tech.eportfolio.server.common.jsend.SuccessResponse;
+import tech.eportfolio.server.dto.PortfolioDTO;
 import tech.eportfolio.server.model.Portfolio;
 import tech.eportfolio.server.model.User;
 import tech.eportfolio.server.repository.mongodb.PortfolioRepository;
@@ -40,13 +42,13 @@ public class PortfolioController {
 
     @PostMapping("/{username}")
     @ApiOperation(value = "", authorizations = {@Authorization(value = "JWT")})
-    public ResponseEntity<SuccessResponse<Object>> createNewPortfolio(@PathVariable String username, @RequestBody Portfolio portfolio) {
+    public ResponseEntity<SuccessResponse<Object>> createNewPortfolio(@PathVariable String username, @RequestBody PortfolioDTO portfolioDTO) {
         User user = userService.findByUsername(username).orElseThrow(() -> new UserNotFoundException(username));
         // Throw exception if user has already created an eportfolio
-//        if (portfolioService.findByUsername(username).isPresent()) {
-//            throw new PortfolioExistException(username);
-//        }
-        portfolioService.create(user, portfolio);
+        if (portfolioService.findByUsername(username).isPresent()) {
+            throw new PortfolioExistException(username);
+        }
+        portfolioService.create(user, portfolioService.fromPortfolioDTO(portfolioDTO));
         return new SuccessResponse<>().toOk();
     }
 
