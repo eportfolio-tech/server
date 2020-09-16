@@ -18,6 +18,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import tech.eportfolio.server.dto.LoginRequestBody;
 import tech.eportfolio.server.dto.UserDTO;
 import tech.eportfolio.server.model.User;
 import tech.eportfolio.server.service.UserService;
@@ -52,12 +53,14 @@ public class AuthenticationControllerTest {
 
     @Test
     public void ifUserNotExistThenLoginShouldReturn401() throws Exception {
-        String username = RandomStringUtils.randomAlphabetic(8);
-        String password = RandomStringUtils.randomAlphabetic(8);
+        LoginRequestBody loginRequestBody = LoginRequestBody.builder().
+                username(MockNeat.threadLocal().users().val()).
+                password(MockNeat.threadLocal().passwords().strong().val()).build();
+        String body = (new ObjectMapper()).valueToTree(loginRequestBody).toString();
+
         this.mockMvc.perform(post("/authentication/login")
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
-                .param("username", username)
-                .param("password", password)
+                .content(body)
         ).andDo(print())
                 .andExpect(status().isUnauthorized())
                 .andExpect(jsonPath("$.status").value("fail"));
@@ -65,10 +68,14 @@ public class AuthenticationControllerTest {
 
     @Test
     public void ifCredentialIsIncorrectThenLoginShouldReturn401() throws Exception {
+        LoginRequestBody loginRequestBody = LoginRequestBody.builder().
+                username(existingUser.getUsername()).
+                password(MockNeat.threadLocal().passwords().strong().val()).build();
+        String body = (new ObjectMapper()).valueToTree(loginRequestBody).toString();
+
         this.mockMvc.perform(post("/authentication/login")
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
-                .param("username", existingUser.getUsername())
-                .param("password", MockNeat.threadLocal().passwords().val())
+                .content(body)
         ).andDo(print())
                 .andExpect(status().isUnauthorized())
                 .andExpect(jsonPath("$.status").value("fail"));
@@ -76,10 +83,14 @@ public class AuthenticationControllerTest {
 
     @Test
     public void ifCredentialIsCorrectThenLoginShouldReturnJWTAndUser() throws Exception {
+        LoginRequestBody loginRequestBody = LoginRequestBody.builder().
+                username(userDTO.getUsername()).
+                password(userDTO.getPassword()).build();
+        String body = (new ObjectMapper()).valueToTree(loginRequestBody).toString();
+
         this.mockMvc.perform(post("/authentication/login")
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
-                .param("username", existingUser.getUsername())
-                .param("password", userDTO.getPassword())
+                .content(body)
         ).andDo(print())
                 .andExpect(status().isOk()).andExpect(header().exists("x-jwt-token"))
                 .andExpect(jsonPath("$.status").value("success"))

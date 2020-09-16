@@ -13,6 +13,7 @@ import tech.eportfolio.server.common.exception.UserNotFoundException;
 import tech.eportfolio.server.common.exception.handler.AuthenticationExceptionHandler;
 import tech.eportfolio.server.common.jsend.SuccessResponse;
 import tech.eportfolio.server.common.utility.JWTTokenProvider;
+import tech.eportfolio.server.dto.LoginRequestBody;
 import tech.eportfolio.server.dto.UserDTO;
 import tech.eportfolio.server.model.User;
 import tech.eportfolio.server.model.UserPrincipal;
@@ -59,8 +60,9 @@ public class AuthenticationController extends AuthenticationExceptionHandler {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<SuccessResponse<User>> login(@RequestParam String username, @RequestParam String password) {
-        authenticate(username, password);
+    public ResponseEntity<SuccessResponse<User>> login(@RequestBody @Valid LoginRequestBody loginRequestBody) {
+        String username = loginRequestBody.getUsername();
+        authenticate(username, loginRequestBody.getPassword());
         User loginUser = userService.findByUsername(username).orElseThrow(() -> new UserNotFoundException(username));
         UserPrincipal userPrincipal = new UserPrincipal(loginUser);
         HttpHeaders jwtHeader = getJwtHeader(userPrincipal);
