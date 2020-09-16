@@ -2,6 +2,7 @@ package tech.eportfolio.server.service;
 
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.InputStream;
 import java.net.URI;
 import java.util.List;
 
@@ -17,4 +18,7 @@ public interface AzureStorageService {
      void deleteBlob(String containerName, String blobName);
 
      URI uploadPicture(MultipartFile multipartFile);
+
+     URI uploadBlobFromInputStream(String containerName, InputStream inputStream, String filename);
+
 }

@@ -68,6 +68,7 @@ dependencies {
     implementation 'com.microsoft.azure:azure-storage:8.6.5'
     implementation 'commons-io:commons-io:20030203.000550'
     implementation 'com.google.guava:guava:29.0-jre'
+    implementation 'com.talanlabs:avatar-generator:1.1.0'
 }
 
 dependencyManagement {

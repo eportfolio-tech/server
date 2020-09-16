@@ -31,6 +31,8 @@ public class User implements Serializable {
     private String phone;
     @Column(nullable = false, updatable = false, unique = true)
     private String username;
+
+    private String avatarUrl;
     private boolean deleted = false;
     private boolean locked = false;
     private boolean enabled = true;
@@ -44,7 +46,7 @@ public class User implements Serializable {
     private Date updatedOn;
 
     @Column
-    private UUID blobUUID = UUID.randomUUID();
+    private UUID blobUUID;
 
 
     private String roles;

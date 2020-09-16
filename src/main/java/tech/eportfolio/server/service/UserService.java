@@ -26,4 +26,6 @@ public interface UserService {
     User changePassword(User user, String password);
 
     User save(User user);
+
+    String createGithubAvatar(User user);
 }

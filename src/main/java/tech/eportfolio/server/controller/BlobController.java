@@ -58,9 +58,7 @@ public class BlobController extends AuthenticationExceptionHandler {
     @ApiOperation(value = "", authorizations = {@Authorization(value = "JWT")})
     public ResponseEntity<SuccessResponse<String>> uploadBlob(@PathVariable @NotEmpty String username, @RequestParam MultipartFile multipartFile) {
         User user = userService.findByUsername(username).orElseThrow(() -> new UserNotFoundException(username));
-        String containerName = user.getBlobUUID().toString();
-        azureStorageService.createContainer(containerName);
-        URI url = azureStorageService.uploadBlob(containerName, multipartFile);
+        URI url = azureStorageService.uploadBlob(user.getBlobUUID().toString(), multipartFile);
         return new SuccessResponse<>("URI", url.toString()).toOk();
     }
 
@@ -74,11 +72,8 @@ public class BlobController extends AuthenticationExceptionHandler {
     @ApiOperation(value = "", authorizations = {@Authorization(value = "JWT")})
     public ResponseEntity<SuccessResponse<List<URI>>> getBlobs(@PathVariable @NotEmpty String username) {
         User user = userService.findByUsername(username).orElseThrow(() -> new UserNotFoundException(username));
-        // Create a new container if not found
-        String containerName = user.getBlobUUID().toString();
-        azureStorageService.createContainer(containerName);
         // Returns a list of urls
-        List<URI> uris = azureStorageService.listBlob(containerName);
+        List<URI> uris = azureStorageService.listBlob(user.getBlobUUID().toString());
         return new SuccessResponse<>("URI", uris).toOk();
     }
 
@@ -93,11 +88,8 @@ public class BlobController extends AuthenticationExceptionHandler {
     @ApiOperation(value = "", authorizations = {@Authorization(value = "JWT")})
     public ResponseEntity<SuccessResponse<Object>> deleteBlob(@PathVariable @NotEmpty String username, @RequestParam String blobName) {
         User user = userService.findByUsername(username).orElseThrow(() -> new UserNotFoundException(username));
-        // Create a new container if not found
-        String containerName = user.getBlobUUID().toString();
-        azureStorageService.createContainer(containerName);
         // Delete blob
-        azureStorageService.deleteBlob(containerName, blobName);
+        azureStorageService.deleteBlob(user.getBlobUUID().toString(), blobName);
         return new SuccessResponse<>().toAccepted();
     }
 }

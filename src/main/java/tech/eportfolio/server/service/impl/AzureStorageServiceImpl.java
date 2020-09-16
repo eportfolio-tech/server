@@ -14,11 +14,11 @@ import tech.eportfolio.server.common.exception.UploadBlobFailedException;
 import tech.eportfolio.server.service.AzureStorageService;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -52,7 +52,6 @@ public class AzureStorageServiceImpl implements AzureStorageService {
     @Override
     public URI uploadPicture(MultipartFile multipartFile) {
         // Site content will be placed in the image container
-        createContainer("image");
         URI uri = uploadBlob("image", multipartFile);
         return Optional.ofNullable(uri).orElseThrow(UploadBlobFailedException::new);
     }
@@ -108,13 +107,26 @@ public class AzureStorageServiceImpl implements AzureStorageService {
     public URI uploadBlob(String containerName, MultipartFile multipartFile) {
         URI uri = null;
         try {
+            uri = uploadBlobFromInputStream(containerName, multipartFile.getInputStream(), multipartFile.getOriginalFilename());
+        } catch (IOException e) {
+            logger.error("Failed to upload blob: {}", e.getMessage());
+        }
+        return uri;
+    }
+
+    @Override
+    public URI uploadBlobFromInputStream(String containerName, InputStream inputStream, String filename) {
+        URI uri = null;
+        try {
+            createContainer(containerName);
+            // Replace new line character, tab and whitespace with underscore
+            filename = filename.replaceAll("[\\n\\r\\t\\s]", "_");
             CloudBlobContainer container = cloudBlobClient.getContainerReference(containerName);
-            CloudBlockBlob blob = container.getBlockBlobReference(Objects.requireNonNull(multipartFile.getOriginalFilename()));
-            blob.upload(multipartFile.getInputStream(), -1);
+            CloudBlockBlob blob = container.getBlockBlobReference(filename);
+            blob.upload(inputStream, -1);
             // Remove space in filename
-            String multipartName = multipartFile.getName().replaceAll("[\n|\r|\t]", "_");
             uri = blob.getUri();
-            logger.info("blob {} uploaded, url {}", multipartName, uri);
+            logger.info("blob {} uploaded, url {}", filename, uri);
         } catch (URISyntaxException | StorageException | IOException e) {
             logger.error("Failed to upload blob: {}", e.getMessage());
         }
@@ -131,6 +143,7 @@ public class AzureStorageServiceImpl implements AzureStorageService {
     @Override
     public void deleteBlob(String containerName, String blobName) {
         try {
+            createContainer(containerName);
             CloudBlobContainer container = cloudBlobClient.getContainerReference(containerName);
             CloudBlockBlob blobToBeDeleted = container.getBlockBlobReference(blobName);
             blobToBeDeleted.deleteIfExists();
@@ -149,6 +162,7 @@ public class AzureStorageServiceImpl implements AzureStorageService {
     public List<URI> listBlob(String containerName) {
         List<URI> uris = new ArrayList<>();
         try {
+            createContainer(containerName);
             CloudBlobContainer container = cloudBlobClient.getContainerReference(containerName);
             for (ListBlobItem blobItem : container.listBlobs()) {
                 uris.add(blobItem.getUri());

@@ -17,15 +17,19 @@ import tech.eportfolio.server.common.constant.Role;
 import tech.eportfolio.server.common.exception.EmailExistException;
 import tech.eportfolio.server.common.exception.UserNotFoundException;
 import tech.eportfolio.server.common.exception.UsernameExistException;
+import tech.eportfolio.server.common.utility.AvatarGenerator;
 import tech.eportfolio.server.dto.UserDTO;
 import tech.eportfolio.server.model.User;
 import tech.eportfolio.server.model.UserPrincipal;
 import tech.eportfolio.server.repository.jpa.UserRepository;
+import tech.eportfolio.server.service.AzureStorageService;
 import tech.eportfolio.server.service.UserService;
 
+import java.io.InputStream;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
+import java.util.UUID;
 
 @Service
 @Qualifier("UserDetailsService")
@@ -39,6 +43,22 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     private UserRepository userRepository;
 
     private BCryptPasswordEncoder bCryptPasswordEncoder;
+
+    private AzureStorageService azureStorageService;
+
+    private AvatarGenerator avatarGenerator;
+
+
+    @Autowired
+    public void setAzureStorageService(AzureStorageService azureStorageService) {
+        this.azureStorageService = azureStorageService;
+    }
+
+    @Autowired
+    public void setAvatarGenerator(AvatarGenerator avatarGenerator) {
+        this.avatarGenerator = avatarGenerator;
+    }
+
 
     @Autowired
     public void setBoundMapper(BoundMapperFacade<UserDTO, User> boundMapper) {
@@ -81,11 +101,19 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         if (userNameResult.isPresent()) {
             throw new UsernameExistException(user.getUsername());
         }
-
         user.setPassword(encodePassword(user.getPassword()));
         user.setRoles(Role.ROLE_UNVERIFIED_USER.name());
         user.setAuthorities(Role.ROLE_UNVERIFIED_USER.getAuthorities());
+        user.setBlobUUID(UUID.randomUUID());
+        user.setAvatarUrl(createGithubAvatar(user));
         return userRepository.save(user);
+    }
+
+    @Override
+    public String createGithubAvatar(User user) {
+        String containerName = user.getBlobUUID().toString();
+        InputStream avatar = avatarGenerator.generateGithubAvatar();
+        return azureStorageService.uploadBlobFromInputStream(containerName, avatar, "avatar.png").toString();
     }
 
     @Override
