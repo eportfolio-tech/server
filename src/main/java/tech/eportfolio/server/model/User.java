@@ -7,7 +7,6 @@ import org.hibernate.annotations.UpdateTimestamp;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
-import java.util.UUID;
 
 @Data
 @Entity
@@ -46,7 +45,7 @@ public class User implements Serializable {
     private Date updatedOn;
 
     @Column
-    private UUID blobUUID;
+    private String blobUUID;
 
 
     private String roles;

@@ -104,14 +104,14 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         user.setPassword(encodePassword(user.getPassword()));
         user.setRoles(Role.ROLE_UNVERIFIED_USER.name());
         user.setAuthorities(Role.ROLE_UNVERIFIED_USER.getAuthorities());
-        user.setBlobUUID(UUID.randomUUID());
+        user.setBlobUUID(UUID.randomUUID().toString());
         user.setAvatarUrl(createGithubAvatar(user));
         return userRepository.save(user);
     }
 
     @Override
     public String createGithubAvatar(User user) {
-        String containerName = user.getBlobUUID().toString();
+        String containerName = user.getBlobUUID();
         InputStream avatar = avatarGenerator.generateGithubAvatar();
         return azureStorageService.uploadBlobFromInputStream(containerName, avatar, "avatar.png").toString();
     }

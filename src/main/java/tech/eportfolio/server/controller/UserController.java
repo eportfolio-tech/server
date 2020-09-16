@@ -7,7 +7,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.*;
 import tech.eportfolio.server.common.exception.UserNotFoundException;
 import tech.eportfolio.server.common.jsend.SuccessResponse;
@@ -28,7 +27,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/users")
 public class UserController {
-    private final Logger LOGGER = LoggerFactory.getLogger(getClass());
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
     private final UserService userService;
 
@@ -51,7 +50,7 @@ public class UserController {
     public ResponseEntity<SuccessResponse<User>> findOneUser(@PathVariable String username) {
         User user = userService.findByUsername(username).
                 orElseThrow(() -> (new UserNotFoundException(username)));
-        return new SuccessResponse<User>("user", user).toOk();
+        return new SuccessResponse<>("user", user).toOk();
     }
 
 
@@ -102,7 +101,7 @@ public class UserController {
     @ResponseStatus(HttpStatus.ACCEPTED)
     @PostMapping("/{username}/password-reset")
     @ApiOperation(value = "", authorizations = {@Authorization(value = "JWT")})
-    public ResponseEntity<SuccessResponse<Object>> passwordReset(@PathVariable String username, @Valid @RequestBody PasswordResetRequestBody passwordResetRequestBody) throws AccessDeniedException {
+    public ResponseEntity<SuccessResponse<Object>> passwordReset(@PathVariable String username, @Valid @RequestBody PasswordResetRequestBody passwordResetRequestBody) {
         User user = userService.findByUsername(username).orElseThrow(() -> new UserNotFoundException(username));
         if (!userService.verifyPassword(user, passwordResetRequestBody.getOldPassword())) {
             /*
@@ -114,24 +113,8 @@ public class UserController {
         return new SuccessResponse<>().toAccepted();
     }
 
-//    @PutMapping("/{username}")
-//    @ApiOperation(value = "", authorizations = {@Authorization(value = "JWT")})
-//    public User updateOneUser(@RequestBody User changedUser, @PathVariable String username) {
-//        return repository.findgBy(id)
-//                .map(user -> {
-//                    user.setFirstName(changedUser.getFirstName());
-//                    user.setLastName(changedUser.getLastName());
-//                    return repository.save(user);
-//                })
-//                .orElseGet(() -> {
-//                    changedUser.setId(id);
-//                    return repository.save(changedUser);
-//                });
-//    }
-
     /**
      * Return user's tags
-     *
      * @param username username
      * @return User
      */

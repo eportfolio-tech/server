@@ -58,7 +58,7 @@ public class BlobController extends AuthenticationExceptionHandler {
     @ApiOperation(value = "", authorizations = {@Authorization(value = "JWT")})
     public ResponseEntity<SuccessResponse<String>> uploadBlob(@PathVariable @NotEmpty String username, @RequestParam MultipartFile multipartFile) {
         User user = userService.findByUsername(username).orElseThrow(() -> new UserNotFoundException(username));
-        URI url = azureStorageService.uploadBlob(user.getBlobUUID().toString(), multipartFile);
+        URI url = azureStorageService.uploadBlob(user.getBlobUUID(), multipartFile);
         return new SuccessResponse<>("URI", url.toString()).toOk();
     }
 
@@ -73,7 +73,7 @@ public class BlobController extends AuthenticationExceptionHandler {
     public ResponseEntity<SuccessResponse<List<URI>>> getBlobs(@PathVariable @NotEmpty String username) {
         User user = userService.findByUsername(username).orElseThrow(() -> new UserNotFoundException(username));
         // Returns a list of urls
-        List<URI> uris = azureStorageService.listBlob(user.getBlobUUID().toString());
+        List<URI> uris = azureStorageService.listBlob(user.getBlobUUID());
         return new SuccessResponse<>("URI", uris).toOk();
     }
 
@@ -89,7 +89,7 @@ public class BlobController extends AuthenticationExceptionHandler {
     public ResponseEntity<SuccessResponse<Object>> deleteBlob(@PathVariable @NotEmpty String username, @RequestParam String blobName) {
         User user = userService.findByUsername(username).orElseThrow(() -> new UserNotFoundException(username));
         // Delete blob
-        azureStorageService.deleteBlob(user.getBlobUUID().toString(), blobName);
+        azureStorageService.deleteBlob(user.getBlobUUID(), blobName);
         return new SuccessResponse<>().toAccepted();
     }
 }
