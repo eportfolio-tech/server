@@ -45,22 +45,31 @@ public class PortfolioControllerTest {
     private PortfolioService portfolioService;
 
     private UserDTO userDTO;
+    private UserDTO anotherUserDTO;
+
     private PortfolioDTO portfolioDTO;
 
     private User testUser;
+    private User anotherTestUser;
 
     private Portfolio testPortfolio;
+    private Portfolio anotherTestPortfolio;
 
     @Before
     public void init() {
+        // Two users to create two same portfolios to test pagination
         userDTO = UserDTO.mock();
+        anotherUserDTO = UserDTO.mock();
         testUser = userService.register(userService.fromUserDTO(userDTO));
+        anotherTestUser = userService.register(userService.fromUserDTO(anotherUserDTO));
+
         portfolioDTO = PortfolioDTO.mock();
         testPortfolio = portfolioService.create(testUser, portfolioService.fromPortfolioDTO(portfolioDTO));
+        anotherTestPortfolio = portfolioService.create(anotherTestUser, portfolioService.fromPortfolioDTO(portfolioDTO));
     }
 
     @Test
-    public void ifSearchSomethingThenReturn200AndExpectNotEmpty() throws Exception {
+    public void ifFoundSomethingThenReturn200AndExpectNotEmpty() throws Exception {
         String query = testPortfolio.getDescription();
         this.mockMvc.perform(get("/portfolio/search")
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
@@ -74,7 +83,7 @@ public class PortfolioControllerTest {
     }
 
     @Test
-    public void ifSearchNothingThenReturn200AndExpectEmpty() throws Exception {
+    public void ifFoundNothingThenReturn200AndExpectEmpty() throws Exception {
         String query = RandomStringUtils.randomAlphabetic(8);
         this.mockMvc.perform(get("/portfolio/search")
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
@@ -85,6 +94,22 @@ public class PortfolioControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.status").value("success"))
                 .andExpect(jsonPath("$.data.content").isEmpty());
+    }
+
+
+    @Test
+    public void ifPaginationThenReturn200AndMatchElementSize() throws Exception {
+        String query = testPortfolio.getDescription();
+        int pageSize = 1;
+        this.mockMvc.perform(get("/portfolio/search")
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
+                .param("query", query)
+                .param("page", "0")
+                .param("size", String.valueOf(pageSize))
+        ).andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value("success"))
+                .andExpect(jsonPath("$.data.numberOfElements").value(pageSize));
     }
 
 
