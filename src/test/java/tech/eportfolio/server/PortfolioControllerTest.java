@@ -19,11 +19,11 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import tech.eportfolio.server.dto.PortfolioDTO;
 import tech.eportfolio.server.dto.UserDTO;
-import tech.eportfolio.server.model.Portfolio;
 import tech.eportfolio.server.model.User;
 import tech.eportfolio.server.service.PortfolioService;
 import tech.eportfolio.server.service.UserService;
 
+import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -47,45 +47,41 @@ public class PortfolioControllerTest {
     @Autowired
     private PortfolioService portfolioService;
 
-    private UserDTO userDTO;
-    private UserDTO anotherUserDTO;
+    private User testUser;
+    private User user2;
 
     private PortfolioDTO portfolioDTO;
-
-    private User testUser;
-    private User anotherTestUser;
-
-    private Portfolio testPortfolio;
-    private Portfolio anotherTestPortfolio;
+    private int count = 0;
 
     @Before
     public void init() {
         // Two users to create two same portfolios to test pagination
-        userDTO = UserDTO.mock();
+        UserDTO userDTO = UserDTO.mock();
         userDTO.setUsername("test");
-        anotherUserDTO = UserDTO.mock();
 
         testUser = userService.register(userService.fromUserDTO(userDTO));
-        anotherTestUser = userService.register(userService.fromUserDTO(anotherUserDTO));
+        user2 = userService.register(userService.fromUserDTO(UserDTO.mock()));
 
         portfolioDTO = PortfolioDTO.mock();
-        testPortfolio = portfolioService.create(testUser, portfolioService.fromPortfolioDTO(portfolioDTO));
-        anotherTestPortfolio = portfolioService.create(anotherTestUser, portfolioService.fromPortfolioDTO(portfolioDTO));
+        portfolioService.create(testUser, portfolioService.fromPortfolioDTO(portfolioDTO));
+        count++;
+        portfolioService.create(user2, portfolioService.fromPortfolioDTO(portfolioDTO));
+        count++;
     }
 
-    @Test
-    public void ifFoundSomethingThenReturn200AndExpectNotEmpty() throws Exception {
-        String query = testPortfolio.getDescription();
-        this.mockMvc.perform(get("/portfolio/search")
-                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
-                .param("query", query)
-                .param("page", "0")
-                .param("size", "10")
-        ).andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.status").value("success"))
-                .andExpect(jsonPath("$.data.content").isNotEmpty());
-    }
+//    @Test
+//    public void ifFoundSomethingThenReturn200AndExpectNotEmpty() throws Exception {
+//        String query = portfolioDTO.getDescription();
+//        this.mockMvc.perform(get("/portfolio/search")
+//                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
+//                .param("query", query)
+//                .param("page", "0")
+//                .param("size", "10")
+//        ).andDo(print())
+//                .andExpect(status().isOk())
+//                .andExpect(jsonPath("$.status").value("success"))
+//                .andExpect(jsonPath("$.data.content").isNotEmpty());
+//    }
 
     @Test
     public void ifFoundNothingThenReturn200AndExpectEmpty() throws Exception {
@@ -104,7 +100,7 @@ public class PortfolioControllerTest {
     @Test
     @WithMockUser(username = "test")
     public void ifUserAlreadyHasPortfolioButTryToCreateAnotherThenReturn500() throws Exception {
-        String body = (new ObjectMapper()).valueToTree(userDTO).toString();
+        String body = (new ObjectMapper()).valueToTree(portfolioDTO).toString();
         this.mockMvc.perform(post("/portfolio/test")
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
                 .content(body)
@@ -115,18 +111,58 @@ public class PortfolioControllerTest {
 
 
     @Test
-    public void ifPaginationThenReturn200AndMatchElementSize() throws Exception {
-        String query = testPortfolio.getDescription();
-        int pageSize = 1;
+    public void ifSizeIsLargeThanResultCountThenReturnLastPage() throws Exception {
+        String query = portfolioDTO.getTitle();
+        int size = 5;
         this.mockMvc.perform(get("/portfolio/search")
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
                 .param("query", query)
                 .param("page", "0")
-                .param("size", String.valueOf(pageSize))
+                .param("size", String.valueOf(size))
         ).andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.status").value("success"))
-                .andExpect(jsonPath("$.data.numberOfElements").value(pageSize));
+                .andExpect(jsonPath("$.data.content", hasSize(count)))
+                .andExpect(jsonPath("$.data.numberOfElements").value(String.valueOf(count)))
+                .andExpect(jsonPath("$.data.totalElements").value(count))
+                .andExpect(jsonPath("$.data.last").value("true"));
+    }
+
+    @Test
+    public void ifSizeIsSmallerThanResultCountThenReturnFirstPage() throws Exception {
+        String query = portfolioDTO.getTitle();
+        int size = 1;
+        this.mockMvc.perform(get("/portfolio/search")
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
+                .param("query", query)
+                .param("page", "0")
+                .param("size", String.valueOf(size))
+        ).andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value("success"))
+                .andExpect(jsonPath("$.data.content", hasSize(size)))
+                .andExpect(jsonPath("$.data.numberOfElements").value(String.valueOf(size)))
+                .andExpect(jsonPath("$.data.totalElements").value(count))
+                .andExpect(jsonPath("$.data.last").value("false"));
+    }
+
+    @Test
+    public void ifSizeEqualsResultCountThenReturnLastPage() throws Exception {
+        String query = portfolioDTO.getTitle();
+        int size = 2;
+        this.mockMvc.perform(get("/portfolio/search")
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
+                .param("query", query)
+                .param("page", "0")
+                .param("size", String.valueOf(size))
+        ).andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value("success"))
+                .andExpect(jsonPath("$.data.content", hasSize(size)))
+                .andExpect(jsonPath("$.data.numberOfElements").value(String.valueOf(size)))
+                .andExpect(jsonPath("$.data.totalElements").value(count))
+                .andExpect(jsonPath("$.data.last").value("true"));
+
     }
 
 
