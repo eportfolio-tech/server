@@ -1,5 +1,6 @@
 package tech.eportfolio.server;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.Before;
 import org.junit.Test;
@@ -11,6 +12,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -23,6 +25,7 @@ import tech.eportfolio.server.service.PortfolioService;
 import tech.eportfolio.server.service.UserService;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -59,7 +62,9 @@ public class PortfolioControllerTest {
     public void init() {
         // Two users to create two same portfolios to test pagination
         userDTO = UserDTO.mock();
+        userDTO.setUsername("test");
         anotherUserDTO = UserDTO.mock();
+
         testUser = userService.register(userService.fromUserDTO(userDTO));
         anotherTestUser = userService.register(userService.fromUserDTO(anotherUserDTO));
 
@@ -94,6 +99,18 @@ public class PortfolioControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.status").value("success"))
                 .andExpect(jsonPath("$.data.content").isEmpty());
+    }
+
+    @Test
+    @WithMockUser(username = "test")
+    public void ifUserAlreadyHasPortfolioButTryToCreateAnotherThenReturn500() throws Exception {
+        String body = (new ObjectMapper()).valueToTree(userDTO).toString();
+        this.mockMvc.perform(post("/portfolio/test")
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
+                .content(body)
+        ).andDo(print())
+                .andExpect(status().isInternalServerError())
+                .andExpect(jsonPath("$.status").value("error"));
     }
 
 
