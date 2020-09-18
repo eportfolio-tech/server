@@ -8,6 +8,8 @@ services:
   - docker
 before_install:
   - chmod +x gradlew
+
+# Run Azurite emulator in background for testing
 before_script:
   - docker run -d -p 10000:10000 mcr.microsoft.com/azure-storage/azurite azurite-blob --blobHost 0.0.0.0 --blobPort 10000
 

@@ -6,8 +6,11 @@ services:
       - "8090:8090"
   azurite:
     image: mcr.microsoft.com/azure-storage/azurite
+    ports:
+      - "10000:10000"
+      - "10001:10001"
     volumes:
-      - /azure-blob-storage:/data
+      - /home/haswell/azure-blob-storage:/data
     command:
       - azurite-blob --blobHost 0.0.0.0 --blobPort 10000
     restart: unless-stopped
