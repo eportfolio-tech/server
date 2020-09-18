@@ -61,6 +61,9 @@ public class UserController {
      * @param userPatchRequestBody new user information
      * @return updated user
      */
+    /*
+    TODO: Refactor this method using NullAwareBeanUtils to update User
+     */
     @PatchMapping("/{username}")
     @ApiOperation(value = "", authorizations = {@Authorization(value = "JWT")})
     public ResponseEntity<SuccessResponse<User>> updateUser(@Valid @PathVariable String username,

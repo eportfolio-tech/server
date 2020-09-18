@@ -3,21 +3,23 @@ package tech.eportfolio.server.dto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.RandomStringUtils;
 import tech.eportfolio.server.common.constant.Visibility;
 
-import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 @Data
 @Builder
+@NoArgsConstructor
 @AllArgsConstructor
+
 public class PortfolioDTO {
-    @NotNull
+    @NotBlank
     private String title;
 
-    @NotNull
-    @NotEmpty
+    @NotBlank
     private String description;
 
     @NotNull

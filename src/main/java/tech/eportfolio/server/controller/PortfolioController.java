@@ -20,20 +20,23 @@ import tech.eportfolio.server.common.exception.PortfolioExistException;
 import tech.eportfolio.server.common.exception.PortfolioNotFoundException;
 import tech.eportfolio.server.common.exception.UserNotFoundException;
 import tech.eportfolio.server.common.jsend.SuccessResponse;
+import tech.eportfolio.server.common.utility.NullAwareBeanUtilsBean;
 import tech.eportfolio.server.dto.PortfolioDTO;
 import tech.eportfolio.server.model.Portfolio;
 import tech.eportfolio.server.model.User;
+import tech.eportfolio.server.repository.mongodb.PortfolioRepository;
 import tech.eportfolio.server.service.PortfolioService;
 import tech.eportfolio.server.service.UserService;
 
 import javax.validation.constraints.NotEmpty;
+import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/portfolio")
+@RequestMapping("/portfolios")
 public class PortfolioController {
 
     private final PortfolioService portfolioService;
@@ -42,10 +45,13 @@ public class PortfolioController {
 
     private final ObjectMapper objectMapper;
 
-    public PortfolioController(PortfolioService portfolioService, UserService userService, ObjectMapper objectMapper) {
+    private final PortfolioRepository portfolioRepository;
+
+    public PortfolioController(PortfolioService portfolioService, UserService userService, ObjectMapper objectMapper, PortfolioRepository portfolioRepository) {
         this.portfolioService = portfolioService;
         this.userService = userService;
         this.objectMapper = objectMapper;
+        this.portfolioRepository = portfolioRepository;
     }
 
     @PostMapping("/{username}")
@@ -65,6 +71,15 @@ public class PortfolioController {
     @ApiOperation(value = "", authorizations = {@Authorization(value = "JWT")})
     public ResponseEntity<SuccessResponse<Portfolio>> findByUsername(@PathVariable String username) {
         Portfolio result = portfolioService.findByUsername(username).orElseThrow(() -> new PortfolioNotFoundException(username));
+        return new SuccessResponse<>("portfolio", result).toOk();
+    }
+
+    @PatchMapping("/{username}")
+    @ApiOperation(value = "", authorizations = {@Authorization(value = "JWT")})
+    public ResponseEntity<SuccessResponse<Portfolio>> updatePortfolio(@PathVariable String username, @RequestBody PortfolioDTO update) throws InvocationTargetException, IllegalAccessException {
+        Portfolio portfolio = portfolioService.findByUsername(username).orElseThrow(() -> new PortfolioNotFoundException(username));
+        NullAwareBeanUtilsBean.copyProperties(update, portfolio);
+        Portfolio result = portfolioService.save(portfolio);
         return new SuccessResponse<>("portfolio", result).toOk();
     }
 
