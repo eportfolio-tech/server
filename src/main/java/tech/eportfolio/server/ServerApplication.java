@@ -18,7 +18,6 @@ import java.util.Properties;
 @EnableMongoRepositories(basePackages = "tech.eportfolio.server.repository.mongodb")
 @EnableAsync
 @EntityScan(basePackages = {"tech.eportfolio.server.model"})
-//@EnableJpaRepositories(basePackages = {"tech.eportfolio.server.repository"})
 public class ServerApplication {
 
     public static void main(String[] args) {

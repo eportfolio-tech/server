@@ -4,6 +4,13 @@ services:
     image: docker.pkg.github.com/haswf/comp30022backenddev/eportfolio-server-docker
     ports:
       - "8090:8090"
+  azurite:
+    image: mcr.microsoft.com/azure-storage/azurite
+    volumes:
+      - /azure-blob-storage:/data
+    command:
+      - azurite-blob --blobHost 0.0.0.0 --blobPort 10000
+    restart: unless-stopped
   watchtower:
     image: containrrr/watchtower
     volumes:

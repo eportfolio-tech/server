@@ -8,8 +8,9 @@ services:
   - docker
 before_install:
   - chmod +x gradlew
-install:
-  - "./gradlew build"
+before_script:
+  - docker run -p 10000:10000 mcr.microsoft.com/azure-storage/azurite azurite-blob --blobHost 0.0.0.0 --blobPort 10000
+
 after_success:
   - docker login https://docker.pkg.github.com -u haswf -p $DOCKER_TOKEN
   - export TAG=`if [ "$TRAVIS_BRANCH" == "master" ]; then echo "latest"; else echo $TRAVIS_BRANCH; fi`
