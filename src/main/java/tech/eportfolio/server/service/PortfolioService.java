@@ -29,5 +29,7 @@ public interface PortfolioService {
 
     Portfolio updateContent(Portfolio portfolio, HashMap<String, Object> map);
 
+    Portfolio deleteContent(Portfolio portfolio);
+
     Portfolio save(Portfolio portfolio);
 }

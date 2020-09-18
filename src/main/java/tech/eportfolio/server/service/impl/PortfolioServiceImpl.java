@@ -110,6 +110,12 @@ public class PortfolioServiceImpl implements PortfolioService {
     }
 
     @Override
+    public Portfolio deleteContent(Portfolio portfolio) {
+        portfolio.setContent(null);
+        return this.save(portfolio);
+    }
+
+    @Override
     public Portfolio save(Portfolio portfolio) {
         return portfolioRepository.save(portfolio);
     }

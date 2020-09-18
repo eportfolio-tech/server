@@ -3,6 +3,7 @@ package tech.eportfolio.server.controller;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mongodb.DBObject;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.Authorization;
 import org.springframework.data.domain.Page;
@@ -66,25 +67,32 @@ public class PortfolioController {
 
     @GetMapping("/{username}/content")
     @ApiOperation(value = "", authorizations = {@Authorization(value = "JWT")})
-    public ResponseEntity<SuccessResponse<PortfolioDTO>> findContentByUsername(@PathVariable String username) {
+    public ResponseEntity<SuccessResponse<DBObject>> findContentByUsername(@PathVariable String username) {
         Portfolio result = portfolioService.findByUsername(username).orElseThrow(() -> new PortfolioNotFoundException(username));
-        PortfolioDTO resultContent = portfolioService.toPortfolioDTO(result);
-        return new SuccessResponse<>("content", resultContent).toOk();
+        return new SuccessResponse<>("content", result.getContent()).toOk();
     }
 
 
     @PutMapping("/{username}/content")
     @ApiOperation(value = "", authorizations = {@Authorization(value = "JWT")})
-    public ResponseEntity<SuccessResponse<Object>> uploadContent(@PathVariable String username, @RequestBody JsonNode jsonpayload) {
+    public ResponseEntity<SuccessResponse<Object>> uploadContent(@PathVariable String username, @RequestBody JsonNode jsonPayload) {
         Portfolio result = portfolioService.findByUsername(username).orElseThrow(() -> new UserNotFoundException(username));
 
         ObjectMapper mapper = new ObjectMapper();
         TypeReference<HashMap<String, Object>> typeRef = new TypeReference<>() {
         };
-        HashMap<String, Object> map = mapper.convertValue(jsonpayload, typeRef);
+        HashMap<String, Object> map = mapper.convertValue(jsonPayload, typeRef);
 
         portfolioService.updateContent(result, map);
         return new SuccessResponse<>().toOk();
+    }
+
+    @DeleteMapping("/{username}/content")
+    @ApiOperation(value = "", authorizations = {@Authorization(value = "JWT")})
+    public ResponseEntity<SuccessResponse<Portfolio>> deleteContent(@PathVariable String username) {
+        Portfolio result = portfolioService.findByUsername(username).orElseThrow(() -> new PortfolioNotFoundException(username));
+        Portfolio resultContent = portfolioService.deleteContent(result);
+        return new SuccessResponse<>("content", resultContent).toOk();
     }
 
     // Search portfolio with pagination
