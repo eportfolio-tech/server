@@ -11,8 +11,7 @@ services:
       - "10001:10001"
     volumes:
       - /home/haswell/azure-blob-storage:/data
-    command:
-      - azurite-blob --blobHost 0.0.0.0 --blobPort 10000
+    command: azurite-blob --blobHost 0.0.0.0 --blobPort 10000
     restart: unless-stopped
   watchtower:
     image: containrrr/watchtower
