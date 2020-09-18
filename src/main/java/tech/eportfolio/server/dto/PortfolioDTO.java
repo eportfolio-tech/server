@@ -26,7 +26,7 @@ public class PortfolioDTO {
     public static PortfolioDTO mock() {
         String title = RandomStringUtils.randomAlphabetic(8);
         String description = RandomStringUtils.randomAlphabetic(32);
-        return PortfolioDTO.builder().title(title).description(description).build();
+        return PortfolioDTO.builder().title(title).description(description).visibility(Visibility.PUBLIC).build();
     }
 
 }
