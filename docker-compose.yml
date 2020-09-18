@@ -4,6 +4,8 @@ services:
     image: docker.pkg.github.com/haswf/comp30022backenddev/eportfolio-server-docker
     ports:
       - "8090:8090"
+    volumes:
+    - /var/log/eportfolio/:/var/log/eportfolio/
   azurite:
     image: mcr.microsoft.com/azure-storage/azurite
     ports:
