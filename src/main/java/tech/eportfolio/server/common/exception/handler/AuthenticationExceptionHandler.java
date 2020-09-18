@@ -1,11 +1,7 @@
 package tech.eportfolio.server.common.exception.handler;
 
-import org.assertj.core.api.Fail;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.validation.FieldError;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import tech.eportfolio.server.common.exception.EmailExistException;
@@ -15,7 +11,6 @@ import tech.eportfolio.server.common.jsend.ErrorResponse;
 import tech.eportfolio.server.common.jsend.FailResponse;
 
 import java.nio.file.AccessDeniedException;
-import java.util.stream.Collectors;
 
 @RestControllerAdvice
 public class AuthenticationExceptionHandler {
@@ -38,14 +33,6 @@ public class AuthenticationExceptionHandler {
     @ExceptionHandler(AccessDeniedException.class)
     public ResponseEntity<FailResponse> handleException(AccessDeniedException ex) {
         return new FailResponse("authentication", ex.getMessage()).toUnauthorised();
-    }
-
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<FailResponse> handleException(MethodArgumentNotValidException ex) {
-        FailResponse failResponse = new FailResponse();
-        failResponse.setData(ex.getBindingResult().getFieldErrors().stream().collect(Collectors.toMap(FieldError::getField,
-                FieldError::getDefaultMessage)));
-        return failResponse.toBadRequest();
     }
 
     @ExceptionHandler(AuthenticationException.class)
