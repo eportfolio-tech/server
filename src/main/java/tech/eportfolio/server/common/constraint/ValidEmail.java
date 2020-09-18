@@ -12,7 +12,7 @@ import java.lang.annotation.*;
 @Target({ElementType.METHOD, ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ValidEmail {
-    String message() default "is not valid";
+    String message() default "Email is invalid";
 
     Class<?>[] groups() default {};
 

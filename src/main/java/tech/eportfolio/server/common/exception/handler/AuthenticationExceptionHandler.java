@@ -1,6 +1,8 @@
 package tech.eportfolio.server.common.exception.handler;
 
+import org.assertj.core.api.Fail;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -50,6 +52,8 @@ public class AuthenticationExceptionHandler {
     public ResponseEntity<FailResponse> handleException(AuthenticationException ex) {
         return new FailResponse("authentication", ex.getMessage()).toUnauthorised();
     }
+
+
 
 
 }

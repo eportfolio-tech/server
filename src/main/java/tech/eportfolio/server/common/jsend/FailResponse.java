@@ -1,5 +1,6 @@
 package tech.eportfolio.server.common.jsend;
 
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -10,9 +11,10 @@ import java.util.Map;
 
 @Data
 @NoArgsConstructor
+@Builder
 
 public class FailResponse {
-    private String status = "fail";
+    private static final String status = "fail";
     private Map<String, String> data;
 
 

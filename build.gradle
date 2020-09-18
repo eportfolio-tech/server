@@ -86,6 +86,6 @@ build {
 }
 
 test {
-    systemProperty "spring.profiles.active", "dev"
+    systemProperty "spring.profiles.active", "test"
     useJUnitPlatform()
 }
