@@ -1,5 +1,6 @@
 package tech.eportfolio.server.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -10,6 +11,7 @@ import javax.validation.constraints.NotNull;
 
 @Data
 @Builder
+@AllArgsConstructor
 public class PortfolioDTO {
     @NotNull
     private String title;

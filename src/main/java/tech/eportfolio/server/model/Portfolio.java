@@ -1,16 +1,15 @@
 package tech.eportfolio.server.model;
 
+import com.mongodb.DBObject;
 import lombok.Data;
 import org.springframework.data.mongodb.core.index.TextIndexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import tech.eportfolio.server.common.constant.Visibility;
 
-import javax.persistence.Entity;
 import javax.persistence.Id;
 import java.util.Date;
 
 @Data
-@Entity
 @Document
 public class Portfolio {
     @Id
@@ -27,7 +26,8 @@ public class Portfolio {
     @TextIndexed
     private String description;
 
-    private String jsonUrl;
+    @TextIndexed
+    private DBObject content;
 
     private Visibility visibility = Visibility.PUBLIC;
 

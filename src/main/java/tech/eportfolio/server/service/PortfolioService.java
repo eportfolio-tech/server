@@ -6,6 +6,7 @@ import tech.eportfolio.server.dto.PortfolioDTO;
 import tech.eportfolio.server.model.Portfolio;
 import tech.eportfolio.server.model.User;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,9 +21,13 @@ public interface PortfolioService {
 
     Portfolio fromPortfolioDTO(PortfolioDTO portfolioDTO);
 
+    PortfolioDTO toPortfolioDTO(Portfolio portfolio);
+
     Portfolio create(User user, Portfolio portfolio);
 
     Page<Portfolio> searchWithPagination(String text, Pageable pageable);
+
+    Portfolio updateContent(Portfolio portfolio, HashMap<String, Object> map);
 
     Portfolio save(Portfolio portfolio);
 }

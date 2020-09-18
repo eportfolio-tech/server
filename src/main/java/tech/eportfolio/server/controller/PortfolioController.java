@@ -1,5 +1,7 @@
 package tech.eportfolio.server.controller;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.Authorization;
@@ -19,6 +21,7 @@ import tech.eportfolio.server.service.PortfolioService;
 import tech.eportfolio.server.service.UserService;
 
 import javax.validation.constraints.NotEmpty;
+import java.util.HashMap;
 import java.util.Map;
 
 @RestController
@@ -58,7 +61,30 @@ public class PortfolioController {
     public ResponseEntity<SuccessResponse<Portfolio>> findByUsername(@PathVariable String username) {
         Portfolio result = portfolioService.findByUsername(username).orElseThrow(() -> new PortfolioNotFoundException(username));
         return new SuccessResponse<>("portfolio", result).toOk();
+    }
 
+
+    @GetMapping("/{username}/content")
+    @ApiOperation(value = "", authorizations = {@Authorization(value = "JWT")})
+    public ResponseEntity<SuccessResponse<PortfolioDTO>> findContentByUsername(@PathVariable String username) {
+        Portfolio result = portfolioService.findByUsername(username).orElseThrow(() -> new PortfolioNotFoundException(username));
+        PortfolioDTO resultContent = portfolioService.toPortfolioDTO(result);
+        return new SuccessResponse<>("content", resultContent).toOk();
+    }
+
+
+    @PutMapping("/{username}/content")
+    @ApiOperation(value = "", authorizations = {@Authorization(value = "JWT")})
+    public ResponseEntity<SuccessResponse<Object>> uploadContent(@PathVariable String username, @RequestBody JsonNode jsonpayload) {
+        Portfolio result = portfolioService.findByUsername(username).orElseThrow(() -> new UserNotFoundException(username));
+
+        ObjectMapper mapper = new ObjectMapper();
+        TypeReference<HashMap<String, Object>> typeRef = new TypeReference<>() {
+        };
+        HashMap<String, Object> map = mapper.convertValue(jsonpayload, typeRef);
+
+        portfolioService.updateContent(result, map);
+        return new SuccessResponse<>().toOk();
     }
 
     // Search portfolio with pagination

@@ -1,5 +1,6 @@
 package tech.eportfolio.server.service.impl;
 
+import com.mongodb.BasicDBObject;
 import ma.glasnost.orika.BoundMapperFacade;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.impl.DefaultMapperFactory;
@@ -19,6 +20,7 @@ import tech.eportfolio.server.model.User;
 import tech.eportfolio.server.repository.mongodb.PortfolioRepository;
 import tech.eportfolio.server.service.PortfolioService;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
@@ -75,6 +77,11 @@ public class PortfolioServiceImpl implements PortfolioService {
     }
 
     @Override
+    public PortfolioDTO toPortfolioDTO(Portfolio portfolio) {
+        return boundMapper.mapReverse(portfolio);
+    }
+
+    @Override
     public Portfolio create(User user, Portfolio portfolio) {
         // Set attributes for eportfolio
         Portfolio toCreate = new Portfolio();
@@ -94,6 +101,12 @@ public class PortfolioServiceImpl implements PortfolioService {
                 result,
                 pageable,
                 () -> mongoTemplate.count(Query.of(query).limit(-1).skip(-1), Portfolio.class));
+    }
+
+    @Override
+    public Portfolio updateContent(Portfolio portfolio, HashMap<String, Object> map) {
+        portfolio.setContent(new BasicDBObject(map));
+        return this.save(portfolio);
     }
 
     @Override
