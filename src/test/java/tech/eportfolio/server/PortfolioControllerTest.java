@@ -59,6 +59,9 @@ public class PortfolioControllerTest {
     @Autowired
     VerificationService verificationService;
 
+
+    private static final String BASE_PATH = "/portfolios";
+
     private User testUser;
     private User secondUser;
     private User thirdUser;
@@ -96,7 +99,7 @@ public class PortfolioControllerTest {
     @WithMockUser(username = "test")
     public void ifFoundNothingThenReturn200AndExpectEmpty() throws Exception {
         String query = RandomStringUtils.randomAlphabetic(8);
-        this.mockMvc.perform(get("/portfolio/search")
+        this.mockMvc.perform(get(BASE_PATH + "/search")
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
                 .param("query", query)
                 .param("page", "0")
@@ -111,7 +114,7 @@ public class PortfolioControllerTest {
     @WithMockUser(username = "test")
     public void ifUserAlreadyHasPortfolioButTryToCreateAnotherThenReturn500() throws Exception {
         String body = (new ObjectMapper()).valueToTree(portfolioDTO).toString();
-        this.mockMvc.perform(post("/portfolio/test")
+        this.mockMvc.perform(post(BASE_PATH + "/test")
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
                 .content(body)
         ).andDo(print())
@@ -125,7 +128,7 @@ public class PortfolioControllerTest {
     public void ifSizeIsLargeThanResultCountThenReturnLastPage() throws Exception {
         String query = portfolioDTO.getTitle();
         int size = 5;
-        this.mockMvc.perform(get("/portfolio/search")
+        this.mockMvc.perform(get(BASE_PATH + "/search")
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
                 .param("query", query)
                 .param("page", "0")
@@ -144,7 +147,7 @@ public class PortfolioControllerTest {
     public void ifSizeIsSmallerThanResultCountThenReturnFirstPage() throws Exception {
         String query = portfolioDTO.getTitle();
         int size = 1;
-        this.mockMvc.perform(get("/portfolio/search")
+        this.mockMvc.perform(get(BASE_PATH + "/search")
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
                 .param("query", query)
                 .param("page", "0")
@@ -163,7 +166,7 @@ public class PortfolioControllerTest {
     public void ifSizeEqualsResultCountThenReturnLastPage() throws Exception {
         String query = portfolioDTO.getTitle();
         int size = count;
-        this.mockMvc.perform(get("/portfolio/search")
+        this.mockMvc.perform(get(BASE_PATH + "/search")
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
                 .param("query", query)
                 .param("page", "0")
@@ -185,7 +188,7 @@ public class PortfolioControllerTest {
         String query = portfolioDTO.getTitle();
         List<Portfolio> publicResult = portfolioService.searchWithVisibilities(query, Collections.singletonList(Visibility.PUBLIC));
         int size = 5;
-        this.mockMvc.perform(get("/portfolio/search")
+        this.mockMvc.perform(get(BASE_PATH + "/search")
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
                 .param("query", query)
                 .param("page", "0")
@@ -209,7 +212,7 @@ public class PortfolioControllerTest {
         searchVisibility.add(Visibility.UNVERIFIED_USER);
         List<Portfolio> searchResult = portfolioService.searchWithVisibilities(query, searchVisibility);
         int size = 5;
-        this.mockMvc.perform(get("/portfolio/search")
+        this.mockMvc.perform(get(BASE_PATH + "/search")
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
                 .param("query", query)
                 .param("page", "0")
@@ -230,7 +233,7 @@ public class PortfolioControllerTest {
         searchVisibility.add(Visibility.VERIFIED_USER);
         List<Portfolio> searchResult = portfolioService.searchWithVisibilities(query, searchVisibility);
         int size = 5;
-        this.mockMvc.perform(get("/portfolio/search")
+        this.mockMvc.perform(get(BASE_PATH + "/search")
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
                 .param("query", query)
                 .param("page", "0")
