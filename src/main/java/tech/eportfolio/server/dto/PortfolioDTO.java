@@ -8,7 +8,6 @@ import org.apache.commons.lang3.RandomStringUtils;
 import tech.eportfolio.server.common.constant.Visibility;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 
 @Data
 @Builder
@@ -22,7 +21,7 @@ public class PortfolioDTO {
     @NotBlank
     private String description;
 
-    @NotNull
+    @NotBlank
     private Visibility visibility;
 
     public static PortfolioDTO mock() {

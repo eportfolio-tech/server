@@ -1,6 +1,7 @@
 package tech.eportfolio.server;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import net.andreinc.mockneat.MockNeat;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.Before;
 import org.junit.Test;
@@ -24,6 +25,7 @@ import tech.eportfolio.server.dto.PortfolioDTO;
 import tech.eportfolio.server.dto.UserDTO;
 import tech.eportfolio.server.model.Portfolio;
 import tech.eportfolio.server.model.User;
+import tech.eportfolio.server.repository.mongodb.PortfolioRepository;
 import tech.eportfolio.server.service.PortfolioService;
 import tech.eportfolio.server.service.UserService;
 import tech.eportfolio.server.service.VerificationService;
@@ -33,8 +35,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import static org.hamcrest.Matchers.hasSize;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -59,6 +60,9 @@ public class PortfolioControllerTest {
     @Autowired
     VerificationService verificationService;
 
+    @Autowired
+    PortfolioRepository portfolioRepository;
+
 
     private static final String BASE_PATH = "/portfolios";
 
@@ -69,9 +73,11 @@ public class PortfolioControllerTest {
     private PortfolioDTO portfolioDTO;
     private int count = 0;
 
+
     @Before
     public void init() {
-        // Two users to create two same portfolios to test pagination
+        portfolioRepository.deleteAll();
+
         UserDTO userDTO = UserDTO.mock();
         userDTO.setUsername("test");
 
@@ -242,6 +248,21 @@ public class PortfolioControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.status").value("success"))
                 .andExpect(jsonPath("$.data.numberOfElements").value(String.valueOf(searchResult.size())));
+    }
+
+    @Test
+    @WithMockUser("test")
+    public void patchPortfolioShouldUpdateMetaInfo() throws Exception {
+        String updatedDescription = MockNeat.threadLocal().celebrities().actors().val();
+        portfolioDTO.setDescription(updatedDescription);
+        String body = (new ObjectMapper()).valueToTree(portfolioDTO).toString();
+        this.mockMvc.perform(patch(BASE_PATH + "/test")
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
+                .content(body)
+        ).andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value("success"))
+                .andExpect(jsonPath("$.data.portfolio.description").value(updatedDescription));
     }
 
 
