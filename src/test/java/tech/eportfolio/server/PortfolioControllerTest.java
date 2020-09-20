@@ -136,7 +136,7 @@ public class PortfolioControllerTest {
 
     @Test
     @WithMockUser(username = "test")
-    public void ifSizeIsLargeThanResultCountThenReturnLastPage() throws Exception {
+    public void ifSizeIsLargeThenResultCountThenReturnLastPage() throws Exception {
         String query = portfolioDTO.getTitle();
         int size = 5;
         this.mockMvc.perform(get(BASE_PATH + "/search")
@@ -155,7 +155,7 @@ public class PortfolioControllerTest {
 
     @Test
     @WithMockUser(username = "test")
-    public void ifSizeIsSmallerThanResultCountThenReturnFirstPage() throws Exception {
+    public void ifSizeIsSmallerThenResultCountThenReturnFirstPage() throws Exception {
         String query = portfolioDTO.getTitle();
         int size = 1;
         this.mockMvc.perform(get(BASE_PATH + "/search")
@@ -194,7 +194,7 @@ public class PortfolioControllerTest {
 
     @Test
     @WithAnonymousUser
-    public void ifNotLoginThenSearchShouldOnlySeePublicPortfolio() throws Exception {
+    public void ifNotLoginThenReturnPublicPortfolio() throws Exception {
         // Expect 1 public, 1 private portfolio in the database
         String query = portfolioDTO.getTitle();
         List<Portfolio> publicResult = portfolioService.searchWithVisibilities(query, Collections.singletonList(Visibility.PUBLIC));
@@ -212,7 +212,7 @@ public class PortfolioControllerTest {
 
     @Test
     @WithMockUser("test")
-    public void ifUnverifiedThenSearchShouldOnlySeePublicAndUnverifiedPortfolio() throws Exception {
+    public void ifUnverifiedThenReturnPublicAndUnverifiedPortfolio() throws Exception {
         // Update test user's role to unverified
         testUser.setRoles(Role.ROLE_UNVERIFIED_USER.name());
         userService.save(testUser);
@@ -236,7 +236,7 @@ public class PortfolioControllerTest {
 
     @Test
     @WithMockUser("test")
-    public void ifVerifiedThenSearchShouldSeeAllExceptPrivatePortfolio() throws Exception {
+    public void ifVerifiedThenReturnAllExceptPrivatePortfolio() throws Exception {
         String query = portfolioDTO.getTitle();
         List<Visibility> searchVisibility = new LinkedList<>();
         searchVisibility.add(Visibility.PUBLIC);
