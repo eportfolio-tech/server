@@ -1,5 +1,6 @@
 package tech.eportfolio.server;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import net.andreinc.mockneat.MockNeat;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -263,6 +264,36 @@ public class PortfolioControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.status").value("success"))
                 .andExpect(jsonPath("$.data.portfolio.description").value(updatedDescription));
+    }
+
+    @Test
+    @WithMockUser("test")
+    public void ifDeleteContentThenReturn200AndExpectNull() throws Exception {
+        this.mockMvc.perform(delete(BASE_PATH + "/test/content")
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
+                .param("username", "test")
+        ).andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value("success"))
+                .andExpect(jsonPath("$.data.content.content").isEmpty())
+                .andReturn();
+    }
+
+    @Test
+    @WithMockUser("test")
+    public void ifUploadContentThenReturn200AndExpectContent() throws Exception {
+        String json = "{\"title\":\"uyeKDtra\",\"description\":\"KDhQQVVVhIjWwUirxYfzzcIkfYTtiTpZ\",\"visibility\":\"PUBLIC\"}";
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode jsonNode = mapper.readTree(json);
+        String body = String.valueOf(jsonNode);
+        this.mockMvc.perform(put(BASE_PATH + "/test/content")
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
+                .param("username", "test")
+                .content(body)
+        ).andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value("success"))
+                .andExpect(jsonPath("$.data.content").value(json));
     }
 
 

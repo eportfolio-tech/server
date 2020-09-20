@@ -29,7 +29,6 @@ import tech.eportfolio.server.service.PortfolioService;
 import tech.eportfolio.server.service.UserService;
 
 import javax.validation.constraints.NotEmpty;
-import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -76,7 +75,7 @@ public class PortfolioController {
 
     @PatchMapping("/{username}")
     @ApiOperation(value = "", authorizations = {@Authorization(value = "JWT")})
-    public ResponseEntity<SuccessResponse<Portfolio>> updatePortfolio(@PathVariable String username, @RequestBody PortfolioDTO update) throws InvocationTargetException, IllegalAccessException {
+    public ResponseEntity<SuccessResponse<Portfolio>> updatePortfolio(@PathVariable String username, @RequestBody PortfolioDTO update) {
         Portfolio portfolio = portfolioService.findByUsername(username).orElseThrow(() -> new PortfolioNotFoundException(username));
         NullAwareBeanUtilsBean.copyProperties(update, portfolio);
         Portfolio result = portfolioService.save(portfolio);
@@ -94,7 +93,7 @@ public class PortfolioController {
 
     @PutMapping("/{username}/content")
     @ApiOperation(value = "", authorizations = {@Authorization(value = "JWT")})
-    public ResponseEntity<SuccessResponse<Object>> uploadContent(@PathVariable String username, @RequestBody JsonNode jsonPayload) {
+    public ResponseEntity<SuccessResponse<DBObject>> uploadContent(@PathVariable String username, @RequestBody JsonNode jsonPayload) {
         Portfolio result = portfolioService.findByUsername(username).orElseThrow(() -> new UserNotFoundException(username));
 
         ObjectMapper mapper = new ObjectMapper();
@@ -103,7 +102,7 @@ public class PortfolioController {
         HashMap<String, Object> map = mapper.convertValue(jsonPayload, typeRef);
 
         portfolioService.updateContent(result, map);
-        return new SuccessResponse<>().toOk();
+        return new SuccessResponse<>("content", result.getContent()).toOk();
     }
 
     @DeleteMapping("/{username}/content")
