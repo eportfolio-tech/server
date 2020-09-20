@@ -3,6 +3,7 @@ package tech.eportfolio.server.model;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import tech.eportfolio.server.common.constant.Role;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -51,4 +52,9 @@ public class User implements Serializable {
     private String roles;
     private String[] authorities;
 
+    public static User unverifiedUser() {
+        User user = new User();
+        user.setRoles(Role.ROLE_UNVERIFIED_USER.name());
+        return user;
+    }
 }

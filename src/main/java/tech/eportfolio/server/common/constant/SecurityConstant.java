@@ -25,7 +25,7 @@ public class SecurityConstant {
     public static final String AUTHENTICATION_SECRET = "This is a JWT secret";
 
     public static final String[] POST_ONLY = {"/blobs/image/**", "/verification/verify/**"};
-    public static final String[] GET_ONLY = {"/tags/", "/portfolio/search/**"};
+    public static final String[] GET_ONLY = {"/tags/", "/portfolios/search/**"};
 
 
     private SecurityConstant() {

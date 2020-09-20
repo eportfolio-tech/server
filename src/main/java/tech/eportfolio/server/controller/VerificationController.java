@@ -11,8 +11,6 @@ import tech.eportfolio.server.model.User;
 import tech.eportfolio.server.service.UserService;
 import tech.eportfolio.server.service.VerificationService;
 
-import javax.validation.constraints.Null;
-
 @RestController
 @RequestMapping("/verification")
 public class VerificationController {
@@ -46,17 +44,17 @@ public class VerificationController {
     }
 
     @PostMapping("/verify")
-    public ResponseEntity<SuccessResponse<Null>> verify(@RequestParam("token") String token, @RequestParam String username) {
+    public ResponseEntity<SuccessResponse<Object>> verify(@RequestParam("token") String token, @RequestParam String username) {
         User user = userService.findByUsername(username).orElseThrow(() -> new UserNotFoundException(username));
         verificationService.verify(user, token);
-        return new SuccessResponse<Null>().toOk();
+        return new SuccessResponse<>().toOk();
     }
 
     @PostMapping("/resend")
     @ApiOperation(value = "", authorizations = {@Authorization(value = "JWT")})
-    public ResponseEntity<SuccessResponse<Null>> resend(@RequestParam String username) {
+    public ResponseEntity<SuccessResponse<Object>> resend(@RequestParam String username) {
         User user = userService.findByUsername(username).orElseThrow(() -> new UserNotFoundException(username));
         verificationService.sendVerificationEmail(user);
-        return new SuccessResponse<Null>().toOk();
+        return new SuccessResponse<>().toOk();
     }
 }
