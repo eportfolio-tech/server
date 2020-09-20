@@ -2,6 +2,8 @@ package tech.eportfolio.server.model;
 
 import com.mongodb.DBObject;
 import lombok.Data;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.mongodb.core.index.TextIndexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import tech.eportfolio.server.common.constant.Visibility;
@@ -33,8 +35,10 @@ public class Portfolio {
 
     private boolean deleted = false;
 
-    private Date createdAt = new Date();
+    @CreatedDate
+    private Date createdAt;
 
-    private Date updatedOn = new Date();
+    @LastModifiedDate
+    private Date updatedOn;
 
 }
