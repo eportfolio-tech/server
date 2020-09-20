@@ -37,13 +37,11 @@ public class User implements Serializable {
     private boolean locked = false;
     private boolean enabled = true;
 
-    @Column(nullable = false, updatable = false)
     @CreationTimestamp
-    private Date createdAt;
+    private Date createdDate;
 
-    @Column(nullable = false)
     @UpdateTimestamp
-    private Date updatedOn;
+    private Date updatedDate;
 
     @Column
     private String blobUUID;
