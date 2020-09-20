@@ -257,7 +257,7 @@ public class PortfolioControllerTest {
 
     @Test
     @WithMockUser("test")
-    public void patchPortfolioShouldUpdateMetaInfo() throws Exception {
+    public void IfPatchPortfolioThenUpdateMetaInfo() throws Exception {
         String updatedDescription = MockNeat.threadLocal().celebrities().actors().val();
         portfolioDTO.setDescription(updatedDescription);
         String body = (new ObjectMapper()).valueToTree(portfolioDTO).toString();
@@ -282,6 +282,21 @@ public class PortfolioControllerTest {
                 .andExpect(jsonPath("$.data.content.content").isEmpty())
                 .andReturn();
     }
+
+    @Test
+    @WithMockUser("test")
+    public void ifGetPortfolioThenReturnPortfolio() throws Exception {
+        this.mockMvc.perform(get(BASE_PATH + "/test")
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
+                .param("username", "test")
+        ).andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value("success"))
+                .andExpect(jsonPath("$.data.portfolio.username").value("test"))
+                .andExpect(jsonPath("$.data.portfolio.title").value(portfolioDTO.getTitle()))
+                .andReturn();
+    }
+
 
     @Test
     @WithMockUser("test")
