@@ -272,7 +272,7 @@ public class PortfolioControllerTest {
 
     @Test
     @WithMockUser("test")
-    public void ifDeleteContentThenReturn200AndExpectNull() throws Exception {
+    public void ifDeleteContentThenReturn200AndExpectContentToBeNull() throws Exception {
         this.mockMvc.perform(delete(BASE_PATH + "/test/content")
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
                 .param("username", "test")
@@ -285,7 +285,10 @@ public class PortfolioControllerTest {
 
     @Test
     @WithMockUser("test")
-    public void ifUploadContentThenReturn200AndExpectContent() throws Exception {
+    /**
+     * TODO: Remove persistence layer logic like BasicDBObject from request body
+     */
+    public void ifPutContentThenReturn200AndExpectContentToMatch() throws Exception {
         String json = "{\"title\":\"uyeKDtra\",\"description\":\"KDhQQVVVhIjWwUirxYfzzcIkfYTtiTpZ\",\"visibility\":\"PUBLIC\"}";
         ObjectMapper mapper = new ObjectMapper();
         JsonNode jsonNode = mapper.readTree(json);
