@@ -74,7 +74,7 @@ public class AuthenticationController extends AuthenticationExceptionHandler {
         return new SuccessResponse<>("price", "大锤80小锤40").toOk();
     }
 
-    @GetMapping("/letMeLogIn")
+    @GetMapping("/loginAsTest")
     public ResponseEntity<SuccessResponse<Object>> letMeLogIn() {
         Optional<User> loginUser = userService.findByUsername("test");
         User user;
@@ -98,6 +98,16 @@ public class AuthenticationController extends AuthenticationExceptionHandler {
         response.put("token", "Bearer " + jwtTokenProvider.generateJWTToken(userPrincipal, SecurityConstant.AUTHENTICATION_SECRET));
         return new SuccessResponse<>(response).toOk(jwtHeader);
     }
+
+    @DeleteMapping("/deleteTest")
+    public ResponseEntity<SuccessResponse<Object>> deleteTest() {
+        String username = "test";
+        User user = userService.findByUsername(username).orElseThrow(() -> new EmailNotFoundException(username));
+        userService.delete(user);
+        // Generate URI to be embedded into email
+        return new SuccessResponse<>().toOk();
+    }
+
 
     @GetMapping("/recovery-link")
     public ResponseEntity<SuccessResponse<String>> generatePasswordRecoveryLink(@RequestParam String email) {

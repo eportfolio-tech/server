@@ -6,32 +6,24 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.mongodb.core.index.TextIndexed;
 import org.springframework.data.mongodb.core.mapping.Document;
-import tech.eportfolio.server.common.constant.Visibility;
 
 import javax.persistence.Id;
 import java.util.Date;
 
 @Data
 @Document
-public class Portfolio {
+public class Template {
     @Id
     private String id;
 
     @TextIndexed
     private String title;
 
-    @TextIndexed
-    private String username;
-
     private long userId;
 
-    @TextIndexed
-    private String description;
+    private DBObject boilerplate;
 
-    @TextIndexed
-    private DBObject content;
-
-    private Visibility visibility = Visibility.PUBLIC;
+    private boolean hidden = false;
 
     private boolean deleted = false;
 
@@ -41,4 +33,5 @@ public class Portfolio {
     @LastModifiedDate
     private Date updatedDate;
 
+    private Long usage;
 }
