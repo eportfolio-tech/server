@@ -27,11 +27,9 @@ public class Tag {
     @Column(nullable = false, updatable = false)
     private String createdBy;
 
-    @Column(nullable = false, updatable = false)
     @CreationTimestamp
-    private Date createdAt;
+    private Date createdDate;
 
-    @Column(nullable = false)
     @UpdateTimestamp
-    private Date updatedOn;
+    private Date updatedDate;
 }

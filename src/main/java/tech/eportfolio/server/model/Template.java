@@ -28,10 +28,10 @@ public class Template {
     private boolean deleted = false;
 
     @CreatedDate
-    private Date createdAt;
+    private Date createdDate;
 
     @LastModifiedDate
-    private Date updatedOn;
+    private Date updatedDate;
 
     private Long usage;
 }
