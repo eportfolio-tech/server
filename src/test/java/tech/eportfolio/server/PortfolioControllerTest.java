@@ -1,7 +1,10 @@
 package tech.eportfolio.server;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mongodb.BasicDBObject;
+import com.mongodb.DBObject;
 import net.andreinc.mockneat.MockNeat;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.Before;
@@ -32,6 +35,7 @@ import tech.eportfolio.server.service.UserService;
 import tech.eportfolio.server.service.VerificationService;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -285,7 +289,11 @@ public class PortfolioControllerTest {
         String json = "{\"title\":\"uyeKDtra\",\"description\":\"KDhQQVVVhIjWwUirxYfzzcIkfYTtiTpZ\",\"visibility\":\"PUBLIC\"}";
         ObjectMapper mapper = new ObjectMapper();
         JsonNode jsonNode = mapper.readTree(json);
-        String body = String.valueOf(jsonNode);
+        TypeReference<HashMap<String, Object>> typeRef = new TypeReference<>() {
+        };
+        HashMap<String, Object> map = mapper.convertValue(jsonNode, typeRef);
+        DBObject content = new BasicDBObject(map);
+        String body = String.valueOf(content);
         this.mockMvc.perform(put(BASE_PATH + "/test/content")
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
                 .param("username", "test")
@@ -293,8 +301,7 @@ public class PortfolioControllerTest {
         ).andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.status").value("success"))
-                // TODO: It would be better to match value for "$.data.content" rather than just detect not empty
-                .andExpect(jsonPath("$.data.content").isNotEmpty())
+                .andExpect(jsonPath("$.data.content").value(content))
                 .andReturn();
     }
 
