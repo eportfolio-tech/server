@@ -1,5 +1,7 @@
 package tech.eportfolio.server.common.exception.handler;
 
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
@@ -23,6 +25,7 @@ import java.util.Map;
 import java.util.Set;
 
 @RestControllerAdvice
+@Order()
 public class CatchAllExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> exception(Exception ex) {

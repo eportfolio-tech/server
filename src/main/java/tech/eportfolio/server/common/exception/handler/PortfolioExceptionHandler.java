@@ -1,5 +1,7 @@
 package tech.eportfolio.server.common.exception.handler;
 
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -8,6 +10,7 @@ import tech.eportfolio.server.common.exception.PortfolioNotFoundException;
 import tech.eportfolio.server.common.jsend.FailResponse;
 
 @RestControllerAdvice
+@Order(Ordered.HIGHEST_PRECEDENCE)
 public class PortfolioExceptionHandler {
     private static final String PORTFOLIO = "portfolio";
 

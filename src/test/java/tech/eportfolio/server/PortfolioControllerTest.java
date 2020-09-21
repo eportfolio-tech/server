@@ -123,14 +123,14 @@ public class PortfolioControllerTest {
 
     @Test
     @WithMockUser(username = "test")
-    public void ifUserAlreadyHasPortfolioButTryToCreateAnotherThenReturn500() throws Exception {
+    public void ifUserAlreadyHasPortfolioButTryToCreateAnotherThenReturn409() throws Exception {
         String body = (new ObjectMapper()).valueToTree(portfolioDTO).toString();
         this.mockMvc.perform(post(BASE_PATH + "/test")
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
                 .content(body)
         ).andDo(print())
-                .andExpect(status().isInternalServerError())
-                .andExpect(jsonPath("$.status").value("error"));
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.status").value("fail"));
     }
 
 
