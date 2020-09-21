@@ -34,6 +34,7 @@ import tech.eportfolio.server.service.PortfolioService;
 import tech.eportfolio.server.service.UserService;
 import tech.eportfolio.server.service.VerificationService;
 
+import javax.sound.sampled.Port;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -74,6 +75,7 @@ public class PortfolioControllerTest {
     private User testUser;
     private User secondUser;
     private User thirdUser;
+    private Portfolio testPortfolio;
 
     private PortfolioDTO portfolioDTO;
     private int count = 0;
@@ -94,7 +96,7 @@ public class PortfolioControllerTest {
         thirdUser = userService.register(userService.fromUserDTO(UserDTO.mock()));
 
         portfolioDTO = PortfolioDTO.mock();
-        portfolioService.create(testUser, portfolioService.fromPortfolioDTO(portfolioDTO));
+        testPortfolio = portfolioService.create(testUser, portfolioService.fromPortfolioDTO(portfolioDTO));
         count++;
 
         portfolioDTO.setVisibility(Visibility.VERIFIED_USER);
@@ -131,6 +133,17 @@ public class PortfolioControllerTest {
         ).andDo(print())
                 .andExpect(status().isConflict())
                 .andExpect(jsonPath("$.status").value("fail"));
+    }
+
+    @Test
+    @WithMockUser(username = "test")
+    public void ifUserDoesntHaveAPortfolioThenReturn404() throws Exception {
+        portfolioRepository.delete(testPortfolio);
+        this.mockMvc.perform(get(BASE_PATH + "/test")
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
+        ).andDo(print())
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.status").value("ifUserDoesntHaveAPortfolioThenReturn404"));
     }
 
 
