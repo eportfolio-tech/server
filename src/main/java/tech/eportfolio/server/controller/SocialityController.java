@@ -14,6 +14,8 @@ import tech.eportfolio.server.service.PortfolioService;
 import tech.eportfolio.server.service.SocialityService;
 import tech.eportfolio.server.service.UserService;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/portfolios/{username}")
 public class SocialityController {
@@ -34,6 +36,13 @@ public class SocialityController {
         this.portfolioRepository = portfolioRepository;
     }
 
+    @GetMapping("/like")
+    @ApiOperation(value = "", authorizations = {@Authorization(value = "JWT")})
+    public ResponseEntity<SuccessResponse<List<UserLike>>> findAllLikedPortfolios(@PathVariable String username) {
+        userService.findByUsername(username).orElseThrow(() -> new UserNotFoundException(username));
+        List<UserLike> userLikes = socialityService.findAllLiked(username);
+        return new SuccessResponse<>("user_like", userLikes).toOk();
+    }
 
     @PostMapping("/like")
     @ApiOperation(value = "", authorizations = {@Authorization(value = "JWT")})
@@ -41,6 +50,16 @@ public class SocialityController {
         userService.findByUsername(username).orElseThrow(() -> new UserNotFoundException(username));
         portfolioRepository.findById(portfolioId).orElseThrow(() -> new PortfolioNotFoundException(portfolioId));
         UserLike userLike = socialityService.likePortfolio(username, portfolioId);
+
+        return new SuccessResponse<>("user_like", userLike).toOk();
+    }
+
+    @DeleteMapping("/like")
+    @ApiOperation(value = "", authorizations = {@Authorization(value = "JWT")})
+    public ResponseEntity<SuccessResponse<UserLike>> unlikePortfolio(@PathVariable String username, @RequestParam String portfolioId) {
+        userService.findByUsername(username).orElseThrow(() -> new UserNotFoundException(username));
+        portfolioRepository.findById(portfolioId).orElseThrow(() -> new PortfolioNotFoundException(portfolioId));
+        UserLike userLike = socialityService.unlikePortfolio(username, portfolioId);
 
         return new SuccessResponse<>("user_like", userLike).toOk();
     }

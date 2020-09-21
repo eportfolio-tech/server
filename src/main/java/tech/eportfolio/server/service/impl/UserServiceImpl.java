@@ -1,12 +1,9 @@
 package tech.eportfolio.server.service.impl;
 
-import com.microsoft.azure.storage.analytics.StorageService;
 import ma.glasnost.orika.BoundMapperFacade;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.impl.DefaultMapperFactory;
 import org.apache.commons.lang3.StringUtils;
-import org.joda.time.Duration;
-import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +14,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import tech.eportfolio.server.common.constant.Role;
-import tech.eportfolio.server.common.constant.SecurityConstant;
 import tech.eportfolio.server.common.exception.EmailExistException;
 import tech.eportfolio.server.common.exception.UserNotFoundException;
 import tech.eportfolio.server.common.exception.UsernameExistException;
