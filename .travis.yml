@@ -12,8 +12,10 @@ before_install:
 # Run Azurite emulator in background for testing
 before_script:
   - docker run -d -p 10000:10000 mcr.microsoft.com/azure-storage/azurite azurite-blob --blobHost 0.0.0.0 --blobPort 10000
-  - ./gradlew sonarqube -Dsonar.projectKey=j9y9NWiEYdLNOp7IsCXjylzocO0ZcBYsfya6h3mt -Dsonar.host.url=https://sonarqube.eportfolio.tech -Dsonar.login=c5e2389e6f57dce65a2b92fb52d6c536cf0cb406
-after_success:
+  - ./gradlew sonarqube \
+    -Dsonar.projectKey=OXN3NFttmdDnbWb9OUIx0vmgSsmZN7dF12UB2iQl \
+    -Dsonar.host.url=https://sonarqube.eportfolio.tech \
+    -Dsonar.login=1d9b3282fe564ebd0b3eb819a10bd9c0d533d958
   - docker login https://docker.pkg.github.com -u haswf -p $DOCKER_TOKEN
   - export TAG=`if [ "$TRAVIS_BRANCH" == "master" ]; then echo "latest"; else echo $TRAVIS_BRANCH; fi`
   - export IMAGE_NAME=docker.pkg.github.com/haswf/comp30022backenddev/eportfolio-server-docker
