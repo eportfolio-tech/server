@@ -1,15 +1,17 @@
 package tech.eportfolio.server.service;
 
+import com.microsoft.azure.storage.StorageException;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.InputStream;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.List;
 
 public interface AzureStorageService {
-     boolean createContainer(String containerName);
+     void createContainer(String containerName) throws URISyntaxException, StorageException;
 
-     boolean deleteContainer(String containerName);
+     void deleteContainer(String containerName) throws URISyntaxException, StorageException;
 
      URI uploadBlob(String containerName, MultipartFile multipartFile);
 

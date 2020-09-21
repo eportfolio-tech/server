@@ -63,17 +63,9 @@ public class AzureStorageServiceImpl implements AzureStorageService {
      * @return success or fail
      */
     @Override
-    public boolean createContainer(String containerName) {
-        boolean containerCreated = false;
-        try {
-            // Create a new container if not exist
-            CloudBlobContainer container = cloudBlobClient.getContainerReference(containerName);
-            containerCreated = container.createIfNotExists(BlobContainerPublicAccessType.BLOB, new BlobRequestOptions(), new OperationContext());
-        } catch (StorageException | URISyntaxException e) {
-            logger.error(e.getMessage());
-            e.printStackTrace();
-        }
-        return containerCreated;
+    public void createContainer(String containerName) throws URISyntaxException, StorageException {
+        CloudBlobContainer container = cloudBlobClient.getContainerReference(containerName);
+        container.createIfNotExists(BlobContainerPublicAccessType.BLOB, new BlobRequestOptions(), new OperationContext());
     }
 
     /**
@@ -83,17 +75,10 @@ public class AzureStorageServiceImpl implements AzureStorageService {
      * @return success or fail
      */
     @Override
-    public boolean deleteContainer(String containerName) {
-        boolean containerDeleted = false;
-        try {
-            // Delete container
-            CloudBlobContainer container = cloudBlobClient.getContainerReference(containerName);
-            containerDeleted = container.deleteIfExists(AccessCondition.generateEmptyCondition(), new BlobRequestOptions(), new OperationContext());
-        } catch (StorageException | URISyntaxException e) {
-            logger.error(e.getMessage());
-            e.printStackTrace();
-        }
-        return containerDeleted;
+    public void deleteContainer(String containerName) throws URISyntaxException, StorageException {
+        // Delete container
+        CloudBlobContainer container = cloudBlobClient.getContainerReference(containerName);
+        container.deleteIfExists(AccessCondition.generateEmptyCondition(), new BlobRequestOptions(), new OperationContext());
     }
 
     /**

@@ -3,6 +3,7 @@ package tech.eportfolio.server.service;
 import tech.eportfolio.server.dto.UserDTO;
 import tech.eportfolio.server.model.User;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,4 +29,10 @@ public interface UserService {
     User save(User user);
 
     String createGithubAvatar(User user);
+
+    void delete(User user);
+
+    List<User> findDeletedUserWithContainer(Date deleteBeforeDate);
+
+    List<User> saveAll(List<User> users);
 }

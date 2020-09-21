@@ -1,9 +1,12 @@
 package tech.eportfolio.server.service.impl;
 
+import com.microsoft.azure.storage.analytics.StorageService;
 import ma.glasnost.orika.BoundMapperFacade;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.impl.DefaultMapperFactory;
 import org.apache.commons.lang3.StringUtils;
+import org.joda.time.Duration;
+import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +17,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import tech.eportfolio.server.common.constant.Role;
+import tech.eportfolio.server.common.constant.SecurityConstant;
 import tech.eportfolio.server.common.exception.EmailExistException;
 import tech.eportfolio.server.common.exception.UserNotFoundException;
 import tech.eportfolio.server.common.exception.UsernameExistException;
@@ -26,10 +30,7 @@ import tech.eportfolio.server.service.AzureStorageService;
 import tech.eportfolio.server.service.UserService;
 
 import java.io.InputStream;
-import java.util.List;
-import java.util.Optional;
-import java.util.Random;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 @Qualifier("UserDetailsService")
@@ -157,6 +158,30 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         return Optional.ofNullable(userRepository.findByUsernameAndDeleted(username, false));
     }
 
+    @Override
+    public void delete(User user) {
+        user.setDeleted(true);
+        userRepository.save(user);
+    }
+
+    /**
+     * Return a list of deleted user with a container whose account has been deleted for at least 7 days
+     * @param deleteBeforeDate the days since the user has been deleted
+     *                         e.g. Assuming current time is Jan 10th,  deleteBeforeDate is 7 days
+     *                         a deleted user whose updatedDate is Jan 2nd will be included in the list
+     *                         but a deleted user whose updatedDate is Jan 8th won't be included
+     * @return
+     */
+    @Override
+    public List<User> findDeletedUserWithContainer(Date deleteBeforeDate) {
+        return userRepository.findByDeletedAndUpdatedDateBeforeAndBlobUUIDIsNotNull(true, deleteBeforeDate);
+    }
+
+    @Override
+    public List<User> saveAll(List<User> users) {
+        return (List<User>) userRepository.saveAll(users);
+    }
+
 
     @Override
     public UserDetails loadUserByUsername(String username) {
@@ -168,4 +193,5 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             return new UserPrincipal(user);
         }
     }
+
 }

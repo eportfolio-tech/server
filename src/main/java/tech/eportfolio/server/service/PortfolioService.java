@@ -2,6 +2,7 @@ package tech.eportfolio.server.service;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import tech.eportfolio.server.common.constant.Visibility;
 import tech.eportfolio.server.dto.PortfolioDTO;
 import tech.eportfolio.server.model.Portfolio;
 import tech.eportfolio.server.model.User;
@@ -25,9 +26,15 @@ public interface PortfolioService {
 
     Portfolio create(User user, Portfolio portfolio);
 
-    Page<Portfolio> searchWithPagination(String text, Pageable pageable);
+    Page<Portfolio> searchWithPaginationAndVisibilities(String text, Pageable pageable, List<Visibility> visibilities);
 
     Portfolio updateContent(Portfolio portfolio, HashMap<String, Object> map);
 
+    Portfolio deleteContent(Portfolio portfolio);
+
     Portfolio save(Portfolio portfolio);
+
+    List<Portfolio> search(String text);
+
+    List<Portfolio> searchWithVisibilities(String text, List<Visibility> visibilities);
 }

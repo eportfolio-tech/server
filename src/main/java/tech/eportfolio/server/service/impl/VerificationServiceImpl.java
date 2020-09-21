@@ -77,14 +77,19 @@ public class VerificationServiceImpl implements VerificationService {
         try {
             if (verificationTokenProvider.isTokenValid(user.getUsername(), token, secret)
                     && StringUtils.equals(jwtVerifier.verify(token).getSubject(), user.getUsername())) {
-                user.setRoles(Role.ROLE_VERIFIED_USER.name());
-                user.setAuthorities(Authority.VERIFIED_USER_AUTHORITIES);
-                user = userService.save(user);
+                verify(user);
             }
         } catch (JWTVerificationException e) {
             throw new JWTVerificationException("Email verification token is invalid or expired");
         }
         return user;
+    }
+
+    @Override
+    public User verify(@NotNull User user) {
+        user.setRoles(Role.ROLE_VERIFIED_USER.name());
+        user.setAuthorities(Authority.VERIFIED_USER_AUTHORITIES);
+        return userService.save(user);
     }
 
     @Override
