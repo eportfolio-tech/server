@@ -13,7 +13,9 @@ before_install:
 before_script:
   - docker run -d -p 10000:10000 mcr.microsoft.com/azure-storage/azurite azurite-blob --blobHost 0.0.0.0 --blobPort 10000
   - ./gradlew sonarqube -Dsonar.projectKey=349v9g6xuO3QDRMtAQj6jkOZDbgxSBpCx2kyHBWY -Dsonar.host.url=https://sonarqube.eportfolio.tech -Dsonar.login=861a734ac0c83799580894175939b6763b8bb1e0
-  - docker login https://docker.pkg.github.com -u haswf -p $DOCKER_TOKEN
+
+after_success:
+  docker login https://docker.pkg.github.com -u haswf -p $DOCKER_TOKEN
   - export TAG=`if [ "$TRAVIS_BRANCH" == "master" ]; then echo "latest"; else echo $TRAVIS_BRANCH; fi`
   - export IMAGE_NAME=docker.pkg.github.com/haswf/comp30022backenddev/eportfolio-server-docker
   - echo $COMMIT
