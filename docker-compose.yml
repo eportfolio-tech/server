@@ -1,4 +1,4 @@
-version: "3.8"
+version: "3.3"
 services:
   sonarqube:
     image: sonarqube:7.9.4-community
@@ -23,7 +23,7 @@ services:
       - "10000:10000"
       - "10001:10001"
     volumes:
-      - azure_blob_data: /data
+      - azure_blob_data:/data
     command: azurite-blob --blobHost 0.0.0.0 --blobPort 10000
     restart: unless-stopped
   watchtower:
