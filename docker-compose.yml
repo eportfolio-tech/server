@@ -1,4 +1,4 @@
-version: "3"
+version: "3.2"
 services:
   sonarqube:
     image: sonarqube:7.9.4-community
