@@ -14,7 +14,7 @@ before_script:
   - docker run -d -p 10000:10000 mcr.microsoft.com/azure-storage/azurite azurite-blob --blobHost 0.0.0.0 --blobPort 10000
   - ./gradlew sonarqube \
     -Dsonar.projectKey=j9y9NWiEYdLNOp7IsCXjylzocO0ZcBYsfya6h3mt \
-    -Dsonar.host.url=http://103.108.228.162:9000 \
+    -Dsonar.host.url=https://sonarqube.eportfolio.tech/ \
     -Dsonar.login=c5e2389e6f57dce65a2b92fb52d6c536cf0cb406
 after_success:
   - docker login https://docker.pkg.github.com -u haswf -p $DOCKER_TOKEN
