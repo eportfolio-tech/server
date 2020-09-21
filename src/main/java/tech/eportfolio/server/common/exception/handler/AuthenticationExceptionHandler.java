@@ -5,6 +5,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import tech.eportfolio.server.common.exception.EmailExistException;
+import tech.eportfolio.server.common.exception.PortfolioNotFoundException;
 import tech.eportfolio.server.common.exception.UserNotFoundException;
 import tech.eportfolio.server.common.exception.UsernameExistException;
 import tech.eportfolio.server.common.jsend.ErrorResponse;
@@ -38,6 +39,11 @@ public class AuthenticationExceptionHandler {
     @ExceptionHandler(AuthenticationException.class)
     public ResponseEntity<FailResponse> handleException(AuthenticationException ex) {
         return new FailResponse("authentication", ex.getMessage()).toUnauthorised();
+    }
+
+    @ExceptionHandler(PortfolioNotFoundException.class)
+    public ResponseEntity<FailResponse> handleException(PortfolioNotFoundException ex) {
+        return new FailResponse("portfolio", ex.getMessage()).toNotFound();
     }
 
 

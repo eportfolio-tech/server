@@ -44,13 +44,10 @@ public class PortfolioController {
 
     private final ObjectMapper objectMapper;
 
-    private final PortfolioRepository portfolioRepository;
-
-    public PortfolioController(PortfolioService portfolioService, UserService userService, ObjectMapper objectMapper, PortfolioRepository portfolioRepository) {
+    public PortfolioController(PortfolioService portfolioService, UserService userService, ObjectMapper objectMapper) {
         this.portfolioService = portfolioService;
         this.userService = userService;
         this.objectMapper = objectMapper;
-        this.portfolioRepository = portfolioRepository;
     }
 
     @PostMapping("/{username}")
@@ -94,7 +91,7 @@ public class PortfolioController {
     @PutMapping("/{username}/content")
     @ApiOperation(value = "", authorizations = {@Authorization(value = "JWT")})
     public ResponseEntity<SuccessResponse<DBObject>> uploadContent(@PathVariable String username, @RequestBody JsonNode jsonPayload) {
-        Portfolio result = portfolioService.findByUsername(username).orElseThrow(() -> new UserNotFoundException(username));
+        Portfolio result = portfolioService.findByUsername(username).orElseThrow(() -> new PortfolioNotFoundException(username));
 
         ObjectMapper mapper = new ObjectMapper();
         TypeReference<HashMap<String, Object>> typeRef = new TypeReference<>() {
