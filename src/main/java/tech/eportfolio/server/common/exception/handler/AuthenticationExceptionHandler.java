@@ -16,37 +16,10 @@ import java.nio.file.AccessDeniedException;
 @RestControllerAdvice
 public class AuthenticationExceptionHandler {
 
-    @ExceptionHandler(EmailExistException.class)
-    public ResponseEntity<FailResponse> handleException(EmailExistException ex) {
-        return new FailResponse(EmailExistException.SUBJECT, ex.getMessage()).toConflict();
-    }
-
-    @ExceptionHandler(UsernameExistException.class)
-    public ResponseEntity<FailResponse> handleException(UsernameExistException ex) {
-        return new FailResponse(UsernameExistException.SUBJECT, ex.getMessage()).toConflict();
-    }
-
-    @ExceptionHandler(UserNotFoundException.class)
-    public ResponseEntity<ErrorResponse> handleException(UserNotFoundException ex) {
-        return new ErrorResponse(ex.getMessage()).toNotFound();
-    }
-
-    @ExceptionHandler(AccessDeniedException.class)
-    public ResponseEntity<FailResponse> handleException(AccessDeniedException ex) {
-        return new FailResponse("authentication", ex.getMessage()).toUnauthorised();
-    }
+    public static final String AUTHENTICATION = "authentication";
 
     @ExceptionHandler(AuthenticationException.class)
     public ResponseEntity<FailResponse> handleException(AuthenticationException ex) {
-        return new FailResponse("authentication", ex.getMessage()).toUnauthorised();
+        return new FailResponse(AUTHENTICATION, ex.getMessage()).toUnauthorised();
     }
-
-    @ExceptionHandler(PortfolioNotFoundException.class)
-    public ResponseEntity<FailResponse> handleException(PortfolioNotFoundException ex) {
-        return new FailResponse("portfolio", ex.getMessage()).toNotFound();
-    }
-
-
-
-
 }
