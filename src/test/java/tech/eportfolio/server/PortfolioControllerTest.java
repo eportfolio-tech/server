@@ -143,7 +143,7 @@ public class PortfolioControllerTest {
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
         ).andDo(print())
                 .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.status").value("ifUserDoesntHaveAPortfolioThenReturn404"));
+                .andExpect(jsonPath("$.status").value("fail"));
     }
 
 
