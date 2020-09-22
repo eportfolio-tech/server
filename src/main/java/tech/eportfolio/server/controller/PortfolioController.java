@@ -47,6 +47,8 @@ public class PortfolioController {
 
     public static final String CONTENT = "content";
 
+    public static final String PORTFOLIO = "portfolio";
+
     public PortfolioController(PortfolioService portfolioService, UserService userService, ObjectMapper objectMapper) {
         this.portfolioService = portfolioService;
         this.userService = userService;
@@ -55,14 +57,14 @@ public class PortfolioController {
 
     @PostMapping("/{username}")
     @ApiOperation(value = "", authorizations = {@Authorization(value = "JWT")})
-    public ResponseEntity<SuccessResponse<Object>> createNewPortfolio(@PathVariable String username, @RequestBody PortfolioDTO portfolioDTO) {
+    public ResponseEntity<SuccessResponse<Portfolio>> createNewPortfolio(@PathVariable String username, @RequestBody PortfolioDTO portfolioDTO) {
         User user = userService.findByUsername(username).orElseThrow(() -> new UserNotFoundException(username));
         // Throw exception if user has already created an eportfolio
         if (portfolioService.findByUsername(username).isPresent()) {
             throw new PortfolioExistException(username);
         }
-        portfolioService.create(user, portfolioService.fromPortfolioDTO(portfolioDTO));
-        return new SuccessResponse<>().toOk();
+        Portfolio portfolio = portfolioService.create(user, portfolioService.fromPortfolioDTO(portfolioDTO));
+        return new SuccessResponse<>(PORTFOLIO, portfolio).toOk();
     }
 
     // Find portfolio by username
@@ -70,7 +72,7 @@ public class PortfolioController {
     @ApiOperation(value = "", authorizations = {@Authorization(value = "JWT")})
     public ResponseEntity<SuccessResponse<Portfolio>> findByUsername(@PathVariable String username) {
         Portfolio result = portfolioService.findByUsername(username).orElseThrow(() -> new PortfolioNotFoundException(username));
-        return new SuccessResponse<>("portfolio", result).toOk();
+        return new SuccessResponse<>(PORTFOLIO, result).toOk();
     }
 
     @PatchMapping("/{username}")
@@ -79,7 +81,7 @@ public class PortfolioController {
         Portfolio portfolio = portfolioService.findByUsername(username).orElseThrow(() -> new PortfolioNotFoundException(username));
         NullAwareBeanUtilsBean.copyProperties(update, portfolio);
         Portfolio result = portfolioService.save(portfolio);
-        return new SuccessResponse<>("portfolio", result).toOk();
+        return new SuccessResponse<>(PORTFOLIO, result).toOk();
     }
 
 

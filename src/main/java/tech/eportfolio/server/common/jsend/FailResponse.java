@@ -28,6 +28,10 @@ public class FailResponse {
         return new ResponseEntity<>(this, null, HttpStatus.BAD_REQUEST);
     }
 
+    public ResponseEntity<FailResponse> toNotFound() {
+        return new ResponseEntity<>(this, null, HttpStatus.NOT_FOUND);
+    }
+
     public ResponseEntity<FailResponse> toConflict() {
         return new ResponseEntity<>(this, null, HttpStatus.CONFLICT);
     }

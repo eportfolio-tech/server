@@ -2,6 +2,8 @@ plugins {
     id 'org.springframework.boot' version '2.3.4.BUILD-SNAPSHOT'
     id 'io.spring.dependency-management' version '1.0.10.RELEASE'
     id 'java'
+    id "org.sonarqube" version "3.0"
+    id 'jacoco'
 }
 
 group = 'tech.eportfolio'
@@ -88,4 +90,20 @@ build {
 test {
     systemProperty "spring.profiles.active", "test"
     useJUnitPlatform()
+}
+test.finalizedBy jacocoTestReport
+tasks['sonarqube'].dependsOn test
+
+sonarqube {
+    properties {
+        property 'sonar.host.url', 'https://sonarqube.eportfolio.tech'
+        property 'sonar.projectKey', '349v9g6xuO3QDRMtAQj6jkOZDbgxSBpCx2kyHBWY'
+        property 'sonar.login', '861a734ac0c83799580894175939b6763b8bb1e0'
+    }
+}
+
+jacocoTestReport {
+    reports {
+        xml.enabled true
+    }
 }

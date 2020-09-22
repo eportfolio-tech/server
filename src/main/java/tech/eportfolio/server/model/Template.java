@@ -19,11 +19,10 @@ public class Template {
     @TextIndexed
     private String title;
 
-    @TextIndexed
     private String description;
 
     private long userId;
-
+  
     private DBObject boilerplate;
 
     private boolean hidden = false;

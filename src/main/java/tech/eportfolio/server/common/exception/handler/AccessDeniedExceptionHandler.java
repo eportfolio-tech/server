@@ -10,7 +10,7 @@ import java.nio.file.AccessDeniedException;
 @RestControllerAdvice
 class AccessDeniedExceptionHandler {
     @ExceptionHandler(AccessDeniedException.class)
-    public ResponseEntity<FailResponse> exception(Exception ex) {
-        return new FailResponse("authentication", ex.getMessage()).toForbidden();
+    public ResponseEntity<FailResponse> handleException(AccessDeniedException ex) {
+        return new FailResponse("authentication", ex.getMessage()).toUnauthorised();
     }
 }
