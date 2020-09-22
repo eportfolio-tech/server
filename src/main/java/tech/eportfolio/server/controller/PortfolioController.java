@@ -1,6 +1,5 @@
 package tech.eportfolio.server.controller;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mongodb.DBObject;
@@ -13,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import tech.eportfolio.server.common.constant.Role;
 import tech.eportfolio.server.common.constant.Visibility;
@@ -20,21 +20,22 @@ import tech.eportfolio.server.common.exception.PortfolioExistException;
 import tech.eportfolio.server.common.exception.PortfolioNotFoundException;
 import tech.eportfolio.server.common.exception.UserNotFoundException;
 import tech.eportfolio.server.common.jsend.SuccessResponse;
+import tech.eportfolio.server.common.utility.JSONUtil;
 import tech.eportfolio.server.common.utility.NullAwareBeanUtilsBean;
 import tech.eportfolio.server.dto.PortfolioDTO;
 import tech.eportfolio.server.model.Portfolio;
 import tech.eportfolio.server.model.User;
-import tech.eportfolio.server.repository.mongodb.PortfolioRepository;
 import tech.eportfolio.server.service.PortfolioService;
 import tech.eportfolio.server.service.UserService;
 
-import javax.validation.constraints.NotEmpty;
-import java.util.HashMap;
+import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
 @RestController
+@Validated
 @RequestMapping("/portfolios")
 public class PortfolioController {
 
@@ -44,13 +45,12 @@ public class PortfolioController {
 
     private final ObjectMapper objectMapper;
 
-    private final PortfolioRepository portfolioRepository;
+    public static final String CONTENT = "content";
 
-    public PortfolioController(PortfolioService portfolioService, UserService userService, ObjectMapper objectMapper, PortfolioRepository portfolioRepository) {
+    public PortfolioController(PortfolioService portfolioService, UserService userService, ObjectMapper objectMapper) {
         this.portfolioService = portfolioService;
         this.userService = userService;
         this.objectMapper = objectMapper;
-        this.portfolioRepository = portfolioRepository;
     }
 
     @PostMapping("/{username}")
@@ -87,7 +87,7 @@ public class PortfolioController {
     @ApiOperation(value = "", authorizations = {@Authorization(value = "JWT")})
     public ResponseEntity<SuccessResponse<DBObject>> findContentByUsername(@PathVariable String username) {
         Portfolio result = portfolioService.findByUsername(username).orElseThrow(() -> new PortfolioNotFoundException(username));
-        return new SuccessResponse<>("content", result.getContent()).toOk();
+        return new SuccessResponse<>(CONTENT, result.getContent()).toOk();
     }
 
 
@@ -95,14 +95,8 @@ public class PortfolioController {
     @ApiOperation(value = "", authorizations = {@Authorization(value = "JWT")})
     public ResponseEntity<SuccessResponse<DBObject>> uploadContent(@PathVariable String username, @RequestBody JsonNode jsonPayload) {
         Portfolio result = portfolioService.findByUsername(username).orElseThrow(() -> new UserNotFoundException(username));
-
-        ObjectMapper mapper = new ObjectMapper();
-        TypeReference<HashMap<String, Object>> typeRef = new TypeReference<>() {
-        };
-        HashMap<String, Object> map = mapper.convertValue(jsonPayload, typeRef);
-
-        portfolioService.updateContent(result, map);
-        return new SuccessResponse<>("content", result.getContent()).toOk();
+        portfolioService.updateContent(result, JSONUtil.convertJsonNodeToDbObject(jsonPayload));
+        return new SuccessResponse<>(CONTENT, result.getContent()).toOk();
     }
 
     @DeleteMapping("/{username}/content")
@@ -110,12 +104,12 @@ public class PortfolioController {
     public ResponseEntity<SuccessResponse<Portfolio>> deleteContent(@PathVariable String username) {
         Portfolio result = portfolioService.findByUsername(username).orElseThrow(() -> new PortfolioNotFoundException(username));
         Portfolio resultContent = portfolioService.deleteContent(result);
-        return new SuccessResponse<>("content", resultContent).toOk();
+        return new SuccessResponse<>(CONTENT, resultContent).toOk();
     }
 
     // Search portfolio with pagination
     @GetMapping("/search")
-    public ResponseEntity<SuccessResponse<Object>> search(@RequestParam @NotEmpty String query, @RequestParam int page, @RequestParam int size) {
+    public ResponseEntity<SuccessResponse<Object>> search(@RequestParam @Valid @NotBlank String query, @RequestParam int page, @RequestParam int size) {
 
         List<Visibility> searchVisibilities = new LinkedList<>();
         // Anyone should be able to search public portfiolio
