@@ -20,6 +20,10 @@ public class FailResponse {
         this.data = Collections.singletonMap(key, message);
     }
 
+    public ResponseEntity<FailResponse> toNotFound() {
+        return new ResponseEntity<>(this, null, HttpStatus.NOT_FOUND);
+    }
+
     public ResponseEntity<FailResponse> toBadRequest() {
         return new ResponseEntity<>(this, null, HttpStatus.BAD_REQUEST);
     }

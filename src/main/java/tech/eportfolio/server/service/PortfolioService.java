@@ -1,5 +1,6 @@
 package tech.eportfolio.server.service;
 
+import com.mongodb.BasicDBObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import tech.eportfolio.server.common.constant.Visibility;
@@ -7,7 +8,6 @@ import tech.eportfolio.server.dto.PortfolioDTO;
 import tech.eportfolio.server.model.Portfolio;
 import tech.eportfolio.server.model.User;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,7 +28,7 @@ public interface PortfolioService {
 
     Page<Portfolio> searchWithPaginationAndVisibilities(String text, Pageable pageable, List<Visibility> visibilities);
 
-    Portfolio updateContent(Portfolio portfolio, HashMap<String, Object> map);
+    Portfolio updateContent(Portfolio portfolio, BasicDBObject json);
 
     Portfolio deleteContent(Portfolio portfolio);
 

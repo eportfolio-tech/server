@@ -22,7 +22,6 @@ import tech.eportfolio.server.model.User;
 import tech.eportfolio.server.repository.mongodb.PortfolioRepository;
 import tech.eportfolio.server.service.PortfolioService;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
@@ -120,8 +119,8 @@ public class PortfolioServiceImpl implements PortfolioService {
     }
 
     @Override
-    public Portfolio updateContent(Portfolio portfolio, HashMap<String, Object> map) {
-        portfolio.setContent(new BasicDBObject(map));
+    public Portfolio updateContent(Portfolio portfolio, BasicDBObject dbObject) {
+        portfolio.setContent(new BasicDBObject(dbObject));
         return this.save(portfolio);
     }
 

@@ -19,6 +19,10 @@ public class Template {
     @TextIndexed
     private String title;
 
+    private String description;
+
+    private long userId;
+  
     private DBObject boilerplate;
 
     private boolean hidden = false;
@@ -30,6 +34,4 @@ public class Template {
 
     @LastModifiedDate
     private Date updatedDate;
-
-    private long usage;
 }

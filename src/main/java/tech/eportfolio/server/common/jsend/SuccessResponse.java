@@ -50,4 +50,8 @@ public class SuccessResponse<T> {
         return new ResponseEntity<>(this, null, HttpStatus.CREATED);
     }
 
+    public ResponseEntity<SuccessResponse<T>> toNoContent() {
+        return new ResponseEntity<>(this, null, HttpStatus.NO_CONTENT);
+    }
+
 }
