@@ -130,7 +130,7 @@ public class PortfolioControllerTest {
                 .content(body)
         ).andDo(print())
                 .andExpect(status().isInternalServerError())
-                .andExpect(jsonPath("$.status").value("error"));
+                .andExpect(jsonPath("$.status").value("errorU"));
     }
 
 
