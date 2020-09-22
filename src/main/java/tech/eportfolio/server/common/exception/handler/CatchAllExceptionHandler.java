@@ -18,6 +18,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 import tech.eportfolio.server.common.jsend.ErrorResponse;
 import tech.eportfolio.server.common.jsend.FailResponse;
 
+import javax.validation.ConstraintViolationException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -27,6 +28,17 @@ public class CatchAllExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> exception(Exception ex) {
         return new ErrorResponse(ex.getMessage()).toInternalError();
+    }
+
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<FailResponse> exception(ConstraintViolationException ex) {
+        Map<String, String> errors = new HashMap<>();
+        ex.getConstraintViolations().forEach(e -> {
+            errors.put(e.getPropertyPath().toString(), e.getMessage());
+        });
+        FailResponse response = new FailResponse();
+        response.setData(errors);
+        return response.toBadRequest();
     }
 
     @Override
