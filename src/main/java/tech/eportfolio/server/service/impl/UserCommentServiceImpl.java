@@ -2,7 +2,8 @@ package tech.eportfolio.server.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import tech.eportfolio.server.common.exception.UserCommentNotExistException;
+import tech.eportfolio.server.common.exception.UserDidNotBeCommentedException;
+import tech.eportfolio.server.common.exception.UserDidNotCommentException;
 import tech.eportfolio.server.model.Portfolio;
 import tech.eportfolio.server.model.User;
 import tech.eportfolio.server.model.UserComment;
@@ -51,13 +52,25 @@ public class UserCommentServiceImpl implements UserCommentService {
     @Override
     public void uncomment(User user, String id) {
         UserComment userComment = this.findByUsernameAndId(user.getUsername(), id)
-                .orElseThrow(() -> new UserCommentNotExistException(user.getUsername(), id));
+                .orElseThrow(() -> new UserDidNotCommentException(user.getUsername(), id));
+        userCommentRepository.delete(userComment);
+    }
+
+    @Override
+    public void deleteComment(Portfolio portfolio, String id) {
+        UserComment userComment = this.findByPortfolioIdAndId(portfolio.getId(), id)
+                .orElseThrow(() -> new UserDidNotBeCommentedException(portfolio.getUsername(), id));
         userCommentRepository.delete(userComment);
     }
 
     @Override
     public Optional<UserComment> findByUsernameAndId(String username, String id) {
         return Optional.ofNullable(userCommentRepository.findByUsernameAndId(username, id));
+    }
+
+    @Override
+    public Optional<UserComment> findByPortfolioIdAndId(String portfolioId, String id) {
+        return Optional.ofNullable(userCommentRepository.findByPortfolioIdAndId(portfolioId, id));
     }
 
     @Override

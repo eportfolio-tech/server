@@ -71,15 +71,15 @@ public class UserCommentController {
         return new SuccessResponse<>().toOk();
     }
 
-//    @DeleteMapping("/delete-comment")
-//    @ApiOperation(value = "", authorizations = {@Authorization(value = "JWT")})
-//    public ResponseEntity<SuccessResponse<Object>> deleteCommentMadeByOthers(@PathVariable String ownerUsername, @RequestParam String id) {
-//        String username = SecurityContextHolder.getContext().getAuthentication().getName();
-//        User user = userService.findByUsername(username).orElseThrow(() -> new UserNotFoundException(username));
-//        Portfolio portfolio = portfolioService.findByUsername(ownerUsername).orElseThrow(() -> new PortfolioNotFoundException(ownerUsername));
-//        userCommentService.uncomment(user, id);
-//        return new SuccessResponse<>().toOk();
-//    }
+    @DeleteMapping("/delete-comment")
+    @ApiOperation(value = "", authorizations = {@Authorization(value = "JWT")})
+    public ResponseEntity<SuccessResponse<Object>> deleteCommentMadeByOthers(@PathVariable String ownerUsername, @RequestParam String id) {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userService.findByUsername(username).orElseThrow(() -> new UserNotFoundException(username));
+        Portfolio portfolio = portfolioService.findByUsername(ownerUsername).orElseThrow(() -> new PortfolioNotFoundException(ownerUsername));
+        userCommentService.deleteComment(portfolio, id);
+        return new SuccessResponse<>().toOk();
+    }
 
 
 }

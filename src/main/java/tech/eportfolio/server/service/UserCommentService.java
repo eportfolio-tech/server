@@ -13,11 +13,15 @@ public interface UserCommentService {
 
     void uncomment(User user, String id);
 
+    void deleteComment(Portfolio portfolio, String id);
+
 //    Optional<UserComment> findByUsernameAndPortfolioId(String username, String portfolioId);
 
     UserComment delete(UserComment userLike);
 
     Optional<UserComment> findByUsernameAndId(String username, String id);
+
+    Optional<UserComment> findByPortfolioIdAndId(String portfolioId, String id);
 
     List<UserComment> findByUser(User user);
 
