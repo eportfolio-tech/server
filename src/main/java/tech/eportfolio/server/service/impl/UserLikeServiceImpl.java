@@ -8,7 +8,6 @@ import tech.eportfolio.server.model.Portfolio;
 import tech.eportfolio.server.model.User;
 import tech.eportfolio.server.model.UserLike;
 import tech.eportfolio.server.repository.mongodb.UserLikeRepository;
-import tech.eportfolio.server.service.PortfolioService;
 import tech.eportfolio.server.service.UserLikeService;
 
 import java.util.Date;
@@ -20,12 +19,9 @@ public class UserLikeServiceImpl implements UserLikeService {
 
     private final UserLikeRepository userLikeRepository;
 
-    private final PortfolioService portfolioService;
-
     @Autowired
-    public UserLikeServiceImpl(UserLikeRepository userLikeRepository, PortfolioService portfolioService) {
+    public UserLikeServiceImpl(UserLikeRepository userLikeRepository) {
         this.userLikeRepository = userLikeRepository;
-        this.portfolioService = portfolioService;
     }
 
 
