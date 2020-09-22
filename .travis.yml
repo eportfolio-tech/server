@@ -19,7 +19,7 @@ script:
 
 
 after_success:
-  docker login https://docker.pkg.github.com -u haswf -p $DOCKER_TOKEN
+  - docker login https://docker.pkg.github.com -u haswf -p $DOCKER_TOKEN
   - export TAG=`if [ "$TRAVIS_BRANCH" == "master" ]; then echo "latest"; else echo $TRAVIS_BRANCH; fi`
   - export IMAGE_NAME=docker.pkg.github.com/haswf/comp30022backenddev/eportfolio-server-docker
   - echo $COMMIT
