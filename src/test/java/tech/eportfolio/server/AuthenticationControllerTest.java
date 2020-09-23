@@ -52,7 +52,7 @@ public class AuthenticationControllerTest {
     @Before
     public void init() {
         userDTO = UserDTO.mock();
-        existingUser = userService.register(userService.fromUserDTO(userDTO));
+        existingUser = userService.register(userService.fromUserDTO(userDTO), false);
     }
 
     @Test

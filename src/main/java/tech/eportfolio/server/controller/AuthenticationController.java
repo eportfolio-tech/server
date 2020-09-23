@@ -5,7 +5,6 @@ import io.swagger.annotations.Authorization;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -19,6 +18,7 @@ import tech.eportfolio.server.common.jsend.SuccessResponse;
 import tech.eportfolio.server.common.utility.JWTTokenProvider;
 import tech.eportfolio.server.dto.LoginRequestBody;
 import tech.eportfolio.server.dto.UserDTO;
+import tech.eportfolio.server.model.EditorState;
 import tech.eportfolio.server.model.User;
 import tech.eportfolio.server.model.UserPrincipal;
 import tech.eportfolio.server.service.RecoveryService;
@@ -56,7 +56,7 @@ public class AuthenticationController extends AuthenticationExceptionHandler {
 
     @PostMapping("/signup")
     public ResponseEntity<SuccessResponse<User>> signUp(@RequestBody @Valid UserDTO userDTO) {
-        User user = userService.register(userService.fromUserDTO(userDTO));
+        User user = userService.register(userService.fromUserDTO(userDTO), true);
         UserPrincipal userPrincipal = new UserPrincipal(user);
         HttpHeaders jwtHeader = getJwtHeader(userPrincipal);
         verificationService.sendVerificationEmail(user);
@@ -84,8 +84,8 @@ public class AuthenticationController extends AuthenticationExceptionHandler {
     }
 
     @GetMapping("/quick-test")
-    public ResponseEntity<SuccessResponse<String>> quickTest() {
-        throw new AccessDeniedException("");
+    public ResponseEntity<SuccessResponse<EditorState>> quickTest() {
+        return new SuccessResponse<>("json", EditorState.generateState()).toOk();
     }
 
     @GetMapping("/loginAsTest")
@@ -101,7 +101,7 @@ public class AuthenticationController extends AuthenticationExceptionHandler {
             test.setLastName("man");
             test.setPhone("(03)90355511");
             test.setTitle("Mr.");
-            user = userService.register(test);
+            user = userService.register(test, false);
         } else {
             user = loginUser.get();
         }

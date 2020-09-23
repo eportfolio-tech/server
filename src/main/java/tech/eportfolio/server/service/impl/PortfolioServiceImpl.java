@@ -1,5 +1,7 @@
 package tech.eportfolio.server.service.impl;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mongodb.BasicDBObject;
 import ma.glasnost.orika.BoundMapperFacade;
 import ma.glasnost.orika.MapperFactory;
@@ -22,7 +24,9 @@ import tech.eportfolio.server.model.User;
 import tech.eportfolio.server.repository.PortfolioRepository;
 import tech.eportfolio.server.service.PortfolioService;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -119,8 +123,11 @@ public class PortfolioServiceImpl implements PortfolioService {
     }
 
     @Override
-    public Portfolio updateContent(Portfolio portfolio, BasicDBObject dbObject) {
-        portfolio.setContent(dbObject);
+    public Portfolio updateContent(Portfolio portfolio, Map<String, Object> map) {
+        ObjectMapper mapper = new ObjectMapper();
+        TypeReference<HashMap<String, Object>> typeRef = new TypeReference<>() {
+        };
+        portfolio.setContent(new BasicDBObject(mapper.convertValue(map, typeRef)));
         return this.save(portfolio);
     }
 

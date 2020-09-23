@@ -66,7 +66,7 @@ public class UserLikeControllerTest {
         // Based on the assumption that a user can like and unlike him/her self, only one test user is created
         testUserDTO = UserDTO.mock();
         testUserDTO.setUsername("test");
-        testUser = userService.register(userService.fromUserDTO(testUserDTO));
+        testUser = userService.register(userService.fromUserDTO(testUserDTO), false);
 
         testPortfolioDTO = PortfolioDTO.mock();
         testPortfolio = portfolioService.create(testUser, portfolioService.fromPortfolioDTO(testPortfolioDTO));

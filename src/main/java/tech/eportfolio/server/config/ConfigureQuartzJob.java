@@ -1,8 +1,10 @@
 package tech.eportfolio.server.config;
 import org.quartz.*;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import tech.eportfolio.server.common.job.DeleteUserContainerJob;
+import tech.eportfolio.server.job.DeleteUserContainerJob;
+import tech.eportfolio.server.job.MockContentJob;
 
 /**
  * https://www.baeldung.com/spring-quartz-schedule
@@ -11,21 +13,38 @@ import tech.eportfolio.server.common.job.DeleteUserContainerJob;
 public class ConfigureQuartzJob {
 
     // TODO: Change jobA to a more reasonable name
-    @Bean
+    @Bean(name = "jobADetail")
     public JobDetail jobADetails() {
         return JobBuilder.newJob(DeleteUserContainerJob.class).withIdentity("sampleJobA")
                 .storeDurably().build();
     }
 
-    @Bean
-    public Trigger jobATrigger(JobDetail jobADetails) {
+    @Bean(name = "mockContentJobDetail")
+    public JobDetail mockContentJob() {
+        return JobBuilder.newJob(MockContentJob.class).withIdentity("mockContentJob")
+                .storeDurably().build();
+    }
 
-        return TriggerBuilder.newTrigger().forJob(jobADetails)
+    @Bean(name = "DeleteUserContainerJobTrigger")
+    public Trigger jobATrigger(@Qualifier("jobADetail") JobDetail jobDetail) {
+
+        return TriggerBuilder.newTrigger().forJob(jobDetail)
                 .withIdentity("TriggerA")
                 // Execute every day at mid night
                 .withSchedule(CronScheduleBuilder.cronSchedule("0 0 0 * * ?"))
                 .build();
     }
+
+//    @Bean(name = "mockContentJobTrigger")
+//    public Trigger mockContentJobTrigger(@Qualifier("mockContentJobDetail") JobDetail mockContentJob) {
+//
+//        return TriggerBuilder.newTrigger().forJob(mockContentJob)
+//                .withIdentity("mockContentJob")
+//                // Execute every day at mid night
+//                .withSchedule(CronScheduleBuilder.cronSchedule("* * * ? * *"))
+//                .build();
+//    }
+
 
     //    @Bean
 //    public JobDetailFactoryBean jobDetail() {
