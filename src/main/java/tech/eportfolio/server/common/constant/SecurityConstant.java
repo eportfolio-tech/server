@@ -8,8 +8,20 @@ public class SecurityConstant {
     @Value("jwt.expire")
     public static final long EXPIRATION_TIME = 1_800_000; // stands for 30 minutes
 
+    public static final String AUTHENTICATION_BASE_PATH = "/authentication";
     // Authentication endpoints
-    public static final String[] AUTHENTICATION = {"/authentication/**"};
+    public static final String[] AUTHENTICATION = {
+            AUTHENTICATION_BASE_PATH + "/login",
+            AUTHENTICATION_BASE_PATH + "/loginAsTest",
+            AUTHENTICATION_BASE_PATH + "/deleteTest",
+            AUTHENTICATION_BASE_PATH + "/password-recovery",
+            AUTHENTICATION_BASE_PATH + "/quick-test",
+            AUTHENTICATION_BASE_PATH + "/recovery-link",
+            AUTHENTICATION_BASE_PATH + "/recovery-token",
+            AUTHENTICATION_BASE_PATH + "/send-recovery-link",
+            AUTHENTICATION_BASE_PATH + "/signup"
+    };
+
     public static final String TOKEN_HEADER = "Bearer ";
     public static final String JWT_TOKEN_HEADER = "X-JWT-Token";
     public static final String TOKEN_CANNOT_BE_VERIFIED = "Token can't be verified";

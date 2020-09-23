@@ -1,11 +1,14 @@
 package tech.eportfolio.server.controller;
 
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.Authorization;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import tech.eportfolio.server.common.constant.SecurityConstant;
 import tech.eportfolio.server.common.constraint.ValidPassword;
@@ -68,6 +71,16 @@ public class AuthenticationController extends AuthenticationExceptionHandler {
         UserPrincipal userPrincipal = new UserPrincipal(loginUser);
         HttpHeaders jwtHeader = getJwtHeader(userPrincipal);
         return new SuccessResponse<>("user", loginUser).toOk(jwtHeader);
+    }
+
+    @PostMapping("/renew")
+    @ApiOperation(value = "", authorizations = {@Authorization(value = "JWT")})
+    public ResponseEntity<SuccessResponse<String>> renewToken() {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        User loginUser = userService.findByUsername(username).orElseThrow(() -> new UserNotFoundException(username) {
+        });
+        UserPrincipal userPrincipal = new UserPrincipal(loginUser);
+        return new SuccessResponse<>("token", jwtTokenProvider.generateJWTToken(userPrincipal, SecurityConstant.AUTHENTICATION_SECRET)).toOk();
     }
 
     @GetMapping("/quick-test")
