@@ -120,7 +120,7 @@ public class PortfolioServiceImpl implements PortfolioService {
 
     @Override
     public Portfolio updateContent(Portfolio portfolio, BasicDBObject dbObject) {
-        portfolio.setContent(new BasicDBObject(dbObject));
+        portfolio.setContent(dbObject);
         return this.save(portfolio);
     }
 
