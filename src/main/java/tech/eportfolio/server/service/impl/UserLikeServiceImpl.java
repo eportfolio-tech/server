@@ -7,7 +7,7 @@ import tech.eportfolio.server.common.exception.UserLikeNotExistException;
 import tech.eportfolio.server.model.Portfolio;
 import tech.eportfolio.server.model.User;
 import tech.eportfolio.server.model.UserLike;
-import tech.eportfolio.server.repository.mongodb.UserLikeRepository;
+import tech.eportfolio.server.repository.UserLikeRepository;
 import tech.eportfolio.server.service.UserLikeService;
 
 import java.util.Date;

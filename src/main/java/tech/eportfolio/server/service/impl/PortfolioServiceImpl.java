@@ -19,7 +19,7 @@ import tech.eportfolio.server.common.constant.Visibility;
 import tech.eportfolio.server.dto.PortfolioDTO;
 import tech.eportfolio.server.model.Portfolio;
 import tech.eportfolio.server.model.User;
-import tech.eportfolio.server.repository.mongodb.PortfolioRepository;
+import tech.eportfolio.server.repository.PortfolioRepository;
 import tech.eportfolio.server.service.PortfolioService;
 
 import java.util.List;

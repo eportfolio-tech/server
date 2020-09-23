@@ -23,7 +23,7 @@ public class Portfolio {
     @TextIndexed
     private String username;
 
-    private long userId;
+    private String userId;
 
     @TextIndexed
     private String description;

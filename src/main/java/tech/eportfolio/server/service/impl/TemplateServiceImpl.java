@@ -3,7 +3,7 @@ package tech.eportfolio.server.service.impl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import tech.eportfolio.server.model.Template;
-import tech.eportfolio.server.repository.mongodb.TemplateRepository;
+import tech.eportfolio.server.repository.TemplateRepository;
 import tech.eportfolio.server.service.TemplateService;
 
 import java.util.List;

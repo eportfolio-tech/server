@@ -7,14 +7,14 @@ import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 import net.andreinc.mockneat.MockNeat;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.jdbc.EmbeddedDatabaseConnection;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithAnonymousUser;
@@ -29,12 +29,11 @@ import tech.eportfolio.server.dto.PortfolioDTO;
 import tech.eportfolio.server.dto.UserDTO;
 import tech.eportfolio.server.model.Portfolio;
 import tech.eportfolio.server.model.User;
-import tech.eportfolio.server.repository.mongodb.PortfolioRepository;
+import tech.eportfolio.server.repository.PortfolioRepository;
 import tech.eportfolio.server.service.PortfolioService;
 import tech.eportfolio.server.service.UserService;
 import tech.eportfolio.server.service.VerificationService;
 
-import javax.sound.sampled.Port;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -51,7 +50,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ActiveProfiles("test")
 @AutoConfigureMockMvc
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
-@AutoConfigureTestDatabase(connection = EmbeddedDatabaseConnection.H2)
 public class PortfolioControllerTest {
 
     @Autowired
@@ -69,6 +67,9 @@ public class PortfolioControllerTest {
     @Autowired
     PortfolioRepository portfolioRepository;
 
+    @Autowired
+    MongoTemplate mongoTemplate;
+
 
     private static final String BASE_PATH = "/portfolios";
 
@@ -83,8 +84,6 @@ public class PortfolioControllerTest {
 
     @Before
     public void init() {
-        portfolioRepository.deleteAll();
-
         UserDTO userDTO = UserDTO.mock();
         userDTO.setUsername("test");
 
@@ -336,5 +335,8 @@ public class PortfolioControllerTest {
                 .andReturn();
     }
 
-
+    @After
+    public void afterClass() {
+        mongoTemplate.getDb().drop();
+    }
 }

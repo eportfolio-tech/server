@@ -21,7 +21,7 @@ public class Template {
 
     private String description;
 
-    private long userId;
+    private String userId;
   
     private DBObject boilerplate;
 

@@ -1,35 +1,33 @@
 package tech.eportfolio.server.model;
 
 import lombok.Data;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.mongodb.core.mapping.Document;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Id;
 import java.util.Date;
 
 @Data
-@Entity
-@Table(name = "tag",
-        indexes = {
-                @Index(columnList = "name", name = "name_index"),
-        })
+@Document
+
 public class Tag {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    private String id;
 
-    @Column(nullable = false, unique = true)
     private String name;
 
     private String icon;
+
     private boolean deleted = false;
 
     @Column(nullable = false, updatable = false)
     private String createdBy;
 
-    @CreationTimestamp
+    @CreatedDate
     private Date createdDate;
 
-    @UpdateTimestamp
+    @LastModifiedDate
     private Date updatedDate;
 }

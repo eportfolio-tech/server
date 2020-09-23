@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import tech.eportfolio.server.model.Tag;
 import tech.eportfolio.server.model.User;
 import tech.eportfolio.server.model.UserTag;
-import tech.eportfolio.server.repository.jpa.UserTagRepository;
+import tech.eportfolio.server.repository.UserTagRepository;
 import tech.eportfolio.server.service.TagService;
 import tech.eportfolio.server.service.UserTagService;
 
@@ -36,8 +36,8 @@ public class UserTagServiceImpl implements UserTagService {
     }
 
     @Override
-    public List<UserTag> findByUserId(Long userID) {
-        return userTagRepository.findByUserIdAndDeleted(userID, false);
+    public List<UserTag> findByUserId(Long userId) {
+        return userTagRepository.findByUserIdAndDeleted(userId, false);
     }
 
     @Override
@@ -66,7 +66,7 @@ public class UserTagServiceImpl implements UserTagService {
         List<Tag> result = tagService.saveAllIfNotExist(tags);
         // Find user's existing tags
         List<UserTag> userTags = findByUsername(user.getUsername());
-        List<Long> currentTagIds = new ArrayList<>();
+        List<String> currentTagIds = new ArrayList<>();
         userTags.forEach(e -> currentTagIds.add(e.getTagId()));
 
         List<UserTag> userTagsBatchInsert = new ArrayList<>();

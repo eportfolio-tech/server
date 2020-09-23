@@ -1,14 +1,15 @@
-package tech.eportfolio.server.repository.jpa;
+package tech.eportfolio.server.repository;
 
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.stereotype.Repository;
 import tech.eportfolio.server.model.User;
 
 import java.util.Date;
 import java.util.List;
 
-public interface UserRepository extends CrudRepository<User, Long> {
+@Repository
 
-    User findById(long id);
+public interface UserRepository extends MongoRepository<User, String> {
 
     User findByUsernameAndDeleted(String username, boolean deleted);
 
