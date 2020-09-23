@@ -34,7 +34,7 @@ public class TagController {
     // Single item
     @GetMapping("/{id}")
     @ApiOperation(value = "", authorizations = {@Authorization(value = "JWT")})
-    public ResponseEntity<SuccessResponse<Tag>> findOneTag(@PathVariable Long id) {
+    public ResponseEntity<SuccessResponse<Tag>> findOneTag(@PathVariable String id) {
         Tag tag = tagService.findById(id)
                 .orElseThrow(() -> new TagNotFoundException(id));
         return new SuccessResponse<>("tag", tag).toOk();

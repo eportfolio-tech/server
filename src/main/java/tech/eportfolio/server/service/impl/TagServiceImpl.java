@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import tech.eportfolio.server.model.Tag;
-import tech.eportfolio.server.repository.jpa.TagRepository;
+import tech.eportfolio.server.repository.TagRepository;
 import tech.eportfolio.server.service.TagService;
 
 import javax.validation.constraints.NotEmpty;
@@ -24,7 +24,7 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
-    public Optional<Tag> findById(long id) {
+    public Optional<Tag> findById(String id) {
         return Optional.ofNullable(tagRepository.findByIdAndDeleted(id, false));
     }
 
@@ -72,7 +72,7 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
-    public List<Tag> findByIdIn(List<Long> ids) {
+    public List<Tag> findByIdIn(List<String> ids) {
         return tagRepository.findByIdInAndDeleted(ids, false);
     }
 

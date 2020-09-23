@@ -1,26 +1,22 @@
 package tech.eportfolio.server.model;
 
 import lombok.Data;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.mongodb.core.mapping.Document;
 import tech.eportfolio.server.common.constant.Role;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Id;
 import java.io.Serializable;
 import java.util.Date;
 
 @Data
-@Entity
-@Table(name = "user",
-        indexes = {
-                @Index(columnList = "username", name = "username_index"),
-                @Index(columnList = "email", name = "email_index")
-        })
+@Document
 public class User implements Serializable {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(nullable = false, updatable = false)
-    private Long id;
+    private String id;
     private String firstName;
     private String lastName;
     @Column(nullable = false, unique = true)
@@ -37,13 +33,12 @@ public class User implements Serializable {
     private boolean locked = false;
     private boolean enabled = true;
 
-    @CreationTimestamp
+    @CreatedDate
     private Date createdDate;
 
-    @UpdateTimestamp
+    @LastModifiedDate
     private Date updatedDate;
 
-    @Column
     private String blobUUID;
 
 

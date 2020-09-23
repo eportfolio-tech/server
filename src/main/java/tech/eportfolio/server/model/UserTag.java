@@ -1,30 +1,25 @@
 package tech.eportfolio.server.model;
 
 import lombok.Data;
+import org.springframework.data.mongodb.core.mapping.Document;
 
-import javax.persistence.*;
+import javax.persistence.Id;
 import javax.validation.constraints.NotNull;
 
 @Data
-@Entity
-@Table(name = "user_tag",
-        indexes = {
-                @Index(columnList = "username", name = "username_index"),
-                @Index(columnList = "tagId", name = "tagId_index")
-        })
+@Document
 public class UserTag {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    private String id;
 
     @NotNull
     private String username;
 
     @NotNull
-    private Long userId;
+    private String userId;
 
     @NotNull
-    private Long tagId;
+    private String tagId;
 
     private boolean deleted = false;
 }

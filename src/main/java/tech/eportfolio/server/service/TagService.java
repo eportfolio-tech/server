@@ -8,11 +8,11 @@ import java.util.List;
 import java.util.Optional;
 
 public interface TagService {
-    Optional<Tag> findById(long id);
+    Optional<Tag> findById(String id);
 
     List<Tag> findAll();
 
-    List<Tag> findByIdIn(List<Long> ids);
+    List<Tag> findByIdIn(List<String> ids);
 
     List<Tag> findByNameIn(List<String> name);
 

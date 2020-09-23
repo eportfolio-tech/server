@@ -1,12 +1,12 @@
 package tech.eportfolio.server.common.exception.handler;
 
-import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.util.CollectionUtils;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
@@ -27,7 +27,14 @@ import java.util.Set;
 
 @RestControllerAdvice
 @Order()
-public class CatchAllExceptionHandler extends ResponseEntityExceptionHandler {
+public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
+
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<FailResponse> handleAccessDeniedException(AccessDeniedException ex, WebRequest request) {
+        logger.error(ex);
+        return new FailResponse("authorization", ex.getMessage()).toForbidden();
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> exception(Exception ex) {
         return new ErrorResponse(ex.getMessage()).toInternalError();
@@ -36,9 +43,8 @@ public class CatchAllExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(ConstraintViolationException.class)
     public ResponseEntity<FailResponse> exception(ConstraintViolationException ex) {
         Map<String, String> errors = new HashMap<>();
-        ex.getConstraintViolations().forEach(e -> {
-            errors.put(e.getPropertyPath().toString(), e.getMessage());
-        });
+        ex.getConstraintViolations().forEach(e -> errors.put(e.getPropertyPath().toString(), e.getMessage())
+        );
         FailResponse response = new FailResponse();
         response.setData(errors);
         return response.toBadRequest();

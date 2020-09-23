@@ -3,14 +3,15 @@ package tech.eportfolio.server;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import net.andreinc.mockneat.MockNeat;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.jdbc.EmbeddedDatabaseConnection;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.boot.test.autoconfigure.data.mongo.AutoConfigureDataMongo;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -31,8 +32,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @RunWith(SpringRunner.class)
 @ActiveProfiles("test")
 @AutoConfigureMockMvc
+@AutoConfigureDataMongo
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
-@AutoConfigureTestDatabase(connection = EmbeddedDatabaseConnection.H2)
 public class AuthenticationControllerTest {
 
     @Autowired
@@ -44,6 +45,9 @@ public class AuthenticationControllerTest {
     private User existingUser;
 
     private UserDTO userDTO;
+
+    @Autowired
+    private MongoTemplate mongoTemplate;
 
     @Before
     public void init() {
@@ -169,5 +173,10 @@ public class AuthenticationControllerTest {
                 .andExpect(status().is(HttpStatus.CONFLICT.value()))
                 .andExpect(jsonPath("$.status").value("fail"))
                 .andReturn();
+    }
+
+    @After
+    public void afterClass() {
+        mongoTemplate.getDb().drop();
     }
 }

@@ -1,13 +1,14 @@
 package tech.eportfolio.server;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.jdbc.EmbeddedDatabaseConnection;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.boot.test.autoconfigure.data.mongo.AutoConfigureDataMongo;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -34,7 +35,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ActiveProfiles("test")
 @AutoConfigureMockMvc
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
-@AutoConfigureTestDatabase(connection = EmbeddedDatabaseConnection.H2)
+@AutoConfigureDataMongo
 public class UserLikeControllerTest {
 
     @Autowired
@@ -56,6 +57,9 @@ public class UserLikeControllerTest {
     private PortfolioDTO testPortfolioDTO;
 
     private Portfolio testPortfolio;
+
+    @Autowired
+    MongoTemplate mongoTemplate;
 
     @Before
     public void init() {
@@ -91,6 +95,11 @@ public class UserLikeControllerTest {
         ).andDo(print())
                 .andExpect(status().isInternalServerError())
                 .andExpect(jsonPath("$.status").value("error"));
+    }
+
+    @After
+    public void afterClass() {
+        mongoTemplate.getDb().drop();
     }
 
 }

@@ -21,7 +21,7 @@ import tech.eportfolio.server.common.utility.AvatarGenerator;
 import tech.eportfolio.server.dto.UserDTO;
 import tech.eportfolio.server.model.User;
 import tech.eportfolio.server.model.UserPrincipal;
-import tech.eportfolio.server.repository.jpa.UserRepository;
+import tech.eportfolio.server.repository.UserRepository;
 import tech.eportfolio.server.service.AzureStorageService;
 import tech.eportfolio.server.service.UserService;
 
@@ -130,16 +130,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public Optional<User> findById(long id) {
-        return Optional.ofNullable(userRepository.findById(id));
-    }
-
-    @Override
-    public List<User> findAll() {
-        return (List<User>) userRepository.findAll();
-    }
-
-    @Override
     public Optional<User> findByEmail(String email) {
         return Optional.ofNullable(userRepository.findByEmailAndDeleted(email, false));
     }
@@ -175,7 +165,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public List<User> saveAll(List<User> users) {
-        return (List<User>) userRepository.saveAll(users);
+        return userRepository.saveAll(users);
     }
 
 

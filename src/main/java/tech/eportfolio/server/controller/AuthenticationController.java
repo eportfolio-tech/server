@@ -3,6 +3,7 @@ package tech.eportfolio.server.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.web.bind.annotation.*;
@@ -69,9 +70,9 @@ public class AuthenticationController extends AuthenticationExceptionHandler {
         return new SuccessResponse<>("user", loginUser).toOk(jwtHeader);
     }
 
-    @DeleteMapping("/ 大哥大嫂过年好")
-    public ResponseEntity<SuccessResponse<String>> happyNewYear() {
-        return new SuccessResponse<>("price", "大锤80小锤40").toOk();
+    @GetMapping("/quick-test")
+    public ResponseEntity<SuccessResponse<String>> quickTest() {
+        throw new AccessDeniedException("");
     }
 
     @GetMapping("/loginAsTest")
