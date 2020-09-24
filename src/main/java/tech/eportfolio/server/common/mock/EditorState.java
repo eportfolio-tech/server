@@ -1,4 +1,4 @@
-package tech.eportfolio.server.model;
+package tech.eportfolio.server.common.mock;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
