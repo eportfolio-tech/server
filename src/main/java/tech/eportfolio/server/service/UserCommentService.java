@@ -13,7 +13,7 @@ public interface UserCommentService {
 
     void uncomment(User user, String id);
 
-    void deleteComment(Portfolio portfolio, String id);
+//    void deleteComment(Portfolio portfolio, String id);
 
 //    Optional<UserComment> findByUsernameAndPortfolioId(String username, String portfolioId);
 

@@ -1,9 +1,8 @@
 package tech.eportfolio.server.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
-import tech.eportfolio.server.common.exception.UserDidNotBeCommentedException;
-import tech.eportfolio.server.common.exception.UserDidNotCommentException;
 import tech.eportfolio.server.model.Portfolio;
 import tech.eportfolio.server.model.User;
 import tech.eportfolio.server.model.UserComment;
@@ -52,16 +51,19 @@ public class UserCommentServiceImpl implements UserCommentService {
     @Override
     public void uncomment(User user, String id) {
         UserComment userComment = this.findByUsernameAndId(user.getUsername(), id)
-                .orElseThrow(() -> new UserDidNotCommentException(user.getUsername(), id));
-        userCommentRepository.delete(userComment);
+                .orElseThrow(() -> new AccessDeniedException("user comment is not found"));
+        if (userComment.isDeleted()) {
+            throw new AccessDeniedException("user comment is not found");
+        }
+        this.delete(userComment);
     }
 
-    @Override
-    public void deleteComment(Portfolio portfolio, String id) {
-        UserComment userComment = this.findByPortfolioIdAndId(portfolio.getId(), id)
-                .orElseThrow(() -> new UserDidNotBeCommentedException(portfolio.getUsername(), id));
-        userCommentRepository.delete(userComment);
-    }
+//    @Override
+//    public void deleteComment(Portfolio portfolio, String id) {
+//        UserComment userComment = this.findByPortfolioIdAndId(portfolio.getId(), id)
+//                .orElseThrow(() -> new UserDidNotBeCommentedException(portfolio.getUsername(), id));
+//        userCommentRepository.delete(userComment);
+//    }
 
     @Override
     public Optional<UserComment> findByUsernameAndId(String username, String id) {
@@ -74,9 +76,9 @@ public class UserCommentServiceImpl implements UserCommentService {
     }
 
     @Override
-    public UserComment delete(UserComment userLike) {
-        userLike.setDeleted(true);
-        userCommentRepository.save(userLike);
-        return userLike;
+    public UserComment delete(UserComment userComment) {
+        userComment.setDeleted(true);
+        userCommentRepository.save(userComment);
+        return userComment;
     }
 }

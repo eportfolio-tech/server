@@ -35,15 +35,15 @@ public class UserCommentController {
         this.userCommentService = userCommentService;
     }
 
-    @GetMapping("/comment-made")
-    @ApiOperation(value = "", authorizations = {@Authorization(value = "JWT")})
-    public ResponseEntity<SuccessResponse<List<UserComment>>> findAllCommentsMade() {
-        String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        List<UserComment> userComments = userCommentService.findAllCommentsMade(username);
-        return new SuccessResponse<>("user_comment", userComments).toOk();
-    }
+//    @GetMapping("/comment-made")
+//    @ApiOperation(value = "", authorizations = {@Authorization(value = "JWT")})
+//    public ResponseEntity<SuccessResponse<List<UserComment>>> findAllCommentsMade() {
+//        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+//        List<UserComment> userComments = userCommentService.findAllCommentsMade(username);
+//        return new SuccessResponse<>("user_comment", userComments).toOk();
+//    }
 
-    @GetMapping("/comment-received")
+    @GetMapping("/comments")
     @ApiOperation(value = "", authorizations = {@Authorization(value = "JWT")})
     public ResponseEntity<SuccessResponse<List<UserComment>>> findWhoCommentedThisPortfolio(@PathVariable String ownerUsername) {
         Portfolio portfolio = portfolioService.findByUsername(ownerUsername).orElseThrow(() -> new PortfolioNotFoundException(ownerUsername));
@@ -51,19 +51,19 @@ public class UserCommentController {
         return new SuccessResponse<>("user_comment", userComments).toOk();
     }
 
-    @PostMapping("/comment")
+    @PostMapping("/comments")
     @ApiOperation(value = "", authorizations = {@Authorization(value = "JWT")})
-    public ResponseEntity<SuccessResponse<Object>> commentPortfolio(@PathVariable String ownerUsername, @RequestParam String comment) {
+    public ResponseEntity<SuccessResponse<UserComment>> commentPortfolio(@PathVariable String ownerUsername, @RequestParam String comment) {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = userService.findByUsername(username).orElseThrow(() -> new UserNotFoundException(username));
         Portfolio portfolio = portfolioService.findByUsername(ownerUsername).orElseThrow(() -> new PortfolioNotFoundException(ownerUsername));
-        userCommentService.comment(user, portfolio, comment);
-        return new SuccessResponse<>().toOk();
+        UserComment userComment = userCommentService.comment(user, portfolio, comment);
+        return new SuccessResponse<>("user_comment", userComment).toOk();
     }
 
-    @DeleteMapping("/uncomment")
+    @DeleteMapping("/comments/{id}")
     @ApiOperation(value = "", authorizations = {@Authorization(value = "JWT")})
-    public ResponseEntity<SuccessResponse<Object>> uncommentPortfolio(@PathVariable String ownerUsername, @RequestParam String id) {
+    public ResponseEntity<SuccessResponse<Object>> uncommentPortfolio(@PathVariable String ownerUsername, @PathVariable String id) {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = userService.findByUsername(username).orElseThrow(() -> new UserNotFoundException(username));
         Portfolio portfolio = portfolioService.findByUsername(ownerUsername).orElseThrow(() -> new PortfolioNotFoundException(ownerUsername));
@@ -71,15 +71,15 @@ public class UserCommentController {
         return new SuccessResponse<>().toOk();
     }
 
-    @DeleteMapping("/delete-comment")
-    @ApiOperation(value = "", authorizations = {@Authorization(value = "JWT")})
-    public ResponseEntity<SuccessResponse<Object>> deleteCommentMadeByOthers(@PathVariable String ownerUsername, @RequestParam String id) {
-        String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        User user = userService.findByUsername(username).orElseThrow(() -> new UserNotFoundException(username));
-        Portfolio portfolio = portfolioService.findByUsername(ownerUsername).orElseThrow(() -> new PortfolioNotFoundException(ownerUsername));
-        userCommentService.deleteComment(portfolio, id);
-        return new SuccessResponse<>().toOk();
-    }
+//    @DeleteMapping("/delete-comment")
+//    @ApiOperation(value = "", authorizations = {@Authorization(value = "JWT")})
+//    public ResponseEntity<SuccessResponse<Object>> deleteCommentMadeByOthers(@PathVariable String ownerUsername, @RequestParam String id) {
+//        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+//        User user = userService.findByUsername(username).orElseThrow(() -> new UserNotFoundException(username));
+//        Portfolio portfolio = portfolioService.findByUsername(ownerUsername).orElseThrow(() -> new PortfolioNotFoundException(ownerUsername));
+//        userCommentService.deleteComment(portfolio, id);
+//        return new SuccessResponse<>().toOk();
+//    }
 
 
 }
