@@ -4,9 +4,9 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.Authorization;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+import tech.eportfolio.server.common.exception.CommentNotFoundException;
 import tech.eportfolio.server.common.exception.PortfolioNotFoundException;
 import tech.eportfolio.server.common.exception.UserNotFoundException;
 import tech.eportfolio.server.common.jsend.SuccessResponse;
@@ -61,7 +61,7 @@ public class UserCommentController {
         User user = userService.findByUsername(username).orElseThrow(() -> new UserNotFoundException(username));
         Portfolio portfolio = portfolioService.findByUsername(ownerUsername).orElseThrow(() -> new PortfolioNotFoundException(ownerUsername));
         UserComment userComment = userCommentService.findByUsernameAndIdAndDeleted(user.getUsername(), id, false)
-                .orElseThrow(() -> new AccessDeniedException("user comment is not found"));
+                .orElseThrow(() -> new CommentNotFoundException(username, portfolio.getId()));
         userCommentService.uncomment(userComment);
         return new SuccessResponse<>().toOk();
     }

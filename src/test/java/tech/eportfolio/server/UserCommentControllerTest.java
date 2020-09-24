@@ -80,7 +80,7 @@ public class UserCommentControllerTest {
                 .param("ownerUsername", "test")
                 .param("id", id)
         ).andDo(print())
-                .andExpect(status().isForbidden())
+                .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.status").value("fail"));
     }
 
@@ -96,7 +96,7 @@ public class UserCommentControllerTest {
                 .param("ownerUsername", "test")
                 .param("id", userComment.getId())
         ).andDo(print())
-                .andExpect(status().isForbidden())
+                .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.status").value("fail"));
     }
 
@@ -111,7 +111,7 @@ public class UserCommentControllerTest {
                 .param("ownerUsername", "test")
                 .param("id", userComment.getId())
         ).andDo(print())
-                .andExpect(status().isForbidden())
+                .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.status").value("fail"));
     }
 
