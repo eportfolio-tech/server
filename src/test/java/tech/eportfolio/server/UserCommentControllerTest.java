@@ -72,7 +72,7 @@ public class UserCommentControllerTest {
 
     @Test
     @WithMockUser(username = "test")
-    public void ifUserTryToDeleteANotExistCommentThenReturn403() throws Exception {
+    public void ifUserTryToDeleteANotExistCommentThenReturn404() throws Exception {
         String id = RandomStringUtils.randomAlphabetic(8);
 
         this.mockMvc.perform(delete("/portfolios/test/comments/" + id)
@@ -86,7 +86,7 @@ public class UserCommentControllerTest {
 
     @Test
     @WithMockUser(username = "test")
-    public void ifUserTryToDeleteADeletedCommentThenReturn403() throws Exception {
+    public void ifUserTryToDeleteADeletedCommentThenReturn404() throws Exception {
         String comment = RandomStringUtils.randomAlphabetic(8);
         UserComment userComment = userCommentService.comment(testUser, testPortfolio, comment);
         userCommentService.uncomment(userComment);
@@ -102,7 +102,7 @@ public class UserCommentControllerTest {
 
     @Test
     @WithMockUser(username = "test")
-    public void ifUserTryToDeleteCommentOfOtherUserThenReturn403() throws Exception {
+    public void ifUserTryToDeleteCommentOfOtherUserThenReturn404() throws Exception {
         String comment = RandomStringUtils.randomAlphabetic(8);
         UserComment userComment = userCommentService.comment(secondUser, testPortfolio, comment);
 
