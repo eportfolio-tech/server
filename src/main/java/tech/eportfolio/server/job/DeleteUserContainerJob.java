@@ -1,4 +1,4 @@
-package tech.eportfolio.server.common.job;
+package tech.eportfolio.server.job;
 
 import com.microsoft.azure.storage.StorageException;
 import org.joda.time.LocalDate;

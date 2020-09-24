@@ -84,7 +84,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public User register(User user) {
+    public User register(User user, boolean createAvatar) {
         Optional<User> emailResult = findByEmail(user.getEmail());
         if (emailResult.isPresent()) {
             throw new EmailExistException(user.getEmail());
@@ -102,7 +102,9 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         user.setRoles(Role.ROLE_UNVERIFIED_USER.name());
         user.setAuthorities(Role.ROLE_UNVERIFIED_USER.getAuthorities());
         user.setBlobUUID(UUID.randomUUID().toString());
-        user.setAvatarUrl(createGithubAvatar(user));
+        if (createAvatar) {
+            user.setAvatarUrl(createGithubAvatar(user));
+        }
         return userRepository.save(user);
     }
 

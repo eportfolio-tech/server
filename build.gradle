@@ -68,8 +68,8 @@ dependencies {
     implementation 'commons-io:commons-io:20030203.000550'
     implementation 'com.google.guava:guava:29.0-jre'
     implementation 'com.talanlabs:avatar-generator:1.1.0'
-//    implementation 'de.flapdoodle.embed:de.flapdoodle.embed.mongo:2.2.0'
     implementation 'com.h2database:h2:1.4.200'
+    implementation 'com.github.javafaker:javafaker:1.0.2'
 }
 
 dependencyManagement {

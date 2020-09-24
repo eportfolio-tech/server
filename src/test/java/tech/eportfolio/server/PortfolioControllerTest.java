@@ -88,11 +88,11 @@ public class PortfolioControllerTest {
         userDTO.setUsername("test");
 
         // Verify testUser
-        testUser = userService.register(userService.fromUserDTO(userDTO));
+        testUser = userService.register(userService.fromUserDTO(userDTO), false);
         testUser = verificationService.verify(testUser);
 
-        secondUser = userService.register(userService.fromUserDTO(UserDTO.mock()));
-        thirdUser = userService.register(userService.fromUserDTO(UserDTO.mock()));
+        secondUser = userService.register(userService.fromUserDTO(UserDTO.mock()), false);
+        thirdUser = userService.register(userService.fromUserDTO(UserDTO.mock()), false);
 
         portfolioDTO = PortfolioDTO.mock();
         testPortfolio = portfolioService.create(testUser, portfolioService.fromPortfolioDTO(portfolioDTO));
