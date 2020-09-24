@@ -61,8 +61,8 @@ public class UserCommentControllerTest {
         testUserDTO = UserDTO.mock();
         testUserDTO.setUsername("test");
 
-        testUser = userService.register(userService.fromUserDTO(testUserDTO));
-        secondUser = userService.register(userService.fromUserDTO(UserDTO.mock()));
+        testUser = userService.register(userService.fromUserDTO(testUserDTO), false);
+        secondUser = userService.register(userService.fromUserDTO(UserDTO.mock()), false);
 
         testPortfolioDTO = PortfolioDTO.mock();
         testPortfolio = portfolioService.create(testUser, portfolioService.fromPortfolioDTO(testPortfolioDTO));
