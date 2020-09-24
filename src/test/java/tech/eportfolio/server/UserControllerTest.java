@@ -55,7 +55,7 @@ public class UserControllerTest {
     public void init() {
         testUserDTO = UserDTO.mock();
         testUserDTO.setUsername("test");
-        testUser = userService.register(userService.fromUserDTO(testUserDTO));
+        testUser = userService.register(userService.fromUserDTO(testUserDTO), false);
     }
 
     @Test

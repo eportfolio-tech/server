@@ -1,5 +1,6 @@
 package tech.eportfolio.server.controller;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mongodb.DBObject;
@@ -20,7 +21,6 @@ import tech.eportfolio.server.common.exception.PortfolioExistException;
 import tech.eportfolio.server.common.exception.PortfolioNotFoundException;
 import tech.eportfolio.server.common.exception.UserNotFoundException;
 import tech.eportfolio.server.common.jsend.SuccessResponse;
-import tech.eportfolio.server.common.utility.JSONUtil;
 import tech.eportfolio.server.common.utility.NullAwareBeanUtilsBean;
 import tech.eportfolio.server.dto.PortfolioDTO;
 import tech.eportfolio.server.model.Portfolio;
@@ -30,6 +30,7 @@ import tech.eportfolio.server.service.UserService;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -69,10 +70,16 @@ public class PortfolioController {
 
     // Find portfolio by username
     @GetMapping("/{username}")
-    @ApiOperation(value = "", authorizations = {@Authorization(value = "JWT")})
-    public ResponseEntity<SuccessResponse<Portfolio>> findByUsername(@PathVariable String username) {
+//    @ApiOperation(value = "", authorizations = {@Authorization(value = "JWT")})
+    public ResponseEntity<SuccessResponse<Map<String, Object>>> findByUsername(@PathVariable String username) {
         Portfolio result = portfolioService.findByUsername(username).orElseThrow(() -> new PortfolioNotFoundException(username));
-        return new SuccessResponse<>(PORTFOLIO, result).toOk();
+        User user = userService.findByUsername(result.getUsername()).orElseThrow(() -> new UserNotFoundException(username));
+        @SuppressWarnings("unchecked")
+        Map<String, Object> map = objectMapper.convertValue(result, Map.class);
+        map.put("firstName", user.getFirstName());
+        map.put("lastName", user.getLastName());
+        map.put("avatarUrl", user.getAvatarUrl());
+        return new SuccessResponse<>(PORTFOLIO, map).toOk();
     }
 
     @PatchMapping("/{username}")
@@ -96,8 +103,14 @@ public class PortfolioController {
     @PutMapping("/{username}/content")
     @ApiOperation(value = "", authorizations = {@Authorization(value = "JWT")})
     public ResponseEntity<SuccessResponse<DBObject>> uploadContent(@PathVariable String username, @RequestBody JsonNode jsonPayload) {
-        Portfolio result = portfolioService.findByUsername(username).orElseThrow(() -> new UserNotFoundException(username));
-        portfolioService.updateContent(result, JSONUtil.convertJsonNodeToDbObject(jsonPayload));
+        Portfolio result = portfolioService.findByUsername(username).orElseThrow(() -> new PortfolioNotFoundException(username));
+
+        ObjectMapper mapper = new ObjectMapper();
+        TypeReference<HashMap<String, Object>> typeRef = new TypeReference<>() {
+        };
+        HashMap<String, Object> map = mapper.convertValue(jsonPayload, typeRef);
+
+        portfolioService.updateContent(result, map);
         return new SuccessResponse<>(CONTENT, result.getContent()).toOk();
     }
 

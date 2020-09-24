@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface UserService {
-    User register(User user);
+    User register(User user, boolean createAvatar);
 
     Optional<User> findByEmail(String email);
 

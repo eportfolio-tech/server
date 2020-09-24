@@ -1,11 +1,13 @@
 package tech.eportfolio.server.controller;
 
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.Authorization;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import tech.eportfolio.server.common.constant.SecurityConstant;
 import tech.eportfolio.server.common.constraint.ValidPassword;
@@ -13,6 +15,7 @@ import tech.eportfolio.server.common.exception.EmailNotFoundException;
 import tech.eportfolio.server.common.exception.UserNotFoundException;
 import tech.eportfolio.server.common.exception.handler.AuthenticationExceptionHandler;
 import tech.eportfolio.server.common.jsend.SuccessResponse;
+import tech.eportfolio.server.common.mock.EditorState;
 import tech.eportfolio.server.common.utility.JWTTokenProvider;
 import tech.eportfolio.server.dto.LoginRequestBody;
 import tech.eportfolio.server.dto.UserDTO;
@@ -53,7 +56,7 @@ public class AuthenticationController extends AuthenticationExceptionHandler {
 
     @PostMapping("/signup")
     public ResponseEntity<SuccessResponse<User>> signUp(@RequestBody @Valid UserDTO userDTO) {
-        User user = userService.register(userService.fromUserDTO(userDTO));
+        User user = userService.register(userService.fromUserDTO(userDTO), true);
         UserPrincipal userPrincipal = new UserPrincipal(user);
         HttpHeaders jwtHeader = getJwtHeader(userPrincipal);
         verificationService.sendVerificationEmail(user);
@@ -70,9 +73,19 @@ public class AuthenticationController extends AuthenticationExceptionHandler {
         return new SuccessResponse<>("user", loginUser).toOk(jwtHeader);
     }
 
+    @PostMapping("/renew")
+    @ApiOperation(value = "", authorizations = {@Authorization(value = "JWT")})
+    public ResponseEntity<SuccessResponse<String>> renewToken() {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        User loginUser = userService.findByUsername(username).orElseThrow(() -> new UserNotFoundException(username) {
+        });
+        UserPrincipal userPrincipal = new UserPrincipal(loginUser);
+        return new SuccessResponse<>("token", jwtTokenProvider.generateJWTToken(userPrincipal, SecurityConstant.AUTHENTICATION_SECRET)).toOk();
+    }
+
     @GetMapping("/quick-test")
-    public ResponseEntity<SuccessResponse<String>> quickTest() {
-        throw new AccessDeniedException("");
+    public ResponseEntity<SuccessResponse<EditorState>> quickTest() {
+        return new SuccessResponse<>("json", EditorState.generateState()).toOk();
     }
 
     @GetMapping("/loginAsTest")
@@ -88,7 +101,7 @@ public class AuthenticationController extends AuthenticationExceptionHandler {
             test.setLastName("man");
             test.setPhone("(03)90355511");
             test.setTitle("Mr.");
-            user = userService.register(test);
+            user = userService.register(test, false);
         } else {
             user = loginUser.get();
         }

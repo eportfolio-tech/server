@@ -16,4 +16,6 @@ public interface UserRepository extends MongoRepository<User, String> {
     User findByEmailAndDeleted(String email, boolean deleted);
 
     List<User> findByDeletedAndUpdatedDateBeforeAndBlobUUIDIsNotNull(boolean deleted, Date updateDate);
+
+    int countAllByDeleted(boolean deleted);
 }

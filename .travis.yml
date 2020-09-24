@@ -12,11 +12,10 @@ before_install:
 # Run Azurite emulator in background for testing
 before_script:
   - docker run -d -p 10000:10000 mcr.microsoft.com/azure-storage/azurite azurite-blob --blobHost 0.0.0.0 --blobPort 10000
-
+  - docker run -d -p 27017:27017 mongo
 script:
   - ./gradlew build
   - ./gradlew sonarqube -Dsonar.projectKey=$SONARCUBE_PROJECT_KEY -Dsonar.host.url=https://sonarqube.eportfolio.tech -Dsonar.login=$SONARCUBE_LOGIN_TOKEN
-
 
 after_success:
   - docker login https://docker.pkg.github.com -u haswf -p $DOCKER_TOKEN
