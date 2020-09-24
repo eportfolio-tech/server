@@ -69,10 +69,16 @@ public class PortfolioController {
 
     // Find portfolio by username
     @GetMapping("/{username}")
-    @ApiOperation(value = "", authorizations = {@Authorization(value = "JWT")})
-    public ResponseEntity<SuccessResponse<Portfolio>> findByUsername(@PathVariable String username) {
+//    @ApiOperation(value = "", authorizations = {@Authorization(value = "JWT")})
+    public ResponseEntity<SuccessResponse<Map<String, Object>>> findByUsername(@PathVariable String username) {
         Portfolio result = portfolioService.findByUsername(username).orElseThrow(() -> new PortfolioNotFoundException(username));
-        return new SuccessResponse<>(PORTFOLIO, result).toOk();
+        User user = userService.findByUsername(result.getUsername()).orElseThrow(() -> new UserNotFoundException(username));
+        @SuppressWarnings("unchecked")
+        Map<String, Object> map = objectMapper.convertValue(result, Map.class);
+        map.put("firstName", user.getFirstName());
+        map.put("lastName", user.getLastName());
+        map.put("avatarUrl", user.getAvatarUrl());
+        return new SuccessResponse<>(PORTFOLIO, map).toOk();
     }
 
     @PatchMapping("/{username}")
