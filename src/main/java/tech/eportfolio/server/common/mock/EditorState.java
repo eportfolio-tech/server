@@ -37,9 +37,9 @@ class Block {
     @JsonProperty("depth")
     public int depth;
     @JsonProperty("inlineStyleRanges")
-    public List<InlineStyleRange> inlineStyleRanges = null;
+    public List<InlineStyleRange> inlineStyleRanges;
     @JsonProperty("entityRanges")
-    public List<Object> entityRanges = null;
+    public List<Object> entityRanges;
     @JsonProperty("data")
     public Object data;
 
