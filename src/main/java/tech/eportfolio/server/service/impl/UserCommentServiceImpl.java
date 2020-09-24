@@ -1,7 +1,6 @@
 package tech.eportfolio.server.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import tech.eportfolio.server.model.Portfolio;
 import tech.eportfolio.server.model.User;
@@ -22,17 +21,6 @@ public class UserCommentServiceImpl implements UserCommentService {
         this.userCommentRepository = userCommentRepository;
     }
 
-
-    @Override
-    public List<UserComment> findByUser(User user) {
-        return userCommentRepository.findByUsernameAndDeleted(user.getUsername(), false);
-    }
-
-    @Override
-    public List<UserComment> findAllCommentsMade(String username) {
-        return userCommentRepository.findByUsername(username);
-    }
-
     @Override
     public List<UserComment> findByPortfolio(Portfolio portfolio) {
         return userCommentRepository.findByPortfolioId(portfolio.getId());
@@ -49,36 +37,14 @@ public class UserCommentServiceImpl implements UserCommentService {
     }
 
     @Override
-    public void uncomment(User user, String id) {
-        UserComment userComment = this.findByUsernameAndId(user.getUsername(), id)
-                .orElseThrow(() -> new AccessDeniedException("user comment is not found"));
-        if (userComment.isDeleted()) {
-            throw new AccessDeniedException("user comment is not found");
-        }
-        this.delete(userComment);
-    }
-
-//    @Override
-//    public void deleteComment(Portfolio portfolio, String id) {
-//        UserComment userComment = this.findByPortfolioIdAndId(portfolio.getId(), id)
-//                .orElseThrow(() -> new UserDidNotBeCommentedException(portfolio.getUsername(), id));
-//        userCommentRepository.delete(userComment);
-//    }
-
-    @Override
-    public Optional<UserComment> findByUsernameAndId(String username, String id) {
-        return Optional.ofNullable(userCommentRepository.findByUsernameAndId(username, id));
-    }
-
-    @Override
-    public Optional<UserComment> findByPortfolioIdAndId(String portfolioId, String id) {
-        return Optional.ofNullable(userCommentRepository.findByPortfolioIdAndId(portfolioId, id));
-    }
-
-    @Override
-    public UserComment delete(UserComment userComment) {
+    public UserComment uncomment(UserComment userComment) {
         userComment.setDeleted(true);
-        userCommentRepository.save(userComment);
-        return userComment;
+        return userCommentRepository.save(userComment);
     }
+
+    @Override
+    public Optional<UserComment> findByUsernameAndIdAndDeleted(String username, String id, boolean deleted) {
+        return Optional.ofNullable(userCommentRepository.findByUsernameAndIdAndDeleted(username, id, deleted));
+    }
+
 }

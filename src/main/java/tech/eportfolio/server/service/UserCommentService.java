@@ -11,21 +11,9 @@ public interface UserCommentService {
 
     UserComment comment(User user, Portfolio portfolio, String comment);
 
-    void uncomment(User user, String id);
+    UserComment uncomment(UserComment userComment);
 
-//    void deleteComment(Portfolio portfolio, String id);
-
-//    Optional<UserComment> findByUsernameAndPortfolioId(String username, String portfolioId);
-
-    UserComment delete(UserComment userLike);
-
-    Optional<UserComment> findByUsernameAndId(String username, String id);
-
-    Optional<UserComment> findByPortfolioIdAndId(String portfolioId, String id);
-
-    List<UserComment> findByUser(User user);
-
-    List<UserComment> findAllCommentsMade(String username);
+    Optional<UserComment> findByUsernameAndIdAndDeleted(String username, String id, boolean deleted);
 
     List<UserComment> findByPortfolio(Portfolio portfolio);
 }

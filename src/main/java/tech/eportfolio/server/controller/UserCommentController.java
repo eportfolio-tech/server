@@ -4,6 +4,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.Authorization;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import tech.eportfolio.server.common.exception.PortfolioNotFoundException;
@@ -35,20 +36,12 @@ public class UserCommentController {
         this.userCommentService = userCommentService;
     }
 
-//    @GetMapping("/comment-made")
-//    @ApiOperation(value = "", authorizations = {@Authorization(value = "JWT")})
-//    public ResponseEntity<SuccessResponse<List<UserComment>>> findAllCommentsMade() {
-//        String username = SecurityContextHolder.getContext().getAuthentication().getName();
-//        List<UserComment> userComments = userCommentService.findAllCommentsMade(username);
-//        return new SuccessResponse<>("user_comment", userComments).toOk();
-//    }
-
     @GetMapping("/comments")
     @ApiOperation(value = "", authorizations = {@Authorization(value = "JWT")})
     public ResponseEntity<SuccessResponse<List<UserComment>>> findWhoCommentedThisPortfolio(@PathVariable String ownerUsername) {
         Portfolio portfolio = portfolioService.findByUsername(ownerUsername).orElseThrow(() -> new PortfolioNotFoundException(ownerUsername));
         List<UserComment> userComments = userCommentService.findByPortfolio(portfolio);
-        return new SuccessResponse<>("user_comment", userComments).toOk();
+        return new SuccessResponse<>("user-comment", userComments).toOk();
     }
 
     @PostMapping("/comments")
@@ -58,7 +51,7 @@ public class UserCommentController {
         User user = userService.findByUsername(username).orElseThrow(() -> new UserNotFoundException(username));
         Portfolio portfolio = portfolioService.findByUsername(ownerUsername).orElseThrow(() -> new PortfolioNotFoundException(ownerUsername));
         UserComment userComment = userCommentService.comment(user, portfolio, comment);
-        return new SuccessResponse<>("user_comment", userComment).toOk();
+        return new SuccessResponse<>("user-comment", userComment).toOk();
     }
 
     @DeleteMapping("/comments/{id}")
@@ -67,19 +60,10 @@ public class UserCommentController {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = userService.findByUsername(username).orElseThrow(() -> new UserNotFoundException(username));
         Portfolio portfolio = portfolioService.findByUsername(ownerUsername).orElseThrow(() -> new PortfolioNotFoundException(ownerUsername));
-        userCommentService.uncomment(user, id);
+        UserComment userComment = userCommentService.findByUsernameAndIdAndDeleted(user.getUsername(), id, false)
+                .orElseThrow(() -> new AccessDeniedException("user comment is not found"));
+        userCommentService.uncomment(userComment);
         return new SuccessResponse<>().toOk();
     }
-
-//    @DeleteMapping("/delete-comment")
-//    @ApiOperation(value = "", authorizations = {@Authorization(value = "JWT")})
-//    public ResponseEntity<SuccessResponse<Object>> deleteCommentMadeByOthers(@PathVariable String ownerUsername, @RequestParam String id) {
-//        String username = SecurityContextHolder.getContext().getAuthentication().getName();
-//        User user = userService.findByUsername(username).orElseThrow(() -> new UserNotFoundException(username));
-//        Portfolio portfolio = portfolioService.findByUsername(ownerUsername).orElseThrow(() -> new PortfolioNotFoundException(ownerUsername));
-//        userCommentService.deleteComment(portfolio, id);
-//        return new SuccessResponse<>().toOk();
-//    }
-
 
 }

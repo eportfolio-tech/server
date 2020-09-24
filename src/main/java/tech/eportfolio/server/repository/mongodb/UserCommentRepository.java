@@ -9,9 +9,7 @@ import java.util.List;
 @Repository
 public interface UserCommentRepository extends MongoRepository<UserComment, String> {
 
-    UserComment findByUsernameAndId(String username, String id);
-
-    UserComment findByPortfolioIdAndId(String portfolioId, String id);
+    UserComment findByUsernameAndIdAndDeleted(String username, String id, boolean deleted);
 
     List<UserComment> findByUsernameAndDeleted(String username, boolean deleted);
 

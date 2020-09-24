@@ -89,7 +89,7 @@ public class UserCommentControllerTest {
     public void ifUserTryToDeleteADeletedCommentThenReturn403() throws Exception {
         String comment = RandomStringUtils.randomAlphabetic(8);
         UserComment userComment = userCommentService.comment(testUser, testPortfolio, comment);
-        userCommentService.uncomment(testUser, userComment.getId());
+        userCommentService.uncomment(userComment);
 
         this.mockMvc.perform(delete("/portfolios/test/comments/" + userComment.getId())
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
