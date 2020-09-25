@@ -5,7 +5,6 @@ import org.springframework.core.annotation.Order;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import tech.eportfolio.server.common.exception.CommentNotFoundException;
 import tech.eportfolio.server.common.exception.EmailExistException;
 import tech.eportfolio.server.common.exception.UserNotFoundException;
 import tech.eportfolio.server.common.exception.UsernameExistException;
@@ -27,11 +26,6 @@ public class UserExceptionHandler {
 
     @ExceptionHandler(UserNotFoundException.class)
     public ResponseEntity<FailResponse> handleException(UserNotFoundException ex) {
-        return new FailResponse(USER, ex.getMessage()).toNotFound();
-    }
-
-    @ExceptionHandler(CommentNotFoundException.class)
-    public ResponseEntity<FailResponse> handleException(CommentNotFoundException ex) {
         return new FailResponse(USER, ex.getMessage()).toNotFound();
     }
 }
