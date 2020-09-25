@@ -23,7 +23,7 @@ import java.util.List;
 @Component
 public class JWTAuthorizationFilter extends OncePerRequestFilter {
 
-    private final Logger LOGGER = LoggerFactory.getLogger(getClass());
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
     private final JWTTokenProvider jwtTokenProvider;
 
@@ -54,7 +54,7 @@ public class JWTAuthorizationFilter extends OncePerRequestFilter {
                 Authentication authentication = jwtTokenProvider.getAuthentication(username, authorityList, request);
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             } else {
-                LOGGER.error("JWT verification failed: {} {}", username, token);
+                logger.error("JWT verification failed: {} {}", username, token);
                 // otherwise clean up SecurityContext
                 SecurityContextHolder.clearContext();
             }

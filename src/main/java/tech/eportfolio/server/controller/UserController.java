@@ -2,12 +2,11 @@ package tech.eportfolio.server.controller;
 
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.Authorization;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import tech.eportfolio.server.common.exception.PasswordResetException;
 import tech.eportfolio.server.common.exception.UserNotFoundException;
 import tech.eportfolio.server.common.jsend.SuccessResponse;
 import tech.eportfolio.server.common.utility.NullAwareBeanUtilsBean;
@@ -28,7 +27,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/users")
 public class UserController {
-    private final Logger logger = LoggerFactory.getLogger(getClass());
 
     private final UserService userService;
 
@@ -87,10 +85,7 @@ public class UserController {
     public ResponseEntity<SuccessResponse<Object>> passwordReset(@PathVariable String username, @Valid @RequestBody PasswordResetRequestBody passwordResetRequestBody) {
         User user = userService.findByUsername(username).orElseThrow(() -> new UserNotFoundException(username));
         if (!userService.verifyPassword(user, passwordResetRequestBody.getOldPassword())) {
-            /*
-            TODO: create a new exception
-             */
-            throw new RuntimeException("Old password is incorrect");
+            throw new PasswordResetException(user.getUsername(), "Old password is incorrect");
         }
         userService.changePassword(user, passwordResetRequestBody.getNewPassword());
         return new SuccessResponse<>().toAccepted();

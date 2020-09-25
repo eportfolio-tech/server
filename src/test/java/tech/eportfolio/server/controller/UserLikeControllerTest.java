@@ -1,4 +1,4 @@
-package tech.eportfolio.server;
+package tech.eportfolio.server.controller;
 
 import org.junit.After;
 import org.junit.Before;

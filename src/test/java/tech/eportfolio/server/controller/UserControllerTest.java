@@ -1,4 +1,4 @@
-package tech.eportfolio.server;
+package tech.eportfolio.server.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import net.andreinc.mockneat.MockNeat;

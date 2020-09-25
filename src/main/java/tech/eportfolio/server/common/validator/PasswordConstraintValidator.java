@@ -1,6 +1,5 @@
 package tech.eportfolio.server.common.validator;
 
-import com.google.common.base.Joiner;
 import org.passay.*;
 import tech.eportfolio.server.common.constraint.ValidPassword;
 
@@ -33,7 +32,7 @@ public class PasswordConstraintValidator implements ConstraintValidator<ValidPas
         }
         context.disableDefaultConstraintViolation();
         context.buildConstraintViolationWithTemplate(
-                Joiner.on(",").join(validator.getMessages(result)))
+                String.join(",", validator.getMessages(result)))
                 .addConstraintViolation();
         return false;
     }

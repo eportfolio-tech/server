@@ -20,7 +20,7 @@ public class AzureStorageConfig {
     private Environment environment;
 
     @Bean
-    public CloudBlobClient cloudBlobClient() throws URISyntaxException, StorageException, InvalidKeyException {
+    public CloudBlobClient cloudBlobClient() throws URISyntaxException, InvalidKeyException {
         // Read ConnectionString from properties file and create a Azure Storage client
         CloudStorageAccount storageAccount = CloudStorageAccount.parse(Objects.requireNonNull(environment.getProperty("azure.storage.ConnectionString")));
         return storageAccount.createCloudBlobClient();

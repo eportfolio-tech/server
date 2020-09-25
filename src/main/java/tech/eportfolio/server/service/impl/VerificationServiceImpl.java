@@ -11,6 +11,7 @@ import tech.eportfolio.server.common.constant.Authority;
 import tech.eportfolio.server.common.constant.Role;
 import tech.eportfolio.server.common.constant.SecurityConstant;
 import tech.eportfolio.server.common.constant.VerificationConstant;
+import tech.eportfolio.server.common.exception.UserVerificationException;
 import tech.eportfolio.server.common.utility.JWTTokenProvider;
 import tech.eportfolio.server.model.User;
 import tech.eportfolio.server.model.UserPrincipal;
@@ -70,8 +71,7 @@ public class VerificationServiceImpl implements VerificationService {
     @Override
     public User verify(@NotNull User user, @NotEmpty String token) {
         if (StringUtils.equals(user.getRoles(), Role.ROLE_VERIFIED_USER.name())) {
-            // TODO: Create an UserVerificationException
-            throw new RuntimeException("User already verified");
+            throw new UserVerificationException("User already verified");
         }
         String secret = getVerificationSecret(user);
         JWTVerifier jwtVerifier = verificationTokenProvider.getJWTVerifier(secret);

@@ -1,4 +1,4 @@
-package tech.eportfolio.server;
+package tech.eportfolio.server.controller;
 
 import com.github.javafaker.Faker;
 import org.apache.commons.lang3.RandomStringUtils;

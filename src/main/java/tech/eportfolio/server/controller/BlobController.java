@@ -59,6 +59,7 @@ public class BlobController extends AuthenticationExceptionHandler {
     public ResponseEntity<SuccessResponse<String>> uploadBlob(@PathVariable @NotEmpty String username, @RequestParam MultipartFile multipartFile) {
         User user = userService.findByUsername(username).orElseThrow(() -> new UserNotFoundException(username));
         URI url = azureStorageService.uploadBlob(user.getBlobUUID(), multipartFile);
+        logger.debug("File {} uploaded to {}", multipartFile.getOriginalFilename(), url);
         return new SuccessResponse<>("URI", url.toString()).toOk();
     }
 

@@ -84,6 +84,7 @@ public class TemplateController {
         template.setUserId(user.getId());
         template.setHidden(false);
         template.setDeleted(false);
+        logger.debug("Template created" + template);
         return new SuccessResponse<>("template", templateService.save(template)).toCreated();
     }
 

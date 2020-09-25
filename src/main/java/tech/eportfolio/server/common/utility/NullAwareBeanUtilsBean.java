@@ -13,6 +13,8 @@ import java.util.Set;
  * See https://stackoverflow.com/questions/19737626/how-to-ignore-null-values-using-springframework-beanutils-copyproperties
  */
 public class NullAwareBeanUtilsBean {
+    private NullAwareBeanUtilsBean() {
+    }
 
     public static String[] getNullPropertyNames(Object source) {
         final BeanWrapper src = new BeanWrapperImpl(source);

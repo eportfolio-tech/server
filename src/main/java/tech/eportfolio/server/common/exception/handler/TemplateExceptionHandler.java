@@ -11,7 +11,7 @@ import tech.eportfolio.server.common.jsend.FailResponse;
 
 @RestControllerAdvice
 @Order(Ordered.HIGHEST_PRECEDENCE)
-public class TemplateException {
+public class TemplateExceptionHandler {
     @ExceptionHandler(TitleAlreadyExistException.class)
     public ResponseEntity<FailResponse> handleException(TitleAlreadyExistException ex) {
         return new FailResponse("title", ex.getMessage()).toConflict();

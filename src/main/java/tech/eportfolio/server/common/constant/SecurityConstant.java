@@ -23,7 +23,6 @@ public class SecurityConstant {
     // Swagger resources
     public static final String[] API_DOC = {"/swagger-ui.html", "/v2/api-docs", "/configuration/ui", "/swagger-resources/**", "/configuration/**", "/webjars/**", "/h2-console/**"};
 
-    // TODO: Move JWT secret to properties file
     public static final String AUTHENTICATION_SECRET = "This is a JWT secret";
     public static final String REFRESH_SECRET = "This is a refresh token secret";
 
@@ -36,7 +35,7 @@ public class SecurityConstant {
 
 
     private SecurityConstant() {
-        throw new IllegalStateException("SecurityConstant is an Utility class");
+
     }
 
 }

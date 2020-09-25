@@ -1,9 +1,16 @@
 package tech.eportfolio.server.common.constant;
 
+import org.springframework.web.util.UriComponentsBuilder;
+
 public class VerificationConstant {
+    public static final String PATH = UriComponentsBuilder.newInstance().path("verification").path("verify").toUriString();
+
     public static final String HOST = "dev.eportfolio.tech";
     public static final String SCHEME_HTTPS = "https";
-    public static final String PATH = "/verification/verify";
+
+    private VerificationConstant() {
+    }
+
     public static final String TOKEN = "token";
     public static final String USERNAME = "username";
     public static final String EMAIL_CONTENT = "\n" +

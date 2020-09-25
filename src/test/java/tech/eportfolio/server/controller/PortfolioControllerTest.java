@@ -1,4 +1,4 @@
-package tech.eportfolio.server;
+package tech.eportfolio.server.controller;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;

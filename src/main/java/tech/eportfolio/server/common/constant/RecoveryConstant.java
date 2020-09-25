@@ -1,9 +1,16 @@
 package tech.eportfolio.server.common.constant;
 
+import org.springframework.web.util.UriComponentsBuilder;
+
 public class RecoveryConstant {
+    public static final String PATH = UriComponentsBuilder.newInstance().path("authentication").path("password-recovery").toUriString();
+
     public static final String HOST = "dev.eportfolio.tech";
     public static final String SCHEME_HTTPS = "https";
-    public static final String PATH = "/authentication/password-recovery";
+
+    private RecoveryConstant() {
+    }
+
     public static final String TOKEN = "token";
     public static final String USERNAME = "username";
     public static final String EMAIL_CONTENT = "\n" +
@@ -26,4 +33,5 @@ public class RecoveryConstant {
             "Forth-Two E-Portfolio.";
 
     public static final String EMAIL_TITLE = "Forth-Two E-Portfolio Password Recovery";
+
 }
