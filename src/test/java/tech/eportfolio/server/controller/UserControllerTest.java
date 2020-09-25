@@ -60,11 +60,11 @@ public class UserControllerTest {
 
     @Test
     @WithAnonymousUser
-    public void ifNotLoginInThenGetUserShouldReturn403() throws Exception {
+    public void ifNotLoginInThenGetUserShouldReturn401() throws Exception {
         this.mockMvc.perform(post("/users/whatever")
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
         ).andDo(print())
-                .andExpect(status().isForbidden())
+                .andExpect(status().isUnauthorized())
                 .andExpect(jsonPath("$.status").value("fail"));
     }
 
@@ -116,18 +116,18 @@ public class UserControllerTest {
 
     @Test
     @WithAnonymousUser
-    public void ifNotLoginInThenPatchUserShouldReturn403() throws Exception {
+    public void ifNotLoginInThenPatchUserShouldReturn401() throws Exception {
         this.mockMvc.perform(patch("/users/test")
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
         ).andDo(print())
-                .andExpect(status().isForbidden())
+                .andExpect(status().isUnauthorized())
                 .andExpect(jsonPath("$.status").value("fail"));
     }
 
 
     @Test
     @WithMockUser(username = "test")
-    public void ifNewPasswordIsValidThenPasswordResetShouldChangePassword() throws Exception {
+    public void ifPasswordResetSuccessThenShouldReturn202() throws Exception {
         String newPassword = MockNeat.threadLocal().passwords().strong().val() + "Aa1";
         PasswordResetRequestBody passwordResetRequestBody = PasswordResetRequestBody.builder()
                 .oldPassword(testUserDTO.getPassword())

@@ -18,9 +18,9 @@ import java.io.OutputStream;
 public class JwtAccessDeniedHandler implements AccessDeniedHandler {
     @Override
     public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException) throws IOException {
-        FailResponse failResponse = new FailResponse("authorization", SecurityConstant.UNAUTHORISED_MESSAGE);
+        FailResponse failResponse = new FailResponse("authorization", SecurityConstant.FORBIDDEN_MESSAGE);
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-        response.setStatus(HttpStatus.UNAUTHORIZED.value());
+        response.setStatus(HttpStatus.FORBIDDEN.value());
         OutputStream outputStream = response.getOutputStream();
         ObjectMapper mapper = new ObjectMapper();
         mapper.writeValue(outputStream, failResponse);

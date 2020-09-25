@@ -184,7 +184,7 @@ public class AuthenticationControllerTest {
     }
 
     @Test
-    public void ifRefreshTokenIsValidThenShouldReturnNewTokens() throws Exception {
+    public void ifRefreshTokenIsValidThenReturn201() throws Exception {
         String refreshToken = jwtTokenProvider.generateRefreshToken(new UserPrincipal(existingUser));
         RenewRequestBody renewRequestBody = new RenewRequestBody();
         renewRequestBody.setRefreshToken(refreshToken);
@@ -193,7 +193,7 @@ public class AuthenticationControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(body)
         ).andDo(print())
-                .andExpect(status().isOk())
+                .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.data.refresh-token").isNotEmpty())
                 .andExpect(jsonPath("$.data.access-token").isNotEmpty())
                 .andReturn();
