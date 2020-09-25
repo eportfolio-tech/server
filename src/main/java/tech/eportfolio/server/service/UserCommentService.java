@@ -9,9 +9,9 @@ import java.util.Optional;
 
 public interface UserCommentService {
 
-    UserComment comment(User user, Portfolio portfolio, String comment);
+    UserComment create(User user, Portfolio portfolio, String comment);
 
-    UserComment uncomment(UserComment userComment);
+    UserComment delete(UserComment userComment);
 
     Optional<UserComment> findByUsernameAndIdAndDeleted(String username, String id, boolean deleted);
 

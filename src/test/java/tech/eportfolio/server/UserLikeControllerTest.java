@@ -24,8 +24,8 @@ import tech.eportfolio.server.service.PortfolioService;
 import tech.eportfolio.server.service.UserLikeService;
 import tech.eportfolio.server.service.UserService;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.hamcrest.Matchers.hasSize;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -75,9 +75,45 @@ public class UserLikeControllerTest {
 
     @Test
     @WithMockUser(username = "test")
-    public void ifUserLikeALikedPortfolioThenReturn500() throws Exception {
+    public void ifGetLikeSuccessThenReturn200() throws Exception {
         userLikeService.like(testUser, testPortfolio);
+        this.mockMvc.perform(get("/portfolios/test/like")
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
+                .param("ownerUsername", testUser.getUsername())
+        ).andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value("success"))
+                .andExpect(jsonPath("$.data.user-like", hasSize(1)));
+    }
 
+
+    @Test
+    @WithMockUser(username = "test")
+    public void ifPostLikeSuccessThenReturn200() throws Exception {
+        this.mockMvc.perform(post("/portfolios/test/like")
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
+                .param("ownerUsername", testUser.getUsername())
+        ).andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value("success"));
+    }
+
+    @Test
+    @WithMockUser(username = "test")
+    public void ifDeleteLikeSuccessThenReturn200() throws Exception {
+        userLikeService.like(testUser, testPortfolio);
+        this.mockMvc.perform(delete("/portfolios/test/like")
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
+                .param("ownerUsername", testUser.getUsername())
+        ).andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value("success"));
+    }
+
+    @Test
+    @WithMockUser(username = "test")
+    public void ifDoubleLikePortfolioThenReturn500() throws Exception {
+        userLikeService.like(testUser, testPortfolio);
         this.mockMvc.perform(post("/portfolios/test/like")
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
                 .param("ownerUsername", testUser.getUsername())
@@ -88,13 +124,13 @@ public class UserLikeControllerTest {
 
     @Test
     @WithMockUser(username = "test")
-    public void ifUserUnlikeAnUnlikedPortfolioThenReturn500() throws Exception {
+    public void ifDeleteLikeNotExistThenReturn404() throws Exception {
         this.mockMvc.perform(delete("/portfolios/test/like")
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
                 .param("ownerUsername", testUser.getUsername())
         ).andDo(print())
-                .andExpect(status().isInternalServerError())
-                .andExpect(jsonPath("$.status").value("error"));
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.status").value("fail"));
     }
 
     @After

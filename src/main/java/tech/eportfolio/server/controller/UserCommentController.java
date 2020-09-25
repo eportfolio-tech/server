@@ -37,7 +37,6 @@ public class UserCommentController {
     }
 
     @GetMapping("/comments")
-    @ApiOperation(value = "", authorizations = {@Authorization(value = "JWT")})
     public ResponseEntity<SuccessResponse<List<UserComment>>> findWhoCommentedThisPortfolio(@PathVariable String ownerUsername) {
         Portfolio portfolio = portfolioService.findByUsername(ownerUsername).orElseThrow(() -> new PortfolioNotFoundException(ownerUsername));
         List<UserComment> userComments = userCommentService.findByPortfolio(portfolio);
@@ -50,7 +49,7 @@ public class UserCommentController {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = userService.findByUsername(username).orElseThrow(() -> new UserNotFoundException(username));
         Portfolio portfolio = portfolioService.findByUsername(ownerUsername).orElseThrow(() -> new PortfolioNotFoundException(ownerUsername));
-        UserComment userComment = userCommentService.comment(user, portfolio, comment);
+        UserComment userComment = userCommentService.create(user, portfolio, comment);
         return new SuccessResponse<>("user-comment", userComment).toOk();
     }
 
@@ -58,11 +57,9 @@ public class UserCommentController {
     @ApiOperation(value = "", authorizations = {@Authorization(value = "JWT")})
     public ResponseEntity<SuccessResponse<Object>> uncommentPortfolio(@PathVariable String ownerUsername, @PathVariable String id) {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        User user = userService.findByUsername(username).orElseThrow(() -> new UserNotFoundException(username));
-        Portfolio portfolio = portfolioService.findByUsername(ownerUsername).orElseThrow(() -> new PortfolioNotFoundException(ownerUsername));
-        UserComment userComment = userCommentService.findByUsernameAndIdAndDeleted(user.getUsername(), id, false)
-                .orElseThrow(() -> new CommentNotFoundException(username, portfolio.getId()));
-        userCommentService.uncomment(userComment);
+        UserComment userComment = userCommentService.findByUsernameAndIdAndDeleted(username, id, false)
+                .orElseThrow(() -> new CommentNotFoundException(id));
+        userCommentService.delete(userComment);
         return new SuccessResponse<>().toOk();
     }
 

@@ -28,7 +28,7 @@ public class UserCommentServiceImpl implements UserCommentService {
 
 
     @Override
-    public UserComment comment(User user, Portfolio portfolio, String comment) {
+    public UserComment create(User user, Portfolio portfolio, String comment) {
         UserComment userComment = new UserComment();
         userComment.setUsername(user.getUsername());
         userComment.setPortfolioId(portfolio.getId());
@@ -37,7 +37,7 @@ public class UserCommentServiceImpl implements UserCommentService {
     }
 
     @Override
-    public UserComment uncomment(UserComment userComment) {
+    public UserComment delete(UserComment userComment) {
         userComment.setDeleted(true);
         return userCommentRepository.save(userComment);
     }

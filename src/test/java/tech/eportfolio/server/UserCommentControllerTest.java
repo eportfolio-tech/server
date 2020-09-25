@@ -1,5 +1,6 @@
 package tech.eportfolio.server;
 
+import com.github.javafaker.Faker;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.After;
 import org.junit.Before;
@@ -26,7 +27,8 @@ import tech.eportfolio.server.service.PortfolioService;
 import tech.eportfolio.server.service.UserCommentService;
 import tech.eportfolio.server.service.UserService;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.hamcrest.Matchers.hasSize;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -72,7 +74,38 @@ public class UserCommentControllerTest {
 
     @Test
     @WithMockUser(username = "test")
-    public void ifUserTryToDeleteANotExistCommentThenReturn404() throws Exception {
+    public void ifPostCommentSuccessThenShouldReturn200() throws Exception {
+        String comment = Faker.instance().gameOfThrones().quote();
+
+        this.mockMvc.perform(post("/portfolios/test/comments/")
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
+                .param("ownerUsername", "test")
+                .param("comment", comment)
+        ).andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value("success"))
+                .andExpect(jsonPath("$.data.user-comment").isNotEmpty());
+    }
+
+    @Test
+    @WithMockUser(username = "test")
+    public void ifGetCommentsSuccessThenShouldReturnComments() throws Exception {
+        userCommentService.create(testUser, testPortfolio, Faker.instance().gameOfThrones().quote());
+        userCommentService.create(testUser, testPortfolio, Faker.instance().gameOfThrones().quote());
+        userCommentService.create(testUser, testPortfolio, Faker.instance().gameOfThrones().quote());
+
+        this.mockMvc.perform(get("/portfolios/test/comments/")
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
+                .param("ownerUsername", "test")
+        ).andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value("success"))
+                .andExpect(jsonPath("$.data.user-comment", hasSize(3)));
+    }
+
+    @Test
+    @WithMockUser(username = "test")
+    public void ifDeleteCommentNotFoundCommentThenReturn404() throws Exception {
         String id = RandomStringUtils.randomAlphabetic(8);
 
         this.mockMvc.perform(delete("/portfolios/test/comments/" + id)
@@ -86,10 +119,25 @@ public class UserCommentControllerTest {
 
     @Test
     @WithMockUser(username = "test")
-    public void ifUserTryToDeleteADeletedCommentThenReturn404() throws Exception {
+    public void ifDeletedCommentSuccessThenReturn200() throws Exception {
         String comment = RandomStringUtils.randomAlphabetic(8);
-        UserComment userComment = userCommentService.comment(testUser, testPortfolio, comment);
-        userCommentService.uncomment(userComment);
+        UserComment userComment = userCommentService.create(testUser, testPortfolio, comment);
+
+        this.mockMvc.perform(delete("/portfolios/test/comments/" + userComment.getId())
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
+                .param("ownerUsername", "test")
+                .param("id", userComment.getId())
+        ).andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value("success"));
+    }
+
+    @Test
+    @WithMockUser(username = "test")
+    public void ifDoubleDeleteCommentThenReturn404() throws Exception {
+        String comment = RandomStringUtils.randomAlphabetic(8);
+        UserComment userComment = userCommentService.create(testUser, testPortfolio, comment);
+        userCommentService.delete(userComment);
 
         this.mockMvc.perform(delete("/portfolios/test/comments/" + userComment.getId())
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
@@ -102,9 +150,9 @@ public class UserCommentControllerTest {
 
     @Test
     @WithMockUser(username = "test")
-    public void ifUserTryToDeleteCommentOfOtherUserThenReturn404() throws Exception {
+    public void ifDeleteOthersCommentThenReturn404() throws Exception {
         String comment = RandomStringUtils.randomAlphabetic(8);
-        UserComment userComment = userCommentService.comment(secondUser, testPortfolio, comment);
+        UserComment userComment = userCommentService.create(secondUser, testPortfolio, comment);
 
         this.mockMvc.perform(delete("/portfolios/test/comments/" + userComment.getId())
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)

@@ -40,7 +40,7 @@ public class UserLikeController {
     public ResponseEntity<SuccessResponse<List<UserLike>>> findWhoLikedThisPortfolio(@PathVariable String ownerUsername) {
         Portfolio portfolio = portfolioService.findByUsername(ownerUsername).orElseThrow(() -> new PortfolioNotFoundException(ownerUsername));
         List<UserLike> userLikes = userLikeService.findByPortfolio(portfolio);
-        return new SuccessResponse<>("user_like", userLikes).toOk();
+        return new SuccessResponse<>("user-like", userLikes).toOk();
     }
 
     @PostMapping("/like")
