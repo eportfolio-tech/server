@@ -1,5 +1,6 @@
 package tech.eportfolio.server.common.exception.handler;
 
+import com.auth0.jwt.exceptions.TokenExpiredException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -15,4 +16,10 @@ public class AuthenticationExceptionHandler {
     public ResponseEntity<FailResponse> handleException(AuthenticationException ex) {
         return new FailResponse(AUTHENTICATION, ex.getMessage()).toUnauthorised();
     }
+
+    @ExceptionHandler(TokenExpiredException.class)
+    public ResponseEntity<FailResponse> handleException(TokenExpiredException ex) {
+        return new FailResponse(AUTHENTICATION, ex.getMessage()).toUnauthorised();
+    }
+
 }

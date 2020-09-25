@@ -18,8 +18,8 @@ public class SecurityConstant {
     public static final String AUTHORITIES = "Authorities";
     public static final String ACCESS_TOKEN = "access-token";
     public static final String REFRESH_TOKEN = "refresh-token";
-    public static final String FORBIDDEN_MESSAGE = "You need to log in to access this resource";
-    public static final String ACCESS_DENIED_MESSAGE = "You do not have permission to access this resource";
+    public static final String UNAUTHORISED_MESSAGE = "You need to log in to access this resource";
+    public static final String FORBIDDEN_MESSAGE = "You do not have permission to access this resource";
     // Swagger resources
     public static final String[] API_DOC = {"/swagger-ui.html", "/v2/api-docs", "/configuration/ui", "/swagger-resources/**", "/configuration/**", "/webjars/**", "/h2-console/**"};
 
@@ -29,8 +29,7 @@ public class SecurityConstant {
     public static final String[] POST_ONLY = {"/blobs/image/**", "/verification/verify/**"};
     public static final String[] GET_ONLY = {"/tags/", "/portfolios/search/**", "/portfolios/{username}"};
     public static final Period REFRESH_TOKEN_VALIDITY = Period.weeks(2);
-    //
-    public static final Period ACCESS_TOKEN_VALIDITY = Period.seconds(10);
+    public static final Period ACCESS_TOKEN_VALIDITY = Period.minutes(15);
     public static final Period PASSWORD_RECOVERY_TOKEN_VALIDITY = Period.minutes(15);
     public static final Period EMAIL_VERIFICATION_TOKEN_VALIDITY = Period.hours(12);
 
