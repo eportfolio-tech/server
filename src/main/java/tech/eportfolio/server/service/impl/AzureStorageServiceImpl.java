@@ -153,7 +153,7 @@ public class AzureStorageServiceImpl implements AzureStorageService {
                 uris.add(blobItem.getUri());
             }
         } catch (URISyntaxException | StorageException e) {
-            e.printStackTrace();
+            logger.error("Failed to list blob {}", e.getMessage());
         }
         return uris;
     }
