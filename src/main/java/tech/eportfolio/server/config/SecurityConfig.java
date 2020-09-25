@@ -48,7 +48,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.csrf().disable().cors().and()
+        http.csrf().and().cors().and()
                 // Don't keep track of session
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 // permit access to API doc

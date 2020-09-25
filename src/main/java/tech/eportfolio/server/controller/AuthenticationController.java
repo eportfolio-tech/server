@@ -95,7 +95,7 @@ public class AuthenticationController extends AuthenticationExceptionHandler {
         }
         UserPrincipal userPrincipal = new UserPrincipal(refreshUser);
         logger.info("Access token renewed for user: {}", username);
-        return new SuccessResponse<>(generateTokens(userPrincipal)).toOk();
+        return new SuccessResponse<>(generateTokens(userPrincipal)).toCreated();
     }
 
     @GetMapping("/quick-test")
