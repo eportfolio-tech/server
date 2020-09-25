@@ -16,7 +16,7 @@ public class RecoveryConstant {
             "\n" +
             "%s\n" +
             "\n" +
-            "For security reasons, this link will expire in 30 minutes from original datetime of this request.\n" +
+            "For security reasons, this link will expire in 12 hours from original datetime of this request.\n" +
             " \n" +
             "\n" +
             "Need help?\n" +
