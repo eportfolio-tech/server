@@ -1,7 +1,5 @@
 package tech.eportfolio.server.security;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
@@ -22,8 +20,6 @@ import java.util.List;
 
 @Component
 public class JWTAuthorizationFilter extends OncePerRequestFilter {
-
-    private final Logger logger = LoggerFactory.getLogger(getClass());
 
     private final JWTTokenProvider jwtTokenProvider;
 
@@ -54,7 +50,7 @@ public class JWTAuthorizationFilter extends OncePerRequestFilter {
                 Authentication authentication = jwtTokenProvider.getAuthentication(username, authorityList, request);
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             } else {
-                logger.error("JWT verification failed: {} {}", username, token);
+                logger.error(String.format("JWT verification failed %s %s", username, token));
                 // otherwise clean up SecurityContext
                 SecurityContextHolder.clearContext();
             }

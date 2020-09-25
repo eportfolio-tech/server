@@ -1,14 +1,10 @@
 package tech.eportfolio.server.service.impl;
 
-import ma.glasnost.orika.BoundMapperFacade;
-import ma.glasnost.orika.MapperFactory;
-import ma.glasnost.orika.impl.DefaultMapperFactory;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.annotation.Bean;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -18,6 +14,7 @@ import tech.eportfolio.server.common.exception.EmailExistException;
 import tech.eportfolio.server.common.exception.UserNotFoundException;
 import tech.eportfolio.server.common.exception.UsernameExistException;
 import tech.eportfolio.server.common.utility.AvatarGenerator;
+import tech.eportfolio.server.common.utility.NullAwareBeanUtilsBean;
 import tech.eportfolio.server.dto.UserDTO;
 import tech.eportfolio.server.model.User;
 import tech.eportfolio.server.model.UserPrincipal;
@@ -26,16 +23,16 @@ import tech.eportfolio.server.service.AzureStorageService;
 import tech.eportfolio.server.service.UserService;
 
 import java.io.InputStream;
-import java.util.*;
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+import java.util.concurrent.ThreadLocalRandom;
 
 @Service
 @Qualifier("UserDetailsService")
 public class UserServiceImpl implements UserService, UserDetailsService {
     private final Logger logger = LoggerFactory.getLogger(getClass());
-
-    private final Random random = new Random(System.currentTimeMillis());
-
-    private BoundMapperFacade<UserDTO, User> boundMapper;
 
     private UserRepository userRepository;
 
@@ -56,12 +53,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         this.avatarGenerator = avatarGenerator;
     }
 
-
-    @Autowired
-    public void setBoundMapper(BoundMapperFacade<UserDTO, User> boundMapper) {
-        this.boundMapper = boundMapper;
-    }
-
     @Autowired
     public void setUserRepository(UserRepository userRepository) {
         this.userRepository = userRepository;
@@ -70,12 +61,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Autowired
     public void setBcryptPasswordEncoder(BCryptPasswordEncoder bCryptPasswordEncoder) {
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
-    }
-
-    @Bean
-    public BoundMapperFacade<UserDTO, User> boundMapperFacade() {
-        MapperFactory mapperFactory = new DefaultMapperFactory.Builder().build();
-        return mapperFactory.getMapperFacade(UserDTO.class, User.class);
     }
 
     @Override
@@ -91,7 +76,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         }
 
         if (StringUtils.isEmpty(user.getUsername())) {
-            user.setUsername(user.getFirstName() + user.getLastName() + random.nextInt());
+            user.setUsername(user.getFirstName() + user.getLastName() + ThreadLocalRandom.current().nextInt());
         }
 
         Optional<User> userNameResult = findByUsername(user.getUsername());
@@ -138,7 +123,9 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public User fromUserDTO(UserDTO userDTO) {
-        return boundMapper.map(userDTO);
+        User user = new User();
+        NullAwareBeanUtilsBean.copyProperties(userDTO, user);
+        return user;
     }
 
     @Override
@@ -158,7 +145,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
      *                         e.g. Assuming current time is Jan 10th,  deleteBeforeDate is 7 days
      *                         a deleted user whose updatedDate is Jan 2nd will be included in the list
      *                         but a deleted user whose updatedDate is Jan 8th won't be included
-     * @return
      */
     @Override
     public List<User> findDeletedUserWithContainer(Date deleteBeforeDate) {

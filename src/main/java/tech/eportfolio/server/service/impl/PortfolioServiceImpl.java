@@ -3,11 +3,7 @@ package tech.eportfolio.server.service.impl;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mongodb.BasicDBObject;
-import ma.glasnost.orika.BoundMapperFacade;
-import ma.glasnost.orika.MapperFactory;
-import ma.glasnost.orika.impl.DefaultMapperFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -18,6 +14,7 @@ import org.springframework.data.mongodb.core.query.TextQuery;
 import org.springframework.data.repository.support.PageableExecutionUtils;
 import org.springframework.stereotype.Service;
 import tech.eportfolio.server.common.constant.Visibility;
+import tech.eportfolio.server.common.utility.NullAwareBeanUtilsBean;
 import tech.eportfolio.server.dto.PortfolioDTO;
 import tech.eportfolio.server.model.Portfolio;
 import tech.eportfolio.server.model.User;
@@ -34,26 +31,12 @@ public class PortfolioServiceImpl implements PortfolioService {
 
     private final PortfolioRepository portfolioRepository;
 
-    private BoundMapperFacade<PortfolioDTO, Portfolio> boundMapper;
-
     @Autowired
     private MongoTemplate mongoTemplate;
 
     @Autowired
     public PortfolioServiceImpl(PortfolioRepository portfolioRepository) {
         this.portfolioRepository = portfolioRepository;
-    }
-
-    @Autowired
-    public void setBoundMapper(BoundMapperFacade<PortfolioDTO, Portfolio> boundMapper) {
-        this.boundMapper = boundMapper;
-    }
-
-    // TODO: Need to distinguish with the boundMapperFacade in UserServiceImpl
-    @Bean
-    public BoundMapperFacade<PortfolioDTO, Portfolio> boundMapperFacade2() {
-        MapperFactory mapperFactory = new DefaultMapperFactory.Builder().build();
-        return mapperFactory.getMapperFacade(PortfolioDTO.class, Portfolio.class);
     }
 
     @Override
@@ -63,7 +46,9 @@ public class PortfolioServiceImpl implements PortfolioService {
 
     @Override
     public Portfolio fromPortfolioDTO(PortfolioDTO portfolioDTO) {
-        return boundMapper.map(portfolioDTO);
+        Portfolio portfolio = new Portfolio();
+        NullAwareBeanUtilsBean.copyProperties(portfolioDTO, portfolio);
+        return portfolio;
     }
 
     @Override
