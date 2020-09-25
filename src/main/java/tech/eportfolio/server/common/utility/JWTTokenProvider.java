@@ -5,6 +5,8 @@ import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import org.apache.commons.lang3.StringUtils;
+import org.joda.time.DateTime;
+import org.joda.time.Period;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -22,20 +24,34 @@ import java.util.stream.Collectors;
 
 @Component
 public class JWTTokenProvider {
-    public String generateJWTToken(UserPrincipal userPrincipal, String secret) {
+    public String generateAccessToken(UserPrincipal userPrincipal) {
+        return generateJWTToken(userPrincipal,
+                SecurityConstant.AUTHENTICATION_SECRET,
+                SecurityConstant.ACCESS_TOKEN_VALIDITY);
+    }
+
+    public String generateRefreshToken(UserPrincipal userPrincipal) {
+        return generateJWTToken(userPrincipal,
+                SecurityConstant.REFRESH_SECRET,
+                SecurityConstant.REFRESH_TOKEN_VALIDITY);
+    }
+
+    public String generateJWTToken(UserPrincipal userPrincipal, String secret, Period validity) {
+        DateTime now = new DateTime();
+        DateTime expire = now.plus(validity);
+
         String[] claims = getClaimsFromUser(userPrincipal);
         return JWT.create().withIssuer(SecurityConstant.ISSUER).
                 withAudience(SecurityConstant.AUDIENCE).
-                withIssuedAt(new Date()).
+                withIssuedAt(now.toDate()).
                 withSubject(userPrincipal.getUsername()).
                 withArrayClaim(SecurityConstant.AUTHORITIES, claims).
-                withExpiresAt(new Date(System.currentTimeMillis() + SecurityConstant.EXPIRATION_TIME)).
+                withExpiresAt(expire.toDate()).
                 sign(Algorithm.HMAC512(secret.getBytes()));
     }
 
     public String[] getClaimsFromUser(UserPrincipal userPrincipal) {
-        List<String> authorities = userPrincipal.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList());
-        return authorities.toArray(new String[0]);
+        return userPrincipal.getAuthorities().stream().map(GrantedAuthority::getAuthority).toArray(String[]::new);
     }
 
     public List<GrantedAuthority> getAuthorities(String token, String secret) {

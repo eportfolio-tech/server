@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 import tech.eportfolio.server.common.constant.RecoveryConstant;
+import tech.eportfolio.server.common.constant.SecurityConstant;
 import tech.eportfolio.server.common.utility.JWTTokenProvider;
 import tech.eportfolio.server.model.User;
 import tech.eportfolio.server.model.UserPrincipal;
@@ -81,7 +82,10 @@ public class RecoveryServiceImpl implements RecoveryService {
 
     @Override
     public String generatePasswordRecoveryToken(@NotNull User user) {
-        return recoveryTokenProvider.generateJWTToken(new UserPrincipal(user), getPasswordRecoverySecret(user));
+        return recoveryTokenProvider.generateJWTToken(
+                new UserPrincipal(user),
+                getPasswordRecoverySecret(user),
+                SecurityConstant.PASSWORD_RECOVERY_TOKEN_VALIDITY);
     }
 
     @Override
