@@ -40,7 +40,7 @@ public class ConfigureQuartzJob {
         return TriggerBuilder.newTrigger().forJob(mockContentJob)
                 .withIdentity("mockContentJob")
                 // Execute every day at mid night
-                .withSchedule(CronScheduleBuilder.cronSchedule("* * * ? * *"))
+                .withSchedule(CronScheduleBuilder.cronSchedule("0 0 0 * * ?"))
                 .build();
     }
 }
