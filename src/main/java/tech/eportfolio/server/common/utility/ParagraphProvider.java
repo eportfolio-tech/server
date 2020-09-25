@@ -4,7 +4,7 @@ import com.github.javafaker.Faker;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class ParagraphProvider {
 
@@ -49,6 +49,6 @@ public class ParagraphProvider {
 
     public static String sentence() {
         List<String> sentences = paragraphs();
-        return sentences.get(new Random().nextInt(sentences.size()));
+        return sentences.get(ThreadLocalRandom.current().nextInt(sentences.size()));
     }
 }
