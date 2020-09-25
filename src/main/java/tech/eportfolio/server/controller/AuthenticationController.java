@@ -1,10 +1,13 @@
 package tech.eportfolio.server.controller;
 
 import com.auth0.jwt.exceptions.JWTVerificationException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import tech.eportfolio.server.common.constant.SecurityConstant;
 import tech.eportfolio.server.common.constraint.ValidPassword;
@@ -15,6 +18,7 @@ import tech.eportfolio.server.common.jsend.SuccessResponse;
 import tech.eportfolio.server.common.mock.EditorState;
 import tech.eportfolio.server.common.utility.JWTTokenProvider;
 import tech.eportfolio.server.dto.LoginRequestBody;
+import tech.eportfolio.server.dto.RenewRequestBody;
 import tech.eportfolio.server.dto.UserDTO;
 import tech.eportfolio.server.model.User;
 import tech.eportfolio.server.model.UserPrincipal;
@@ -27,9 +31,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
+@Validated
 @RestController
 @RequestMapping("/authentication")
 public class AuthenticationController extends AuthenticationExceptionHandler {
+
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
     private final UserService userService;
 
@@ -80,13 +87,14 @@ public class AuthenticationController extends AuthenticationExceptionHandler {
     }
 
     @PostMapping("/renew")
-    public ResponseEntity<SuccessResponse<Object>> renewToken(@RequestParam String refreshToken) {
-        String username = jwtTokenProvider.getSubject(refreshToken, SecurityConstant.REFRESH_SECRET);
+    public ResponseEntity<SuccessResponse<Object>> renewToken(@RequestBody @Valid RenewRequestBody renewRequestBody) {
+        String username = jwtTokenProvider.getSubject(renewRequestBody.getRefreshToken(), SecurityConstant.REFRESH_SECRET);
         User refreshUser = userService.findByUsername(username).orElseThrow(() -> new UserNotFoundException(username));
-        if (!jwtTokenProvider.isTokenValid(username, refreshToken, SecurityConstant.REFRESH_SECRET)) {
+        if (!jwtTokenProvider.isTokenValid(username, renewRequestBody.getRefreshToken(), SecurityConstant.REFRESH_SECRET)) {
             throw new JWTVerificationException("Refresh token has expired");
         }
         UserPrincipal userPrincipal = new UserPrincipal(refreshUser);
+        logger.info("Access token renewed for user: {}", username);
         return new SuccessResponse<>(generateTokens(userPrincipal)).toOk();
     }
 
