@@ -3,8 +3,7 @@ package tech.eportfolio.server.controller;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.mongodb.BasicDBObject;
-import com.mongodb.DBObject;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import net.andreinc.mockneat.MockNeat;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.After;
@@ -312,18 +311,14 @@ public class PortfolioControllerTest {
 
     @Test
     @WithMockUser("test")
-    /**
-     * TODO: Remove persistence layer logic like BasicDBObject from request body
-     */
     public void ifPutContentThenReturn200AndExpectContentToMatch() throws Exception {
-        String json = "{\"title\":\"uyeKDtra\",\"description\":\"KDhQQVVVhIjWwUirxYfzzcIkfYTtiTpZ\",\"visibility\":\"PUBLIC\"}";
         ObjectMapper mapper = new ObjectMapper();
-        JsonNode jsonNode = mapper.readTree(json);
+        ObjectNode objectNode = mapper.createObjectNode();
+        JsonNode jsonNode = objectNode.put(RandomStringUtils.randomAlphabetic(4), RandomStringUtils.randomAlphanumeric(8));
         TypeReference<HashMap<String, Object>> typeRef = new TypeReference<>() {
         };
         HashMap<String, Object> map = mapper.convertValue(jsonNode, typeRef);
-        DBObject content = new BasicDBObject(map);
-        String body = String.valueOf(content);
+        String body = (new ObjectMapper()).valueToTree(jsonNode).toString();
         this.mockMvc.perform(put(BASE_PATH + "/test/content")
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
                 .param("username", "test")
@@ -331,7 +326,7 @@ public class PortfolioControllerTest {
         ).andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.status").value("success"))
-                .andExpect(jsonPath("$.data.content").value(content))
+                .andExpect(jsonPath("$.data.content").value(map))
                 .andReturn();
     }
 
