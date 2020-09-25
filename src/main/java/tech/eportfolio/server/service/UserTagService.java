@@ -9,8 +9,6 @@ import java.util.List;
 public interface UserTagService {
     List<UserTag> findByUsername(String username);
 
-    List<UserTag> findByUserId(String userId);
-
     List<Tag> findTagsByUser(User user);
 
     UserTag create(User user, Tag tag);

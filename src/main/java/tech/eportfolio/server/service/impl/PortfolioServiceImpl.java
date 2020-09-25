@@ -57,21 +57,6 @@ public class PortfolioServiceImpl implements PortfolioService {
     }
 
     @Override
-    public Optional<Portfolio> findById(String id) {
-        return Optional.ofNullable(portfolioRepository.findByIdAndDeleted(id, false));
-    }
-
-    @Override
-    public Optional<Portfolio> findByUserId(Long userId) {
-        return Optional.ofNullable(portfolioRepository.findByUserIdAndDeleted(userId, false));
-    }
-
-    @Override
-    public List<Portfolio> findByUserIdIn(List<Long> userIds) {
-        return portfolioRepository.findByUserIdInAndDeleted(userIds, false);
-    }
-
-    @Override
     public Optional<Portfolio> findByUsername(String username) {
         return Optional.ofNullable(portfolioRepository.findByUsername(username));
     }
@@ -79,11 +64,6 @@ public class PortfolioServiceImpl implements PortfolioService {
     @Override
     public Portfolio fromPortfolioDTO(PortfolioDTO portfolioDTO) {
         return boundMapper.map(portfolioDTO);
-    }
-
-    @Override
-    public PortfolioDTO toPortfolioDTO(Portfolio portfolio) {
-        return boundMapper.mapReverse(portfolio);
     }
 
     @Override
@@ -109,11 +89,6 @@ public class PortfolioServiceImpl implements PortfolioService {
                 () -> mongoTemplate.count(Query.of(query).limit(-1).skip(-1), Portfolio.class));
     }
 
-    @Override
-    public List<Portfolio> search(String text) {
-        Query query = TextQuery.queryText(new TextCriteria().matchingAny(text)).sortByScore();
-        return mongoTemplate.find(query, Portfolio.class);
-    }
 
     @Override
     public List<Portfolio> searchWithVisibilities(String text, List<Visibility> visibilities) {

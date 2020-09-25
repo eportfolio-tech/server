@@ -12,17 +12,10 @@ import java.util.Map;
 import java.util.Optional;
 
 public interface PortfolioService {
-    Optional<Portfolio> findById(String id);
-
-    Optional<Portfolio> findByUserId(Long userId);
-
-    List<Portfolio> findByUserIdIn(List<Long> userIds);
 
     Optional<Portfolio> findByUsername(String username);
 
     Portfolio fromPortfolioDTO(PortfolioDTO portfolioDTO);
-
-    PortfolioDTO toPortfolioDTO(Portfolio portfolio);
 
     Portfolio create(User user, Portfolio portfolio);
 
@@ -33,8 +26,6 @@ public interface PortfolioService {
     Portfolio deleteContent(Portfolio portfolio);
 
     Portfolio save(Portfolio portfolio);
-
-    List<Portfolio> search(String text);
 
     List<Portfolio> searchWithVisibilities(String text, List<Visibility> visibilities);
 }

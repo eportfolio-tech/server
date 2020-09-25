@@ -1,7 +1,5 @@
 package tech.eportfolio.server.service.impl;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import tech.eportfolio.server.model.Tag;
@@ -20,7 +18,6 @@ import java.util.stream.StreamSupport;
 @Service
 @Qualifier("UserDetailsService")
 public class UserTagServiceImpl implements UserTagService {
-    private final Logger LOGGER = LoggerFactory.getLogger(getClass());
 
     private final UserTagRepository userTagRepository;
     private final TagService tagService;
@@ -33,11 +30,6 @@ public class UserTagServiceImpl implements UserTagService {
     @Override
     public List<UserTag> findByUsername(String username) {
         return userTagRepository.findByUsernameAndDeleted(username, false);
-    }
-
-    @Override
-    public List<UserTag> findByUserId(String userId) {
-        return userTagRepository.findByUserIdAndDeleted(userId, false);
     }
 
     @Override
