@@ -79,7 +79,7 @@ class InlineStyleRange {
 @Builder
 public class EditorState {
     @JsonProperty("blocks")
-    public List<Block> blocks = null;
+    public List<Block> blocks;
     @JsonProperty("entityMap")
     public EntityMap entityMap;
 

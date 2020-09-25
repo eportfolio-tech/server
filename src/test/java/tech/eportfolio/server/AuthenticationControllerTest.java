@@ -21,6 +21,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import tech.eportfolio.server.common.utility.JWTTokenProvider;
 import tech.eportfolio.server.dto.LoginRequestBody;
+import tech.eportfolio.server.dto.RenewRequestBody;
 import tech.eportfolio.server.dto.UserDTO;
 import tech.eportfolio.server.model.User;
 import tech.eportfolio.server.model.UserPrincipal;
@@ -185,11 +186,17 @@ public class AuthenticationControllerTest {
     @Test
     public void ifRefreshTokenIsValidThenShouldReturnNewTokens() throws Exception {
         String refreshToken = jwtTokenProvider.generateRefreshToken(new UserPrincipal(existingUser));
-        this.mockMvc.perform(post("/authentication/renew").param("refreshToken", refreshToken)
+        RenewRequestBody renewRequestBody = new RenewRequestBody();
+        renewRequestBody.setRefreshToken(refreshToken);
+        String body = (new ObjectMapper()).valueToTree(renewRequestBody).toString();
+        this.mockMvc.perform(post("/authentication/renew")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(body)
         ).andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.refresh-token").isNotEmpty())
-                .andExpect(jsonPath("$.data.access-token").isNotEmpty());
+                .andExpect(jsonPath("$.data.access-token").isNotEmpty())
+                .andReturn();
     }
 
 
