@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import tech.eportfolio.server.common.exception.UserNotFoundException;
 import tech.eportfolio.server.common.jsend.SuccessResponse;
+import tech.eportfolio.server.common.utility.NullAwareBeanUtilsBean;
 import tech.eportfolio.server.dto.PasswordResetRequestBody;
 import tech.eportfolio.server.dto.UserPatchRequestBody;
 import tech.eportfolio.server.model.Tag;
@@ -62,35 +63,14 @@ public class UserController {
      * @return updated user
      */
     /*
-    TODO: Refactor this method using NullAwareBeanUtils to update User
      */
     @PatchMapping("/{username}")
     @ApiOperation(value = "", authorizations = {@Authorization(value = "JWT")})
     public ResponseEntity<SuccessResponse<User>> updateUser(@Valid @PathVariable String username,
                                                             @RequestBody @Valid UserPatchRequestBody userPatchRequestBody) {
         User user = userService.findByUsername(username).orElseThrow(() -> new UserNotFoundException(username));
-
-        if (userPatchRequestBody.getFirstName() != null) {
-            user.setFirstName(userPatchRequestBody.getFirstName());
-        }
-        if (userPatchRequestBody.getLastName() != null) {
-            user.setLastName(userPatchRequestBody.getLastName());
-        }
-        if (userPatchRequestBody.getPhone() != null) {
-            user.setPhone(userPatchRequestBody.getPhone());
-        }
-
-        if (userPatchRequestBody.getEmail() != null) {
-            user.setEmail(userPatchRequestBody.getEmail());
-        }
-        if (userPatchRequestBody.getTitle() != null) {
-            user.setTitle(userPatchRequestBody.getTitle());
-        }
-        if (userPatchRequestBody.getAvatarUrl() != null) {
-            user.setAvatarUrl(userPatchRequestBody.getAvatarUrl());
-        }
+        NullAwareBeanUtilsBean.copyProperties(userPatchRequestBody, user);
         user = userService.save(user);
-
         return new SuccessResponse<>("user", user).toOk();
     }
 
