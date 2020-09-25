@@ -19,14 +19,17 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import tech.eportfolio.server.common.utility.JWTTokenProvider;
 import tech.eportfolio.server.dto.LoginRequestBody;
 import tech.eportfolio.server.dto.UserDTO;
 import tech.eportfolio.server.model.User;
+import tech.eportfolio.server.model.UserPrincipal;
 import tech.eportfolio.server.service.UserService;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
 @RunWith(SpringRunner.class)
@@ -49,6 +52,9 @@ public class AuthenticationControllerTest {
     @Autowired
     private MongoTemplate mongoTemplate;
 
+    @Autowired
+    private JWTTokenProvider jwtTokenProvider;
+
     @Before
     public void init() {
         userDTO = UserDTO.mock();
@@ -56,7 +62,7 @@ public class AuthenticationControllerTest {
     }
 
     @Test
-    public void ifUserNotExistThenLoginShouldReturn401() throws Exception {
+    public void ifUserNotExistThenLoginShouldReturn404() throws Exception {
         LoginRequestBody loginRequestBody = LoginRequestBody.builder().
                 username(MockNeat.threadLocal().users().val()).
                 password(MockNeat.threadLocal().passwords().strong().val()).build();
@@ -66,7 +72,7 @@ public class AuthenticationControllerTest {
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
                 .content(body)
         ).andDo(print())
-                .andExpect(status().isUnauthorized())
+                .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.status").value("fail"));
     }
 
@@ -96,10 +102,11 @@ public class AuthenticationControllerTest {
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
                 .content(body)
         ).andDo(print())
-                .andExpect(status().isOk()).andExpect(header().exists("x-jwt-token"))
+                .andExpect(status().isOk())
                 .andExpect(jsonPath("$.status").value("success"))
-                .andExpect(jsonPath("$.data.user.username").value(existingUser.getUsername()))
-                .andExpect(jsonPath("$.data.user.email").value(existingUser.getEmail()));
+                .andExpect(jsonPath("$.data.user").isNotEmpty())
+                .andExpect(jsonPath("$.data.access-token").isNotEmpty())
+                .andExpect(jsonPath("$.data.refresh-token").isNotEmpty());
     }
 
     @Test
@@ -174,6 +181,17 @@ public class AuthenticationControllerTest {
                 .andExpect(jsonPath("$.status").value("fail"))
                 .andReturn();
     }
+
+    @Test
+    public void ifRefreshTokenIsValidThenShouldReturnNewTokens() throws Exception {
+        String refreshToken = jwtTokenProvider.generateRefreshToken(new UserPrincipal(existingUser));
+        this.mockMvc.perform(post("/authentication/renew").param("refreshToken", refreshToken)
+        ).andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data.refresh-token").isNotEmpty())
+                .andExpect(jsonPath("$.data.access-token").isNotEmpty());
+    }
+
 
     @After
     public void afterClass() {

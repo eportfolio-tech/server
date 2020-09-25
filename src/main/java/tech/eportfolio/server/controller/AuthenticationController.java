@@ -1,13 +1,10 @@
 package tech.eportfolio.server.controller;
 
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.Authorization;
+import com.auth0.jwt.exceptions.JWTVerificationException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import tech.eportfolio.server.common.constant.SecurityConstant;
 import tech.eportfolio.server.common.constraint.ValidPassword;
@@ -55,32 +52,42 @@ public class AuthenticationController extends AuthenticationExceptionHandler {
 
 
     @PostMapping("/signup")
-    public ResponseEntity<SuccessResponse<User>> signUp(@RequestBody @Valid UserDTO userDTO) {
+    public ResponseEntity<SuccessResponse<Object>> signUp(@RequestBody @Valid UserDTO userDTO) {
         User user = userService.register(userService.fromUserDTO(userDTO), true);
         UserPrincipal userPrincipal = new UserPrincipal(user);
-        HttpHeaders jwtHeader = getJwtHeader(userPrincipal);
+        Map<String, Object> responseMap = generateTokens(userPrincipal);
+        responseMap.put("user", user);
         verificationService.sendVerificationEmail(user);
-        return new SuccessResponse<>("user", user).toOk(jwtHeader);
+        return new SuccessResponse<>(responseMap).toOk();
     }
 
     @PostMapping("/login")
-    public ResponseEntity<SuccessResponse<User>> login(@RequestBody @Valid LoginRequestBody loginRequestBody) {
+    public ResponseEntity<SuccessResponse<Object>> login(@RequestBody @Valid LoginRequestBody loginRequestBody) {
         String username = loginRequestBody.getUsername();
-        authenticate(username, loginRequestBody.getPassword());
         User loginUser = userService.findByUsername(username).orElseThrow(() -> new UserNotFoundException(username));
+        authenticate(username, loginRequestBody.getPassword());
         UserPrincipal userPrincipal = new UserPrincipal(loginUser);
-        HttpHeaders jwtHeader = getJwtHeader(userPrincipal);
-        return new SuccessResponse<>("user", loginUser).toOk(jwtHeader);
+        Map<String, Object> tokens = generateTokens(userPrincipal);
+        tokens.put("user", loginUser);
+        return new SuccessResponse<>(tokens).toOk();
+    }
+
+    private Map<String, Object> generateTokens(UserPrincipal user) {
+        Map<String, Object> tokens = new HashMap<>();
+        tokens.put(SecurityConstant.ACCESS_TOKEN, jwtTokenProvider.generateAccessToken(user));
+        tokens.put(SecurityConstant.REFRESH_TOKEN, jwtTokenProvider.generateRefreshToken(user));
+        return tokens;
     }
 
     @PostMapping("/renew")
-    @ApiOperation(value = "", authorizations = {@Authorization(value = "JWT")})
-    public ResponseEntity<SuccessResponse<String>> renewToken() {
-        String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        User loginUser = userService.findByUsername(username).orElseThrow(() -> new UserNotFoundException(username) {
-        });
-        UserPrincipal userPrincipal = new UserPrincipal(loginUser);
-        return new SuccessResponse<>("token", jwtTokenProvider.generateJWTToken(userPrincipal, SecurityConstant.AUTHENTICATION_SECRET)).toOk();
+    public ResponseEntity<SuccessResponse<Object>> renewToken(@RequestParam String refreshToken) {
+        String username = jwtTokenProvider.getSubject(refreshToken, SecurityConstant.REFRESH_SECRET);
+        User refreshUser = userService.findByUsername(username).orElseThrow(() -> new UserNotFoundException(username));
+        if (!jwtTokenProvider.isTokenValid(username, refreshToken, SecurityConstant.REFRESH_SECRET)) {
+            throw new JWTVerificationException("Refresh token has expired");
+        }
+        UserPrincipal userPrincipal = new UserPrincipal(refreshUser);
+        return new SuccessResponse<>(generateTokens(userPrincipal)).toOk();
     }
 
     @GetMapping("/quick-test")
@@ -106,11 +113,10 @@ public class AuthenticationController extends AuthenticationExceptionHandler {
             user = loginUser.get();
         }
         UserPrincipal userPrincipal = new UserPrincipal(user);
-        HttpHeaders jwtHeader = getJwtHeader(userPrincipal);
         Map<String, Object> response = new HashMap<>();
-        response.put("user", user);
-        response.put("token", "Bearer " + jwtTokenProvider.generateJWTToken(userPrincipal, SecurityConstant.AUTHENTICATION_SECRET));
-        return new SuccessResponse<>(response).toOk(jwtHeader);
+        response.put("access-token", jwtTokenProvider.generateAccessToken(userPrincipal));
+        response.put("refresh-token", jwtTokenProvider.generateRefreshToken(userPrincipal));
+        return new SuccessResponse<>(response).toOk();
     }
 
     @DeleteMapping("/deleteTest")
@@ -150,12 +156,6 @@ public class AuthenticationController extends AuthenticationExceptionHandler {
         User user = userService.findByUsername(username).orElseThrow(() -> new UserNotFoundException(username));
         recoveryService.passwordRecovery(user, token, password);
         return new SuccessResponse<>().toOk();
-    }
-
-    private HttpHeaders getJwtHeader(UserPrincipal userPrincipal) {
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.add(SecurityConstant.JWT_TOKEN_HEADER, jwtTokenProvider.generateJWTToken(userPrincipal, SecurityConstant.AUTHENTICATION_SECRET));
-        return httpHeaders;
     }
 
     private void authenticate(String username, String password) {
