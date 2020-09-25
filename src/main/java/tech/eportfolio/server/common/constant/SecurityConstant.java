@@ -30,7 +30,7 @@ public class SecurityConstant {
     public static final String[] GET_ONLY = {"/tags/", "/portfolios/search/**", "/portfolios/{username}"};
     public static final Period REFRESH_TOKEN_VALIDITY = Period.weeks(2);
     //
-    public static final Period ACCESS_TOKEN_VALIDITY = Period.minutes(15);
+    public static final Period ACCESS_TOKEN_VALIDITY = Period.seconds(10);
     public static final Period PASSWORD_RECOVERY_TOKEN_VALIDITY = Period.minutes(15);
     public static final Period EMAIL_VERIFICATION_TOKEN_VALIDITY = Period.hours(12);
 
