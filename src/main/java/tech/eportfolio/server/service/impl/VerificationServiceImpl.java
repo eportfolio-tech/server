@@ -9,6 +9,7 @@ import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 import tech.eportfolio.server.common.constant.Authority;
 import tech.eportfolio.server.common.constant.Role;
+import tech.eportfolio.server.common.constant.SecurityConstant;
 import tech.eportfolio.server.common.constant.VerificationConstant;
 import tech.eportfolio.server.common.utility.JWTTokenProvider;
 import tech.eportfolio.server.model.User;
@@ -94,7 +95,10 @@ public class VerificationServiceImpl implements VerificationService {
 
     @Override
     public String generateVerificationToken(User user) {
-        return verificationTokenProvider.generateJWTToken(new UserPrincipal(user), getVerificationSecret(user));
+        return verificationTokenProvider.generateJWTToken(
+                new UserPrincipal(user),
+                getVerificationSecret(user),
+                SecurityConstant.EMAIL_VERIFICATION_TOKEN_VALIDITY);
     }
 
     public String getVerificationSecret(@NotNull User user) {
