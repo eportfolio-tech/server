@@ -12,8 +12,6 @@ import tech.eportfolio.server.common.exception.TemplateNotFoundException;
 import tech.eportfolio.server.common.exception.TitleAlreadyExistException;
 import tech.eportfolio.server.common.exception.UserNotFoundException;
 import tech.eportfolio.server.common.jsend.SuccessResponse;
-import tech.eportfolio.server.common.utility.JSONUtil;
-import tech.eportfolio.server.common.utility.NullAwareBeanUtilsBean;
 import tech.eportfolio.server.dto.TemplateDTO;
 import tech.eportfolio.server.model.Template;
 import tech.eportfolio.server.model.User;
@@ -78,14 +76,10 @@ public class TemplateController {
             throw new TitleAlreadyExistException(templateDTO.getTitle());
         }
 
-        Template template = new Template();
-        NullAwareBeanUtilsBean.copyProperties(templateDTO, template);
-        template.setBoilerplate(JSONUtil.convertJsonNodeToDbObject(templateDTO.getBoilerplate()));
-        template.setUserId(user.getId());
-        template.setHidden(false);
-        template.setDeleted(false);
+        Template template = templateService.create(user, templateDTO);
+
         logger.debug("Template created {} by user {}", template.getId(), username);
-        return new SuccessResponse<>("template", templateService.save(template)).toCreated();
+        return new SuccessResponse<>("template", template).toCreated();
     }
 
     /**
