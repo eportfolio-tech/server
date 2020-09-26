@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 import tech.eportfolio.server.model.Portfolio;
 import tech.eportfolio.server.model.User;
 import tech.eportfolio.server.model.UserComment;
-import tech.eportfolio.server.repository.mongodb.UserCommentRepository;
+import tech.eportfolio.server.repository.UserCommentRepository;
 import tech.eportfolio.server.service.UserCommentService;
 
 import java.util.List;

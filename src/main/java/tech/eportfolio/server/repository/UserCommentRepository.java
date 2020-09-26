@@ -1,4 +1,4 @@
-package tech.eportfolio.server.repository.mongodb;
+package tech.eportfolio.server.repository;
 
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;

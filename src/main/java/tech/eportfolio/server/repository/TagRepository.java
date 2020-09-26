@@ -10,8 +10,6 @@ import java.util.List;
 public interface TagRepository extends MongoRepository<Tag, String> {
     Tag findByIdAndDeleted(String id, boolean deleted);
 
-    Tag findFirstByNameAndDeleted(String name, boolean deleted);
-
     List<Tag> findByIdInAndDeleted(List<String> id, boolean deleted);
 
     List<Tag> findByNameInAndDeleted(List<String> name, boolean deleted);
