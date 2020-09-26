@@ -15,6 +15,6 @@ public interface UserCommentRepository extends MongoRepository<UserComment, Stri
 
     List<UserComment> findByUsername(String username);
 
-    List<UserComment> findByPortfolioId(String portfolioId);
+    List<UserComment> findByPortfolioIdAndDeleted(String portfolioId, boolean deleted);
 
 }

@@ -23,7 +23,7 @@ public class UserCommentServiceImpl implements UserCommentService {
 
     @Override
     public List<UserComment> findByPortfolio(Portfolio portfolio) {
-        return userCommentRepository.findByPortfolioId(portfolio.getId());
+        return userCommentRepository.findByPortfolioIdAndDeleted(portfolio.getId(), false);
     }
 
 
