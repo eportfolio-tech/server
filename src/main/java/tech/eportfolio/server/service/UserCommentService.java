@@ -16,4 +16,6 @@ public interface UserCommentService {
     Optional<UserComment> findByUsernameAndIdAndDeleted(String username, String id, boolean deleted);
 
     List<UserComment> findByPortfolio(Portfolio portfolio);
+
+    List<User> findUsersByUserComments(List<UserComment> userComments);
 }

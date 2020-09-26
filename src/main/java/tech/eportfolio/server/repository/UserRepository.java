@@ -19,5 +19,7 @@ public interface UserRepository extends MongoRepository<User, String> {
 
     List<User> findByIdInAndDeleted(List<String> id, boolean deleted);
 
+    List<User> findByUsernameInAndDeleted(List<String> usernames, boolean deleted);
+
     int countAllByDeleted(boolean deleted);
 }

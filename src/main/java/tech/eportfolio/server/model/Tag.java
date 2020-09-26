@@ -3,6 +3,7 @@ package tech.eportfolio.server.model;
 import lombok.Data;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import javax.persistence.Column;
@@ -16,6 +17,7 @@ public class Tag {
     @Id
     private String id;
 
+    @Indexed(unique = true)
     private String name;
 
     private String icon;

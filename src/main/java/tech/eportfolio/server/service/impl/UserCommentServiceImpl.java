@@ -7,23 +7,33 @@ import tech.eportfolio.server.model.User;
 import tech.eportfolio.server.model.UserComment;
 import tech.eportfolio.server.repository.UserCommentRepository;
 import tech.eportfolio.server.service.UserCommentService;
+import tech.eportfolio.server.service.UserService;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class UserCommentServiceImpl implements UserCommentService {
 
     private final UserCommentRepository userCommentRepository;
 
+    private final UserService userService;
+
     @Autowired
-    public UserCommentServiceImpl(UserCommentRepository userCommentRepository) {
+    public UserCommentServiceImpl(UserCommentRepository userCommentRepository, UserService userService) {
         this.userCommentRepository = userCommentRepository;
+        this.userService = userService;
     }
 
     @Override
     public List<UserComment> findByPortfolio(Portfolio portfolio) {
         return userCommentRepository.findByPortfolioIdAndDeleted(portfolio.getId(), false);
+    }
+
+    @Override
+    public List<User> findUsersByUserComments(List<UserComment> userComments) {
+        return userService.findByUsernameIn(userComments.stream().map(UserComment::getUsername).collect(Collectors.toList()));
     }
 
 

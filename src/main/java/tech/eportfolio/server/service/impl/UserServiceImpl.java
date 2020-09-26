@@ -126,6 +126,12 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         return userRepository.findByIdInAndDeleted(ids, false);
     }
 
+
+    @Override
+    public List<User> findByUsernameIn(List<String> usernames) {
+        return userRepository.findByUsernameInAndDeleted(usernames, false);
+    }
+
     @Override
     public User fromUserDTO(UserDTO userDTO) {
         User user = new User();

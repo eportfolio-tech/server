@@ -10,6 +10,7 @@ import tech.eportfolio.server.common.exception.CommentNotFoundException;
 import tech.eportfolio.server.common.exception.PortfolioNotFoundException;
 import tech.eportfolio.server.common.exception.UserNotFoundException;
 import tech.eportfolio.server.common.jsend.SuccessResponse;
+import tech.eportfolio.server.dto.UserCommentOutputBody;
 import tech.eportfolio.server.model.Portfolio;
 import tech.eportfolio.server.model.User;
 import tech.eportfolio.server.model.UserComment;
@@ -18,6 +19,8 @@ import tech.eportfolio.server.service.UserCommentService;
 import tech.eportfolio.server.service.UserService;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/portfolios/{ownerUsername}")
@@ -37,10 +40,16 @@ public class UserCommentController {
     }
 
     @GetMapping("/comments")
-    public ResponseEntity<SuccessResponse<List<UserComment>>> findWhoCommentedThisPortfolio(@PathVariable String ownerUsername) {
+    public ResponseEntity<SuccessResponse<List<UserCommentOutputBody>>> findWhoCommentedThisPortfolio(@PathVariable String ownerUsername) {
         Portfolio portfolio = portfolioService.findByUsername(ownerUsername).orElseThrow(() -> new PortfolioNotFoundException(ownerUsername));
         List<UserComment> userComments = userCommentService.findByPortfolio(portfolio);
-        return new SuccessResponse<>("user-comment", userComments).toOk();
+        List<User> users = userCommentService.findUsersByUserComments(userComments);
+
+        Map<String, String> map = users.stream().collect(Collectors.toMap(User::getUsername, User::getAvatarUrl));
+        List<UserCommentOutputBody> result = userComments.stream()
+                .map(userComment -> new UserCommentOutputBody(userComment, map.get(userComment.getUsername())))
+                .collect(Collectors.toList());
+        return new SuccessResponse<>("user-comment", result).toOk();
     }
 
     @PostMapping("/comments")
