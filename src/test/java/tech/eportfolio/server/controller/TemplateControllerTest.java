@@ -19,19 +19,16 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
-import tech.eportfolio.server.dto.PortfolioDTO;
 import tech.eportfolio.server.dto.TemplateDTO;
 import tech.eportfolio.server.dto.UserDTO;
-import tech.eportfolio.server.model.Portfolio;
+import tech.eportfolio.server.model.Template;
 import tech.eportfolio.server.model.User;
-import tech.eportfolio.server.service.PortfolioService;
-import tech.eportfolio.server.service.UserCommentService;
+import tech.eportfolio.server.service.TemplateService;
 import tech.eportfolio.server.service.UserService;
 
 import java.util.HashMap;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -51,14 +48,13 @@ public class TemplateControllerTest {
     @Autowired
     private UserService userService;
     @Autowired
-    private PortfolioService portfolioService;
-    @Autowired
-    private UserCommentService userCommentService;
+    private TemplateService templateService;
+
     private User testUser;
-    private User secondUser;
+
     private UserDTO testUserDTO;
-    private PortfolioDTO testPortfolioDTO;
-    private Portfolio testPortfolio;
+
+    private TemplateDTO templateDTO;
 
     @Before
     public void init() {
@@ -67,6 +63,8 @@ public class TemplateControllerTest {
         testUserDTO.setUsername("test");
 
         testUser = userService.register(userService.fromUserDTO(testUserDTO), false);
+
+        templateDTO = TemplateDTO.mock();
 
     }
 
@@ -83,8 +81,7 @@ public class TemplateControllerTest {
 
     @Test
     @WithMockUser(username = "test")
-    public void ifCreateNewTemplateSuccessfulThenReturn200() throws Exception {
-        TemplateDTO templateDTO = TemplateDTO.mock();
+    public void ifCreateNewTemplateSuccessfulThenReturn201() throws Exception {
         ObjectMapper mapper = new ObjectMapper();
         TypeReference<HashMap<String, Object>> typeRef = new TypeReference<>() {
         };
@@ -105,7 +102,25 @@ public class TemplateControllerTest {
 
     @Test
     @WithMockUser(username = "test")
-    public void ifTryToFindANotExistedTemplateThenReturn404() throws Exception {
+    public void ifTryToFindAExistingTemplateThenReturn200() throws Exception {
+        Template template = templateService.create(testUser, templateDTO);
+
+        this.mockMvc.perform(get("/templates/" + template.getId())
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
+                .param("templateId", template.getId())
+        ).andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value("success"))
+                .andExpect(jsonPath("$.data.template.id").value(template.getId()))
+                .andExpect(jsonPath("$.data.template.userId").value(testUser.getId()))
+                .andExpect(jsonPath("$.data.template.title").value(template.getTitle()))
+                .andExpect(jsonPath("$.data.template.description").value(template.getDescription()))
+                .andExpect(jsonPath("$.data.template.boilerplate").value(template.getBoilerplate()));
+    }
+
+    @Test
+    @WithMockUser(username = "test")
+    public void ifTryToFindANotExistingTemplateThenReturn404() throws Exception {
         String templateId = RandomStringUtils.randomAlphabetic(8);
 
         this.mockMvc.perform(get("/templates/" + templateId)
@@ -114,6 +129,33 @@ public class TemplateControllerTest {
         ).andDo(print())
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.status").value("fail"));
+    }
+
+    @Test
+    @WithMockUser(username = "test")
+    public void ifTryToDeleteAnExistingTemplateThenReturn204() throws Exception {
+        Template template = templateService.create(testUser, templateDTO);
+
+        this.mockMvc.perform(delete("/templates/" + template.getId())
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
+                .param("templateId", template.getId())
+        ).andDo(print())
+                .andExpect(status().isNoContent())
+                .andReturn();
+    }
+
+    @Test
+    @WithMockUser(username = "test")
+    public void ifTryToDoubleDeleteATemplateThenReturn404() throws Exception {
+        Template template = templateService.create(testUser, templateDTO);
+        templateService.delete(template);
+
+        this.mockMvc.perform(delete("/templates/" + template.getId())
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
+                .param("templateId", template.getId())
+        ).andDo(print())
+                .andExpect(status().isNotFound())
+                .andReturn();
     }
 
 
