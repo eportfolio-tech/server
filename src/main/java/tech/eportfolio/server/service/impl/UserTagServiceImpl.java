@@ -7,6 +7,7 @@ import tech.eportfolio.server.model.User;
 import tech.eportfolio.server.model.UserTag;
 import tech.eportfolio.server.repository.UserTagRepository;
 import tech.eportfolio.server.service.TagService;
+import tech.eportfolio.server.service.UserService;
 import tech.eportfolio.server.service.UserTagService;
 
 import javax.validation.constraints.NotNull;
@@ -21,10 +22,12 @@ public class UserTagServiceImpl implements UserTagService {
 
     private final UserTagRepository userTagRepository;
     private final TagService tagService;
+    private final UserService userService;
 
-    public UserTagServiceImpl(UserTagRepository userTagRepository, TagService tagService) {
+    public UserTagServiceImpl(UserTagRepository userTagRepository, TagService tagService, UserService userService) {
         this.userTagRepository = userTagRepository;
         this.tagService = tagService;
+        this.userService = userService;
     }
 
     @Override
@@ -33,9 +36,20 @@ public class UserTagServiceImpl implements UserTagService {
     }
 
     @Override
+    public List<UserTag> findByTagId(String tagId) {
+        return userTagRepository.findByTagIdAndDeleted(tagId, false);
+    }
+
+    @Override
     public List<Tag> findTagsByUser(@NotNull User user) {
         List<UserTag> userTags = findByUsername(user.getUsername());
         return tagService.findByIdIn(userTags.stream().map(UserTag::getTagId).collect(Collectors.toList()));
+    }
+
+    @Override
+    public List<User> findUsersByTag(@NotNull Tag tag) {
+        List<UserTag> userTags = findByTagId(tag.getId());
+        return userService.findByIdIn(userTags.stream().map(UserTag::getUserId).collect(Collectors.toList()));
     }
 
     @Override

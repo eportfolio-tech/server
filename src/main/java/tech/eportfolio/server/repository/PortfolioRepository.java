@@ -9,11 +9,8 @@ import java.util.List;
 @Repository
 public interface PortfolioRepository extends MongoRepository<Portfolio, String> {
 
-    Portfolio findByIdAndDeleted(String id, boolean b);
-
-    List<Portfolio> findByUserIdInAndDeleted(List<Long> userIds, boolean b);
+    List<Portfolio> findByUserIdInAndDeleted(List<String> userIds, boolean b);
 
     Portfolio findByUsername(String username);
 
-    Portfolio findByUserIdAndDeleted(Long userId, boolean b);
 }

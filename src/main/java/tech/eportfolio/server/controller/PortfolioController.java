@@ -19,14 +19,19 @@ import tech.eportfolio.server.common.constant.Role;
 import tech.eportfolio.server.common.constant.Visibility;
 import tech.eportfolio.server.common.exception.PortfolioExistException;
 import tech.eportfolio.server.common.exception.PortfolioNotFoundException;
+import tech.eportfolio.server.common.exception.TagNotFoundException;
 import tech.eportfolio.server.common.exception.UserNotFoundException;
 import tech.eportfolio.server.common.jsend.SuccessResponse;
 import tech.eportfolio.server.common.utility.NullAwareBeanUtilsBean;
 import tech.eportfolio.server.dto.PortfolioDTO;
 import tech.eportfolio.server.model.Portfolio;
+import tech.eportfolio.server.model.Tag;
 import tech.eportfolio.server.model.User;
+import tech.eportfolio.server.model.UserTag;
 import tech.eportfolio.server.service.PortfolioService;
+import tech.eportfolio.server.service.TagService;
 import tech.eportfolio.server.service.UserService;
+import tech.eportfolio.server.service.UserTagService;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
@@ -34,6 +39,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController
 @Validated
@@ -44,15 +50,21 @@ public class PortfolioController {
 
     private final UserService userService;
 
+    private final TagService tagService;
+
+    private final UserTagService userTagService;
+
     private final ObjectMapper objectMapper;
 
     public static final String CONTENT = "content";
 
     public static final String PORTFOLIO = "portfolio";
 
-    public PortfolioController(PortfolioService portfolioService, UserService userService, ObjectMapper objectMapper) {
+    public PortfolioController(PortfolioService portfolioService, UserService userService, TagService tagService, UserTagService userTagService, ObjectMapper objectMapper) {
         this.portfolioService = portfolioService;
         this.userService = userService;
+        this.tagService = tagService;
+        this.userTagService = userTagService;
         this.objectMapper = objectMapper;
     }
 
@@ -147,5 +159,20 @@ public class PortfolioController {
         @SuppressWarnings("unchecked")
         Map<String, Object> map = objectMapper.convertValue(result, Map.class);
         return new SuccessResponse<>(map).toOk();
+    }
+
+    /**
+     * Return user's tags
+     *
+     * @param username username
+     * @return User
+     */
+    @GetMapping("/search-by-tag")
+//    @ApiOperation(value = "", authorizations = {@Authorization(value = "JWT")})
+    public ResponseEntity<SuccessResponse<List<Portfolio>>> findPortfoliosByTag(@RequestParam String tagId) {
+        Tag tag = tagService.findById(tagId).orElseThrow(() -> (new TagNotFoundException(tagId)));
+        List<UserTag> userTags = userTagService.findByTagId(tag.getId());
+        List<Portfolio> portfolios = portfolioService.findByUserIdIn(userTags.stream().map(UserTag::getUserId).collect(Collectors.toList()));
+        return new SuccessResponse<>("portfolio", portfolios).toOk();
     }
 }

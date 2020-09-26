@@ -122,6 +122,11 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
+    public List<User> findByIdIn(List<String> ids) {
+        return userRepository.findByIdInAndDeleted(ids, false);
+    }
+
+    @Override
     public User fromUserDTO(UserDTO userDTO) {
         User user = new User();
         NullAwareBeanUtilsBean.copyProperties(userDTO, user);

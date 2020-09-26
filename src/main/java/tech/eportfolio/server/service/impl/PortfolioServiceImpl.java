@@ -45,6 +45,11 @@ public class PortfolioServiceImpl implements PortfolioService {
     }
 
     @Override
+    public List<Portfolio> findByUserIdIn(List<String> userIds) {
+        return portfolioRepository.findByUserIdInAndDeleted(userIds, false);
+    }
+
+    @Override
     public Portfolio fromPortfolioDTO(PortfolioDTO portfolioDTO) {
         Portfolio portfolio = new Portfolio();
         NullAwareBeanUtilsBean.copyProperties(portfolioDTO, portfolio);

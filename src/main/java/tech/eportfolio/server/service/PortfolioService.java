@@ -15,6 +15,8 @@ public interface PortfolioService {
 
     Optional<Portfolio> findByUsername(String username);
 
+    List<Portfolio> findByUserIdIn(List<String> userIds);
+
     Portfolio fromPortfolioDTO(PortfolioDTO portfolioDTO);
 
     Portfolio create(User user, Portfolio portfolio);
