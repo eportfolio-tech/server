@@ -1,6 +1,7 @@
 package tech.eportfolio.server.model;
 
 import lombok.Data;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import javax.persistence.Id;
@@ -12,10 +13,9 @@ public class UserTag {
     @Id
     private String id;
 
-    @NotNull
+    @Indexed
     private String username;
 
-    @NotNull
     private String userId;
 
     @NotNull

@@ -3,6 +3,7 @@ package tech.eportfolio.server.model;
 import lombok.Data;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import tech.eportfolio.server.common.constant.Role;
 
@@ -17,14 +18,20 @@ public class User implements Serializable {
     @Id
     @Column(nullable = false, updatable = false)
     private String id;
+
     private String firstName;
     private String lastName;
+
+    @Indexed(name = "email_index")
     @Column(nullable = false, unique = true)
     private String email;
+
     @Column(nullable = false)
     private String password;
     private String title;
     private String phone;
+
+    @Indexed(unique = true)
     @Column(nullable = false, updatable = false, unique = true)
     private String username;
 
