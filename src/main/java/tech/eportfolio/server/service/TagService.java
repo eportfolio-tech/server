@@ -10,6 +10,8 @@ import java.util.Optional;
 public interface TagService {
     Optional<Tag> findById(String id);
 
+    Optional<Tag> findByName(String name);
+
     List<Tag> findAll();
 
     List<Tag> findByIdIn(List<String> ids);

@@ -12,5 +12,7 @@ public interface UserTagRepository extends MongoRepository<UserTag, String> {
 
     List<UserTag> findByTagIdAndDeleted(String tagId, boolean deleted);
 
+    List<UserTag> findBy(String tagName, boolean deleted);
+
     List<UserTag> findByTagIdInAndUsernameAndDeleted(List<String> tagIds, String username, Boolean delete);
 }

@@ -59,7 +59,7 @@ public class SearchController {
 
     // Search portfolio with pagination
     @GetMapping("/keyword")
-    public ResponseEntity<SuccessResponse<Object>> search(@RequestParam @Valid @NotBlank String query, @RequestParam int page, @RequestParam int size) {
+    public ResponseEntity<SuccessResponse<Object>> searchByKeyword(@RequestParam @Valid @NotBlank String query, @RequestParam int page, @RequestParam int size) {
 
         List<Visibility> searchVisibilities = new LinkedList<>();
         // Anyone should be able to search public portfiolio
@@ -87,13 +87,12 @@ public class SearchController {
     /**
      * Return user's tags
      *
-     * @param username username
+     * @param tagName username
      * @return User
      */
     @GetMapping("/tag")
-//    @ApiOperation(value = "", authorizations = {@Authorization(value = "JWT")})
-    public ResponseEntity<SuccessResponse<List<Portfolio>>> findPortfoliosByTag(@RequestParam String tagId) {
-        Tag tag = tagService.findById(tagId).orElseThrow(() -> (new TagNotFoundException(tagId)));
+    public ResponseEntity<SuccessResponse<List<Portfolio>>> searchByTag(@RequestParam String tagName) {
+        Tag tag = tagService.findByName(tagName).orElseThrow(() -> (new TagNotFoundException(tagName)));
         List<UserTag> userTags = userTagService.findByTagId(tag.getId());
         List<Portfolio> portfolios = portfolioService.findByUserIdIn(userTags.stream().map(UserTag::getUserId).collect(Collectors.toList()));
         return new SuccessResponse<>("portfolio", portfolios).toOk();

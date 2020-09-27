@@ -29,6 +29,11 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
+    public Optional<Tag> findByName(String name) {
+        return Optional.ofNullable(tagRepository.findByNameAndDeleted(name, false));
+    }
+
+    @Override
     public List<Tag> findAll() {
         return tagRepository.findByDeleted(false);
     }
