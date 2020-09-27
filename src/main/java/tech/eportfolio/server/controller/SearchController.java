@@ -61,6 +61,38 @@ public class SearchController {
     @GetMapping("/keyword")
     public ResponseEntity<SuccessResponse<Object>> searchByKeyword(@RequestParam @Valid @NotBlank String query, @RequestParam int page, @RequestParam int size) {
 
+        List<Visibility> searchVisibilities = addVisibilities();
+
+        Page<Portfolio> result = portfolioService.searchByKeywordWithPaginationAndVisibilities(query, PageRequest.of(page, size), searchVisibilities);
+        @SuppressWarnings("unchecked")
+        Map<String, Object> map = objectMapper.convertValue(result, Map.class);
+        return new SuccessResponse<>(map).toOk();
+    }
+
+    /**
+     * Return user's tags
+     *
+     * @param tagName username
+     * @return User
+     */
+    @GetMapping("/tag")
+    public ResponseEntity<SuccessResponse<Object>> searchByTag(@RequestParam @Valid @NotBlank String tagName, @RequestParam int page, @RequestParam int size) {
+
+        List<Visibility> searchVisibilities = addVisibilities();
+
+        Tag tag = tagService.findByName(tagName).orElseThrow(() -> (new TagNotFoundException(tagName)));
+        List<UserTag> userTags = userTagService.findByTagId(tag.getId());
+        List<String> userIds = userTags.stream().map(UserTag::getUserId).collect(Collectors.toList());
+//        List<Portfolio> portfolios = portfolioService.findByUserIdIn(userTags.stream().map(UserTag::getUserId).collect(Collectors.toList()));
+        Page<Portfolio> result = portfolioService.searchByTagWithPaginationAndVisibilities(PageRequest.of(page, size), searchVisibilities, userIds);
+        @SuppressWarnings("unchecked")
+        Map<String, Object> map = objectMapper.convertValue(result, Map.class);
+        return new SuccessResponse<>(map).toOk();
+    }
+
+
+    // functional methods to add visibilities
+    private List<Visibility> addVisibilities() {
         List<Visibility> searchVisibilities = new LinkedList<>();
         // Anyone should be able to search public portfiolio
         searchVisibilities.add(Visibility.PUBLIC);
@@ -78,23 +110,6 @@ public class SearchController {
             }
         }
 
-        Page<Portfolio> result = portfolioService.searchWithPaginationAndVisibilities(query, PageRequest.of(page, size), searchVisibilities);
-        @SuppressWarnings("unchecked")
-        Map<String, Object> map = objectMapper.convertValue(result, Map.class);
-        return new SuccessResponse<>(map).toOk();
-    }
-
-    /**
-     * Return user's tags
-     *
-     * @param tagName username
-     * @return User
-     */
-    @GetMapping("/tag")
-    public ResponseEntity<SuccessResponse<List<Portfolio>>> searchByTag(@RequestParam String tagName) {
-        Tag tag = tagService.findByName(tagName).orElseThrow(() -> (new TagNotFoundException(tagName)));
-        List<UserTag> userTags = userTagService.findByTagId(tag.getId());
-        List<Portfolio> portfolios = portfolioService.findByUserIdIn(userTags.stream().map(UserTag::getUserId).collect(Collectors.toList()));
-        return new SuccessResponse<>("portfolio", portfolios).toOk();
+        return searchVisibilities;
     }
 }

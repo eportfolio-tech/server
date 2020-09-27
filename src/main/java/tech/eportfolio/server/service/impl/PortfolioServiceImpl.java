@@ -69,9 +69,22 @@ public class PortfolioServiceImpl implements PortfolioService {
     }
 
     @Override
-    public Page<Portfolio> searchWithPaginationAndVisibilities(String text, Pageable pageable, List<Visibility> visibilities) {
+    public Page<Portfolio> searchByKeywordWithPaginationAndVisibilities(String text, Pageable pageable, List<Visibility> visibilities) {
         Query query = TextQuery.queryText(new TextCriteria().matchingAny(text)).sortByScore()
                 .addCriteria(Criteria.where("visibility").in(visibilities)).with(pageable);
+        return this.searchWithPaginationAndVisibilities(query, pageable, visibilities);
+    }
+
+    @Override
+    public Page<Portfolio> searchByTagWithPaginationAndVisibilities(Pageable pageable, List<Visibility> visibilities, List<String> userIds) {
+        Query query = new Query()
+                .addCriteria(Criteria.where("userId").in(userIds))
+                .addCriteria(Criteria.where("visibility").in(visibilities)).with(pageable);
+        return this.searchWithPaginationAndVisibilities(query, pageable, visibilities);
+    }
+
+    @Override
+    public Page<Portfolio> searchWithPaginationAndVisibilities(Query query, Pageable pageable, List<Visibility> visibilities) {
         List<Portfolio> result = mongoTemplate.find(query, Portfolio.class);
         return PageableExecutionUtils.getPage(
                 result,
