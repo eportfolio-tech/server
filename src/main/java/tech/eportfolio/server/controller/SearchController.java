@@ -82,6 +82,7 @@ public class SearchController {
 
         Tag tag = tagService.findByName(tagName).orElseThrow(() -> (new TagNotFoundException(tagName)));
         List<UserTag> userTags = userTagService.findByTagId(tag.getId());
+        // Extract all userIds from userTags
         List<String> userIds = userTags.stream().map(UserTag::getUserId).collect(Collectors.toList());
 //        List<Portfolio> portfolios = portfolioService.findByUserIdIn(userTags.stream().map(UserTag::getUserId).collect(Collectors.toList()));
         Page<Portfolio> result = portfolioService.searchByTagWithPaginationAndVisibilities(PageRequest.of(page, size), searchVisibilities, userIds);

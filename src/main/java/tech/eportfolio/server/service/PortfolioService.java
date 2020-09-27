@@ -26,7 +26,7 @@ public interface PortfolioService {
 
     Page<Portfolio> searchByTagWithPaginationAndVisibilities(Pageable pageable, List<Visibility> visibilities, List<String> userIds);
 
-    Page<Portfolio> searchWithPaginationAndVisibilities(Query query, Pageable pageable, List<Visibility> visibilities);
+    Page<Portfolio> searchWithPagination(Query query, Pageable pageable);
 
     Portfolio updateContent(Portfolio portfolio, Map<String, Object> map);
 
