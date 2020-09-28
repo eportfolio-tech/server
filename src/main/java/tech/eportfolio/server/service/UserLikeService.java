@@ -15,6 +15,8 @@ public interface UserLikeService {
 
     Optional<UserLike> findByUsernameAndPortfolioId(String username, String portfolioId);
 
+    Optional<UserLike> findByUsernameAndPortfolioIdAndDeleted(String likerName, String portfolioId);
+
     UserLike delete(UserLike userLike);
 
     List<UserLike> findByUser(User user);

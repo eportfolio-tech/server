@@ -64,11 +64,8 @@ public class UserLikeServiceImpl implements UserLikeService {
     public UserLike unlike(User user, Portfolio portfolio) {
         String username = user.getUsername();
         String portfolioId = portfolio.getId();
-        UserLike userLike = this.findByUsernameAndPortfolioId(user.getUsername(), portfolio.getId()).orElseThrow(
-                () -> new UserLikeNotExistException(username, portfolioId));
-        if (userLike.isDeleted()) {
-            throw new UserLikeNotExistException(username, portfolioId);
-        }
+        UserLike userLike = this.findByUsernameAndPortfolioIdAndDeleted(user.getUsername(), portfolio.getId())
+                .orElseThrow(() -> new UserLikeNotExistException(username, portfolioId));
         return this.delete(userLike);
     }
 
@@ -78,7 +75,12 @@ public class UserLikeServiceImpl implements UserLikeService {
     }
 
     @Override
-    public UserLike delete(UserLike userLike){
+    public Optional<UserLike> findByUsernameAndPortfolioIdAndDeleted(String likerName, String portfolioId) {
+        return Optional.ofNullable(userLikeRepository.findByPortfolioIdAndUsernameAndDeleted(portfolioId, likerName, false));
+    }
+
+    @Override
+    public UserLike delete(UserLike userLike) {
         userLike.setDeleted(true);
         userLikeRepository.save(userLike);
         return userLike;
