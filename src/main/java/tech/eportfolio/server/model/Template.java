@@ -4,6 +4,7 @@ import com.mongodb.DBObject;
 import lombok.Data;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.index.TextIndexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -16,7 +17,9 @@ public class Template {
     @Id
     private String id;
 
+
     @TextIndexed
+    @Indexed
     private String title;
 
     private String description;
