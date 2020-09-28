@@ -2,6 +2,7 @@ package tech.eportfolio.server.model;
 
 import lombok.Data;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import javax.persistence.Id;
@@ -13,8 +14,10 @@ public class UserComment {
     @Id
     private String id;
 
+    @Indexed
     private String username;
 
+    @Indexed
     private String portfolioId;
 
     private String comment;
