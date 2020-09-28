@@ -35,4 +35,6 @@ public interface PortfolioService {
     Portfolio save(Portfolio portfolio);
 
     List<Portfolio> searchWithVisibilities(String text, List<Visibility> visibilities);
+
+    List<Portfolio> searchWithVisibilities(List<Visibility> visibilities);
 }

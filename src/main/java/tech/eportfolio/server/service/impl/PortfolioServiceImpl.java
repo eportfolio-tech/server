@@ -101,6 +101,13 @@ public class PortfolioServiceImpl implements PortfolioService {
     }
 
     @Override
+    public List<Portfolio> searchWithVisibilities(List<Visibility> visibilities) {
+        Query query = new Query()
+                .addCriteria(Criteria.where("visibility").in(visibilities));
+        return mongoTemplate.find(query, Portfolio.class);
+    }
+
+    @Override
     public Portfolio updateContent(Portfolio portfolio, Map<String, Object> map) {
         ObjectMapper mapper = new ObjectMapper();
         TypeReference<HashMap<String, Object>> typeRef = new TypeReference<>() {
