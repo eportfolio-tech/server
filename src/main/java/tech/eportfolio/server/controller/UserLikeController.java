@@ -16,7 +16,9 @@ import tech.eportfolio.server.service.PortfolioService;
 import tech.eportfolio.server.service.UserLikeService;
 import tech.eportfolio.server.service.UserService;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/portfolios/{ownerUsername}")
@@ -37,11 +39,20 @@ public class UserLikeController {
 
     @GetMapping("/like")
     @ApiOperation(value = "", authorizations = {@Authorization(value = "JWT")})
-    public ResponseEntity<SuccessResponse<List<UserLike>>> findWhoLikedThisPortfolio(@PathVariable String ownerUsername) {
+    public ResponseEntity<SuccessResponse<Object>> findWhoLikedThisPortfolio(@PathVariable String ownerUsername) {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
         Portfolio portfolio = portfolioService.findByUsername(ownerUsername).orElseThrow(() -> new PortfolioNotFoundException(ownerUsername));
         List<UserLike> userLikes = userLikeService.findByPortfolio(portfolio);
-        return new SuccessResponse<>("user-like", userLikes).toOk();
+        Optional<UserLike> loginUserLike = userLikeService.findByPortfolioAndUsername(portfolio, username);
+        HashMap<String, Object> hashMap = new HashMap<>();
+
+        hashMap.put("liked", loginUserLike.isPresent());
+        hashMap.put("user-like", userLikes);
+        SuccessResponse<Object> response = new SuccessResponse<>();
+        response.setData(hashMap);
+        return response.toOk();
     }
+
 
     @PostMapping("/like")
     @ApiOperation(value = "", authorizations = {@Authorization(value = "JWT")})

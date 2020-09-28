@@ -35,6 +35,10 @@ public class UserLikeServiceImpl implements UserLikeService {
         return userLikeRepository.findByPortfolioIdAndDeleted(portfolio.getId(), false);
     }
 
+    @Override
+    public Optional<UserLike> findByPortfolioAndUsername(Portfolio portfolio, String username) {
+        return Optional.ofNullable(userLikeRepository.findByPortfolioIdAndUsernameAndDeleted(portfolio.getId(), username, false));
+    }
 
 
     @Override

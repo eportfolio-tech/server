@@ -15,5 +15,6 @@ public interface UserLikeRepository extends MongoRepository<UserLike, String> {
 
     List<UserLike> findByPortfolioIdAndDeleted(String id, boolean deleted);
 
+    UserLike findByPortfolioIdAndUsernameAndDeleted(String id, String username, boolean deleted);
 
 }

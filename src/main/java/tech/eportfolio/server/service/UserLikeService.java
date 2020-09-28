@@ -20,4 +20,6 @@ public interface UserLikeService {
     List<UserLike> findByUser(User user);
 
     List<UserLike> findByPortfolio(Portfolio portfolio);
+
+    Optional<UserLike> findByPortfolioAndUsername(Portfolio portfolio, String username);
 }
