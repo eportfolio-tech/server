@@ -8,16 +8,16 @@ import java.util.Optional;
 
 public interface UserFollowService {
 
-    UserFollow follow(User user, String followerName);
+    UserFollow follow(User sourceUser, String destinationUsername);
 
-    UserFollow unfollow(User user, String followerName);
+    UserFollow unfollow(User sourceUser, String destinationUsername);
 
-    Optional<UserFollow> findByUsernameAndFollowerName(String username, String followerName);
+    Optional<UserFollow> findBySourceUsernameAndDestinationName(String sourceUsername, String destinationUsername);
 
-    Optional<UserFollow> findByUsernameAndFollowerNameAndDeleted(String username, String followerName);
+    Optional<UserFollow> findBySourceUsernameAndDestinationNameAndDeleted(String sourceUsername, String destinationUsername);
 
-    UserFollow delete(UserFollow userLike);
+    UserFollow delete(UserFollow userFollow);
 
-    List<UserFollow> findByFollower(User user);
+    List<UserFollow> findByDestinationUser(User destinationUser);
 
 }

@@ -25,14 +25,14 @@ public class UserFollowServiceImpl implements UserFollowService {
 
 
     @Override
-    public List<UserFollow> findByFollower(User user) {
-        return userFollowerRepository.findByFollowerNameAndDeleted(user.getUsername(), false);
+    public List<UserFollow> findByDestinationUser(User destinationUser) {
+        return userFollowerRepository.findByDestinationUsernameAndDeleted(destinationUser.getUsername(), false);
     }
 
 
     @Override
-    public UserFollow follow(User user, String followerName) {
-        Optional<UserFollow> follower = this.findByUsernameAndFollowerName(user.getUsername(), followerName);
+    public UserFollow follow(User sourceUser, String destinationUsername) {
+        Optional<UserFollow> follower = this.findBySourceUsernameAndDestinationName(sourceUser.getUsername(), destinationUsername);
         if (follower.isPresent()) {
             UserFollow userFollower = follower.get();
             if (userFollower.isDeleted()) {
@@ -40,37 +40,37 @@ public class UserFollowServiceImpl implements UserFollowService {
                 userFollower.setCreatedDate(new Date());
                 return userFollowerRepository.save(userFollower);
             } else {
-                throw new UserFollowExistException(user.getUsername(), followerName);
+                throw new UserFollowExistException(sourceUser.getUsername(), destinationUsername);
             }
         }
         UserFollow newUserFollower = new UserFollow();
-        newUserFollower.setUsername(user.getUsername());
-        newUserFollower.setFollowerName(followerName);
+        newUserFollower.setSourceUsername(sourceUser.getUsername());
+        newUserFollower.setDestinationUsername(destinationUsername);
         return userFollowerRepository.save(newUserFollower);
     }
 
     @Override
-    public UserFollow unfollow(User user, String followerName) {
-        String username = user.getUsername();
-        UserFollow userLike = this.findByUsernameAndFollowerNameAndDeleted(user.getUsername(), followerName).orElseThrow(
-                () -> new UserFollowNotExistException(username, followerName));
+    public UserFollow unfollow(User sourceUser, String destinationUsername) {
+        String username = sourceUser.getUsername();
+        UserFollow userLike = this.findBySourceUsernameAndDestinationNameAndDeleted(sourceUser.getUsername(), destinationUsername).orElseThrow(
+                () -> new UserFollowNotExistException(username, destinationUsername));
         return this.delete(userLike);
     }
 
     @Override
-    public Optional<UserFollow> findByUsernameAndFollowerName(String username, String followerName) {
-        return Optional.ofNullable(userFollowerRepository.findByUsernameAndFollowerName(username, followerName));
+    public Optional<UserFollow> findBySourceUsernameAndDestinationName(String sourceUsername, String destinationUsername) {
+        return Optional.ofNullable(userFollowerRepository.findBySourceUsernameAndDestinationUsername(sourceUsername, destinationUsername));
     }
 
     @Override
-    public Optional<UserFollow> findByUsernameAndFollowerNameAndDeleted(String username, String followerName) {
-        return Optional.ofNullable(userFollowerRepository.findByUsernameAndFollowerNameAndDeleted(username, followerName, false));
+    public Optional<UserFollow> findBySourceUsernameAndDestinationNameAndDeleted(String sourceUser, String destinationUsername) {
+        return Optional.ofNullable(userFollowerRepository.findBySourceUsernameAndDestinationUsernameAndDeleted(sourceUser, destinationUsername, false));
     }
 
     @Override
-    public UserFollow delete(UserFollow userFollower) {
-        userFollower.setDeleted(true);
-        userFollowerRepository.save(userFollower);
-        return userFollower;
+    public UserFollow delete(UserFollow userFollow) {
+        userFollow.setDeleted(true);
+        userFollowerRepository.save(userFollow);
+        return userFollow;
     }
 }

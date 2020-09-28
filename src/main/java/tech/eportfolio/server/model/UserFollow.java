@@ -14,10 +14,12 @@ public class UserFollow {
     @Id
     private String id;
 
+    // source user follows destination user
     @Indexed
-    private String username;
+    private String sourceUsername;
 
-    private String followerName;
+    @Indexed
+    private String destinationUsername;
 
     @CreatedDate
     private Date createdDate;

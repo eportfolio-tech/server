@@ -4,6 +4,8 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.Authorization;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import tech.eportfolio.server.common.exception.PortfolioNotFoundException;
@@ -21,7 +23,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/users/{followerName}")
+@RequestMapping("/users/{destinationUsername}")
 public class UserFollowController {
 
     private final UserFollowService userFollowerService;
@@ -37,16 +39,24 @@ public class UserFollowController {
 
     @GetMapping("/follow")
     @ApiOperation(value = "", authorizations = {@Authorization(value = "JWT")})
-    public ResponseEntity<SuccessResponse<Object>> findWhoFollowedThisUser(@PathVariable String followerName) {
-        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+    public ResponseEntity<SuccessResponse<Object>> findWhoFollowedThisUser(@PathVariable String destinationUsername) {
 
-        User follower = userService.findByUsername(followerName).orElseThrow(() -> new UserNotFoundException(followerName));
-        List<UserFollow> userFollows = userFollowerService.findByFollower(follower);
-        Optional<UserFollow> loginUserFollower = userFollowerService.findByUsernameAndFollowerNameAndDeleted(username, followerName);
+        // Retrieve authentication from security context
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String sourceUsername = authentication.getName();
 
+        User follower = userService.findByUsername(destinationUsername).orElseThrow(() -> new UserNotFoundException(destinationUsername));
+        List<UserFollow> userFollows = userFollowerService.findByDestinationUser(follower);
         HashMap<String, Object> hashMap = new HashMap<>();
-        hashMap.put("followed", loginUserFollower.isPresent());
         hashMap.put("user-follow", userFollows);
+
+        if (authentication instanceof AnonymousAuthenticationToken) {
+            hashMap.put("followed", false);
+        } else {
+            Optional<UserFollow> loginUserFollower = userFollowerService.findBySourceUsernameAndDestinationNameAndDeleted(sourceUsername, destinationUsername);
+            hashMap.put("followed", loginUserFollower.isPresent());
+        }
+
         SuccessResponse<Object> response = new SuccessResponse<>();
         response.setData(hashMap);
         return response.toOk();
@@ -55,33 +65,33 @@ public class UserFollowController {
 
     @PostMapping("/follow")
     @ApiOperation(value = "", authorizations = {@Authorization(value = "JWT")})
-    public ResponseEntity<SuccessResponse<Object>> followUser(@PathVariable String followerName) {
-        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+    public ResponseEntity<SuccessResponse<Object>> followUser(@PathVariable String destinationUsername) {
+        String sourceUsername = SecurityContextHolder.getContext().getAuthentication().getName();
 
         // The condition when a user is following himself/herself
-        if (username.equals(followerName)) {
-            throw new SelfFollowCanNotBeAllowedException(username);
+        if (sourceUsername.equals(destinationUsername)) {
+            throw new SelfFollowCanNotBeAllowedException(sourceUsername);
         }
 
-        User user = userService.findByUsername(username).orElseThrow(() -> new UserNotFoundException(username));
-        User owner = userService.findByUsername(followerName).orElseThrow(() -> new PortfolioNotFoundException(followerName));
-        userFollowerService.follow(user, owner.getUsername());
+        User sourceUser = userService.findByUsername(sourceUsername).orElseThrow(() -> new UserNotFoundException(sourceUsername));
+        User destinationUser = userService.findByUsername(destinationUsername).orElseThrow(() -> new PortfolioNotFoundException(destinationUsername));
+        userFollowerService.follow(sourceUser, destinationUser.getUsername());
         return new SuccessResponse<>().toOk();
     }
 
     @DeleteMapping("/follow")
     @ApiOperation(value = "", authorizations = {@Authorization(value = "JWT")})
-    public ResponseEntity<SuccessResponse<Object>> unlikePortfolio(@PathVariable String followerName) {
+    public ResponseEntity<SuccessResponse<Object>> unlikePortfolio(@PathVariable String destinationUsername) {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
 
         // The condition when a user is following himself/herself
-        if (username.equals(followerName)) {
+        if (username.equals(destinationUsername)) {
             throw new SelfUnfollowCanNotBeAllowedException(username);
         }
 
-        User user = userService.findByUsername(username).orElseThrow(() -> new UserNotFoundException(username));
-        User owner = userService.findByUsername(followerName).orElseThrow(() -> new PortfolioNotFoundException(followerName));
-        userFollowerService.unfollow(user, owner.getUsername());
+        User sourceUser = userService.findByUsername(username).orElseThrow(() -> new UserNotFoundException(username));
+        User destinationUser = userService.findByUsername(destinationUsername).orElseThrow(() -> new PortfolioNotFoundException(destinationUsername));
+        userFollowerService.unfollow(sourceUser, destinationUser.getUsername());
         return new SuccessResponse<>().toOk();
     }
 

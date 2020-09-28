@@ -27,7 +27,8 @@ public class SecurityConstant {
     public static final String REFRESH_SECRET = "This is a refresh token secret";
 
     public static final String[] POST_ONLY = {"/blobs/image/**", "/verification/verify/**"};
-    public static final String[] GET_ONLY = {"/tags/", "/search/**", "/portfolios/{username}", "/portfolios/{ownerUsername}/comments"};
+    public static final String[] GET_ONLY = {"/tags/", "/search/**", "/portfolios/{username}", "/portfolios/{ownerUsername}/comments",
+            "/portfolios/{ownerUsername}/like", "/users/{followerName}/follow"};
     public static final Period REFRESH_TOKEN_VALIDITY = Period.weeks(2);
     public static final Period ACCESS_TOKEN_VALIDITY = Period.minutes(15);
     public static final Period PASSWORD_RECOVERY_TOKEN_VALIDITY = Period.minutes(15);

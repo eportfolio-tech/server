@@ -9,12 +9,12 @@ import java.util.List;
 @Repository
 public interface UserFollowRepository extends MongoRepository<UserFollow, String> {
 
-    UserFollow findByUsernameAndFollowerName(String username, String followerName);
+    UserFollow findBySourceUsernameAndDestinationUsername(String sourceUsername, String destinationUsername);
 
-    UserFollow findByUsernameAndFollowerNameAndDeleted(String username, String followerName, boolean deleted);
+    UserFollow findBySourceUsernameAndDestinationUsernameAndDeleted(String sourceUsername, String destinationUsername, boolean deleted);
 
-    UserFollow findByUsernameAndIdAndDeleted(String username, String id, boolean deleted);
+    UserFollow findBySourceUsernameAndIdAndDeleted(String sourceUsername, String id, boolean deleted);
 
-    List<UserFollow> findByFollowerNameAndDeleted(String follower, boolean deleted);
+    List<UserFollow> findByDestinationUsernameAndDeleted(String destinationUsername, boolean deleted);
 
 }

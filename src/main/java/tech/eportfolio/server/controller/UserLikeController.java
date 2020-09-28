@@ -4,6 +4,8 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.Authorization;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import tech.eportfolio.server.common.exception.PortfolioNotFoundException;
@@ -40,14 +42,23 @@ public class UserLikeController {
     @GetMapping("/like")
     @ApiOperation(value = "", authorizations = {@Authorization(value = "JWT")})
     public ResponseEntity<SuccessResponse<Object>> findWhoLikedThisPortfolio(@PathVariable String ownerUsername) {
-        String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        Portfolio portfolio = portfolioService.findByUsername(ownerUsername).orElseThrow(() -> new PortfolioNotFoundException(ownerUsername));
-        List<UserLike> userLikes = userLikeService.findByPortfolio(portfolio);
-        Optional<UserLike> loginUserLike = userLikeService.findByPortfolioAndUsername(portfolio, username);
-        HashMap<String, Object> hashMap = new HashMap<>();
 
-        hashMap.put("liked", loginUserLike.isPresent());
+        // Retrieve authentication from security context
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+
+        Portfolio portfolio = portfolioService.findByUsername(ownerUsername).orElseThrow(() -> new PortfolioNotFoundException(ownerUsername));
+        HashMap<String, Object> hashMap = new HashMap<>();
+        List<UserLike> userLikes = userLikeService.findByPortfolio(portfolio);
         hashMap.put("user-like", userLikes);
+
+        if (authentication instanceof AnonymousAuthenticationToken) {
+            hashMap.put("liked", false);
+        } else {
+            Optional<UserLike> loginUserLike = userLikeService.findByPortfolioAndUsername(portfolio, username);
+            hashMap.put("liked", loginUserLike.isPresent());
+        }
+
         SuccessResponse<Object> response = new SuccessResponse<>();
         response.setData(hashMap);
         return response.toOk();
