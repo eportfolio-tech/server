@@ -52,9 +52,9 @@ public class UserFollowServiceImpl implements UserFollowService {
     @Override
     public UserFollow unfollow(User sourceUser, String destinationUsername) {
         String username = sourceUser.getUsername();
-        UserFollow userLike = this.findBySourceUsernameAndDestinationNameAndDeleted(sourceUser.getUsername(), destinationUsername).orElseThrow(
+        UserFollow userFollow = this.findBySourceUsernameAndDestinationNameAndDeleted(sourceUser.getUsername(), destinationUsername).orElseThrow(
                 () -> new UserFollowNotExistException(username, destinationUsername));
-        return this.delete(userLike);
+        return this.delete(userFollow);
     }
 
     @Override
