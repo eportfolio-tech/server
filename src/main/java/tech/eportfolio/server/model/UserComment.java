@@ -20,7 +20,9 @@ public class UserComment {
     @Indexed
     private String portfolioId;
 
-    private String comment;
+    private String inReplyTo;
+
+    private String content;
 
     @CreatedDate
     private Date createdDate;

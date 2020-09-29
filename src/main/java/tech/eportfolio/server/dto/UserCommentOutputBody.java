@@ -14,7 +14,7 @@ public class UserCommentOutputBody {
 
     private String portfolioId;
 
-    private String comment;
+    private String content;
 
     private Date createdDate;
 
@@ -22,13 +22,16 @@ public class UserCommentOutputBody {
 
     private String avatarUrl;
 
-    public UserCommentOutputBody(UserComment userComment, String s) {
+    private String inReplyTo;
+
+    public UserCommentOutputBody(UserComment userComment, String avatarUrl) {
         this.id = userComment.getId();
         this.username = userComment.getUsername();
         this.portfolioId = userComment.getPortfolioId();
-        this.comment = userComment.getComment();
+        this.content = userComment.getContent();
         this.createdDate = userComment.getCreatedDate();
         this.deleted = userComment.isDeleted();
-        this.avatarUrl = s;
+        this.avatarUrl = avatarUrl;
+        this.inReplyTo = userComment.getInReplyTo();
     }
 }

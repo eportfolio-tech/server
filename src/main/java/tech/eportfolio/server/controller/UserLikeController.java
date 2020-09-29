@@ -38,7 +38,6 @@ public class UserLikeController {
     }
 
     @GetMapping("/like")
-    @ApiOperation(value = "", authorizations = {@Authorization(value = "JWT")})
     public ResponseEntity<SuccessResponse<Object>> findWhoLikedThisPortfolio(@PathVariable String ownerUsername) {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         Portfolio portfolio = portfolioService.findByUsername(ownerUsername).orElseThrow(() -> new PortfolioNotFoundException(ownerUsername));

@@ -18,4 +18,8 @@ public interface UserCommentService {
     List<UserComment> findByPortfolio(Portfolio portfolio);
 
     List<User> findUsersByUserComments(List<UserComment> userComments);
+
+    UserComment reply(User user, UserComment inReplyTo, String content);
+
+    Optional<UserComment> findById(String id);
 }

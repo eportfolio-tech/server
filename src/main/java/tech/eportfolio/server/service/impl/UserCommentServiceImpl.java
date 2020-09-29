@@ -36,13 +36,29 @@ public class UserCommentServiceImpl implements UserCommentService {
         return userService.findByUsernameIn(userComments.stream().map(UserComment::getUsername).collect(Collectors.toList()));
     }
 
+    @Override
+    public UserComment reply(User user, UserComment inReplyTo, String content) {
+        UserComment userComment = new UserComment();
+        userComment.setUsername(user.getUsername());
+        userComment.setPortfolioId(inReplyTo.getPortfolioId());
+        userComment.setContent(content);
+        userComment.setInReplyTo(inReplyTo.getId());
+        return userCommentRepository.save(userComment);
+    }
 
     @Override
-    public UserComment create(User user, Portfolio portfolio, String comment) {
+    public Optional<UserComment> findById(String id) {
+        return userCommentRepository.findById(id);
+    }
+
+
+    @Override
+    public UserComment create(User user, Portfolio portfolio, String content) {
         UserComment userComment = new UserComment();
         userComment.setUsername(user.getUsername());
         userComment.setPortfolioId(portfolio.getId());
-        userComment.setComment(comment);
+        userComment.setContent(content);
+        userComment.setInReplyTo(null);
         return userCommentRepository.save(userComment);
     }
 

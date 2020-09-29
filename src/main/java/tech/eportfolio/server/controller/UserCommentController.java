@@ -32,6 +32,8 @@ public class UserCommentController {
 
     private final UserCommentService userCommentService;
 
+    private static final String COMMENTS = "comments";
+
     @Autowired
     public UserCommentController(PortfolioService portfolioService, UserService userService, UserCommentService userCommentService, PortfolioService portfolioRepository) {
         this.portfolioService = portfolioService;
@@ -49,17 +51,27 @@ public class UserCommentController {
         List<UserCommentOutputBody> result = userComments.stream()
                 .map(userComment -> new UserCommentOutputBody(userComment, map.get(userComment.getUsername())))
                 .collect(Collectors.toList());
-        return new SuccessResponse<>("user-comment", result).toOk();
+        return new SuccessResponse<>(COMMENTS, result).toOk();
     }
 
     @PostMapping("/comments")
     @ApiOperation(value = "", authorizations = {@Authorization(value = "JWT")})
-    public ResponseEntity<SuccessResponse<UserComment>> commentPortfolio(@PathVariable String ownerUsername, @RequestParam String comment) {
+    public ResponseEntity<SuccessResponse<UserComment>> createComment(@PathVariable String ownerUsername, @RequestParam String content) {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = userService.findByUsername(username).orElseThrow(() -> new UserNotFoundException(username));
         Portfolio portfolio = portfolioService.findByUsername(ownerUsername).orElseThrow(() -> new PortfolioNotFoundException(ownerUsername));
-        UserComment userComment = userCommentService.create(user, portfolio, comment);
-        return new SuccessResponse<>("user-comment", userComment).toOk();
+        UserComment userComment = userCommentService.create(user, portfolio, content);
+        return new SuccessResponse<>(COMMENTS, userComment).toOk();
+    }
+
+    @PostMapping("/comments/{commentId}/reply")
+    @ApiOperation(value = "", authorizations = {@Authorization(value = "JWT")})
+    public ResponseEntity<SuccessResponse<UserComment>> reply(@PathVariable String commentId, @RequestParam String content) {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userService.findByUsername(username).orElseThrow(() -> new UserNotFoundException(username));
+        UserComment inReplyTo = userCommentService.findById(commentId).orElseThrow(() -> new CommentNotFoundException(commentId));
+        UserComment reply = userCommentService.reply(user, inReplyTo, content);
+        return new SuccessResponse<>(COMMENTS, reply).toOk();
     }
 
     @DeleteMapping("/comments/{id}")
