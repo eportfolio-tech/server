@@ -1,0 +1,344 @@
+@startuml
+
+title __DTO's Class Diagram__\n
+
+  namespace tech.eportfolio.server {
+    namespace dto {
+      class tech.eportfolio.server.dto.LoginRequestBody {
+          - password : String
+          - username : String
+          + LoginRequestBody()
+          {static} + builder()
+          + equals()
+          + getPassword()
+          + getUsername()
+          + hashCode()
+          + setPassword()
+          + setUsername()
+          + toString()
+          # canEqual()
+      }
+    }
+  }
+  
+
+  namespace tech.eportfolio.server {
+    namespace dto {
+      class tech.eportfolio.server.dto.LoginRequestBody.LoginRequestBodyBuilder {
+          - password : String
+          - username : String
+          + build()
+          + password()
+          + toString()
+          + username()
+          ~ LoginRequestBodyBuilder()
+      }
+    }
+  }
+  
+
+  namespace tech.eportfolio.server {
+    namespace dto {
+      class tech.eportfolio.server.dto.PasswordResetRequestBody {
+          - newPassword : String
+          - oldPassword : String
+          {static} + builder()
+          + equals()
+          + getNewPassword()
+          + getOldPassword()
+          + hashCode()
+          + setNewPassword()
+          + setOldPassword()
+          + toString()
+          # canEqual()
+          ~ PasswordResetRequestBody()
+      }
+    }
+  }
+  
+
+  namespace tech.eportfolio.server {
+    namespace dto {
+      class tech.eportfolio.server.dto.PasswordResetRequestBody.PasswordResetRequestBodyBuilder {
+          - newPassword : String
+          - oldPassword : String
+          + build()
+          + newPassword()
+          + oldPassword()
+          + toString()
+          ~ PasswordResetRequestBodyBuilder()
+      }
+    }
+  }
+  
+
+  namespace tech.eportfolio.server {
+    namespace dto {
+      class tech.eportfolio.server.dto.PortfolioDTO {
+          - description : String
+          - title : String
+          + PortfolioDTO()
+          + PortfolioDTO()
+          {static} + builder()
+          + equals()
+          + getDescription()
+          + getTitle()
+          + getVisibility()
+          + hashCode()
+          {static} + mock()
+          + setDescription()
+          + setTitle()
+          + setVisibility()
+          + toString()
+          # canEqual()
+      }
+    }
+  }
+  
+
+  namespace tech.eportfolio.server {
+    namespace dto {
+      class tech.eportfolio.server.dto.PortfolioDTO.PortfolioDTOBuilder {
+          - description : String
+          - title : String
+          + build()
+          + description()
+          + title()
+          + toString()
+          + visibility()
+          ~ PortfolioDTOBuilder()
+      }
+    }
+  }
+  
+
+  namespace tech.eportfolio.server {
+    namespace dto {
+      class tech.eportfolio.server.dto.RenewRequestBody {
+          - refreshToken : String
+          + RenewRequestBody()
+          + equals()
+          + getRefreshToken()
+          + hashCode()
+          + setRefreshToken()
+          + toString()
+          # canEqual()
+      }
+    }
+  }
+  
+
+  namespace tech.eportfolio.server {
+    namespace dto {
+      class tech.eportfolio.server.dto.TemplateDTO {
+          - boilerplate : JsonNode
+          - description : String
+          - title : String
+          + TemplateDTO()
+          {static} + builder()
+          + equals()
+          + getBoilerplate()
+          + getDescription()
+          + getTitle()
+          + hashCode()
+          {static} + mock()
+          + setBoilerplate()
+          + setDescription()
+          + setTitle()
+          + toString()
+          # canEqual()
+      }
+    }
+  }
+  
+
+  namespace tech.eportfolio.server {
+    namespace dto {
+      class tech.eportfolio.server.dto.TemplateDTO.TemplateDTOBuilder {
+          - boilerplate : JsonNode
+          - description : String
+          - title : String
+          + boilerplate()
+          + build()
+          + description()
+          + title()
+          + toString()
+          ~ TemplateDTOBuilder()
+      }
+    }
+  }
+  
+
+  namespace tech.eportfolio.server {
+    namespace dto {
+      class tech.eportfolio.server.dto.UserCommentOutputBody {
+          - avatarUrl : String
+          - content : String
+          - createdDate : Date
+          - deleted : boolean
+          - id : String
+          - inReplyTo : String
+          - portfolioId : String
+          - username : String
+          + UserCommentOutputBody()
+          + UserCommentOutputBody()
+          + equals()
+          + getAvatarUrl()
+          + getContent()
+          + getCreatedDate()
+          + getId()
+          + getInReplyTo()
+          + getPortfolioId()
+          + getUsername()
+          + hashCode()
+          + isDeleted()
+          + setAvatarUrl()
+          + setContent()
+          + setCreatedDate()
+          + setDeleted()
+          + setId()
+          + setInReplyTo()
+          + setPortfolioId()
+          + setUsername()
+          + toString()
+          # canEqual()
+      }
+    }
+  }
+  
+
+  namespace tech.eportfolio.server {
+    namespace dto {
+      class tech.eportfolio.server.dto.UserDTO {
+          - email : String
+          - firstName : String
+          - lastName : String
+          - password : String
+          - phone : String
+          - title : String
+          - username : String
+          {static} + builder()
+          + equals()
+          + getEmail()
+          + getFirstName()
+          + getLastName()
+          + getPassword()
+          + getPhone()
+          + getTitle()
+          + getUsername()
+          + hashCode()
+          {static} + mock()
+          + setEmail()
+          + setFirstName()
+          + setLastName()
+          + setPassword()
+          + setPhone()
+          + setTitle()
+          + setUsername()
+          + toString()
+          # canEqual()
+          ~ UserDTO()
+      }
+    }
+  }
+  
+
+  namespace tech.eportfolio.server {
+    namespace dto {
+      class tech.eportfolio.server.dto.UserDTO.UserDTOBuilder {
+          - email : String
+          - firstName : String
+          - lastName : String
+          - password : String
+          - phone : String
+          - title : String
+          - username : String
+          + build()
+          + email()
+          + firstName()
+          + lastName()
+          + password()
+          + phone()
+          + title()
+          + toString()
+          + username()
+          ~ UserDTOBuilder()
+      }
+    }
+  }
+  
+
+  namespace tech.eportfolio.server {
+    namespace dto {
+      class tech.eportfolio.server.dto.UserPatchRequestBody {
+          - avatarUrl : String
+          - email : String
+          - firstName : String
+          - lastName : String
+          - phone : String
+          - title : String
+          {static} + builder()
+          + equals()
+          + getAvatarUrl()
+          + getEmail()
+          + getFirstName()
+          + getLastName()
+          + getPhone()
+          + getTitle()
+          + hashCode()
+          {static} + mock()
+          + setAvatarUrl()
+          + setEmail()
+          + setFirstName()
+          + setLastName()
+          + setPhone()
+          + setTitle()
+          + toString()
+          # canEqual()
+          ~ UserPatchRequestBody()
+      }
+    }
+  }
+  
+
+  namespace tech.eportfolio.server {
+    namespace dto {
+      class tech.eportfolio.server.dto.UserPatchRequestBody.UserPatchRequestBodyBuilder {
+          - avatarUrl : String
+          - email : String
+          - firstName : String
+          - lastName : String
+          - phone : String
+          - title : String
+          + avatarUrl()
+          + build()
+          + email()
+          + firstName()
+          + lastName()
+          + phone()
+          + title()
+          + toString()
+          ~ UserPatchRequestBodyBuilder()
+      }
+    }
+  }
+  
+
+  tech.eportfolio.server.dto.LoginRequestBody +-down- tech.eportfolio.server.dto.LoginRequestBody.LoginRequestBodyBuilder
+  tech.eportfolio.server.dto.PasswordResetRequestBody +-down- tech.eportfolio.server.dto.PasswordResetRequestBody.PasswordResetRequestBodyBuilder
+  tech.eportfolio.server.dto.PortfolioDTO o-- tech.eportfolio.server.common.constant.Visibility : visibility
+  tech.eportfolio.server.dto.PortfolioDTO +-down- tech.eportfolio.server.dto.PortfolioDTO.PortfolioDTOBuilder
+  tech.eportfolio.server.dto.PortfolioDTO.PortfolioDTOBuilder o-- tech.eportfolio.server.common.constant.Visibility : visibility
+  tech.eportfolio.server.dto.TemplateDTO +-down- tech.eportfolio.server.dto.TemplateDTO.TemplateDTOBuilder
+  tech.eportfolio.server.dto.UserDTO +-down- tech.eportfolio.server.dto.UserDTO.UserDTOBuilder
+  tech.eportfolio.server.dto.UserPatchRequestBody +-down- tech.eportfolio.server.dto.UserPatchRequestBody.UserPatchRequestBodyBuilder
+
+
+right footer
+
+
+PlantUML diagram generated by SketchIt! (https://bitbucket.org/pmesmeur/sketch.it)
+For more information about this tool, please contact philippe.mesmeur@gmail.com
+endfooter
+
+@enduml

@@ -1,0 +1,336 @@
+@startuml
+
+title __MODEL's Class Diagram__\n
+
+  namespace tech.eportfolio.server {
+    namespace model {
+      class tech.eportfolio.server.model.Portfolio {
+          - content : DBObject
+          - createdDate : Date
+          - deleted : boolean
+          - description : String
+          - id : String
+          - title : String
+          - updatedDate : Date
+          - userId : String
+          - username : String
+          + Portfolio()
+          + equals()
+          + getContent()
+          + getCreatedDate()
+          + getDescription()
+          + getId()
+          + getTitle()
+          + getUpdatedDate()
+          + getUserId()
+          + getUsername()
+          + getVisibility()
+          + hashCode()
+          + isDeleted()
+          + setContent()
+          + setCreatedDate()
+          + setDeleted()
+          + setDescription()
+          + setId()
+          + setTitle()
+          + setUpdatedDate()
+          + setUserId()
+          + setUsername()
+          + setVisibility()
+          + toString()
+          # canEqual()
+      }
+    }
+  }
+  
+
+  namespace tech.eportfolio.server {
+    namespace model {
+      class tech.eportfolio.server.model.Tag {
+          - createdBy : String
+          - createdDate : Date
+          - deleted : boolean
+          - icon : String
+          - id : String
+          - name : String
+          - updatedDate : Date
+          + Tag()
+          + equals()
+          + getCreatedBy()
+          + getCreatedDate()
+          + getIcon()
+          + getId()
+          + getName()
+          + getUpdatedDate()
+          + hashCode()
+          + isDeleted()
+          + setCreatedBy()
+          + setCreatedDate()
+          + setDeleted()
+          + setIcon()
+          + setId()
+          + setName()
+          + setUpdatedDate()
+          + toString()
+          # canEqual()
+      }
+    }
+  }
+  
+
+  namespace tech.eportfolio.server {
+    namespace model {
+      class tech.eportfolio.server.model.Template {
+          - boilerplate : DBObject
+          - createdDate : Date
+          - deleted : boolean
+          - description : String
+          - hidden : boolean
+          - id : String
+          - title : String
+          - updatedDate : Date
+          - userId : String
+          + Template()
+          + equals()
+          + getBoilerplate()
+          + getCreatedDate()
+          + getDescription()
+          + getId()
+          + getTitle()
+          + getUpdatedDate()
+          + getUserId()
+          + hashCode()
+          + isDeleted()
+          + isHidden()
+          + setBoilerplate()
+          + setCreatedDate()
+          + setDeleted()
+          + setDescription()
+          + setHidden()
+          + setId()
+          + setTitle()
+          + setUpdatedDate()
+          + setUserId()
+          + toString()
+          # canEqual()
+      }
+    }
+  }
+  
+
+  namespace tech.eportfolio.server {
+    namespace model {
+      class tech.eportfolio.server.model.User {
+          - authorities : String[]
+          - avatarUrl : String
+          - blobUUID : String
+          - createdDate : Date
+          - deleted : boolean
+          - email : String
+          - enabled : boolean
+          - firstName : String
+          - id : String
+          - lastName : String
+          - locked : boolean
+          - organisation : String
+          - password : String
+          - phone : String
+          - roles : String
+          - title : String
+          - updatedDate : Date
+          - username : String
+          + User()
+          + equals()
+          + getAuthorities()
+          + getAvatarUrl()
+          + getBlobUUID()
+          + getCreatedDate()
+          + getEmail()
+          + getFirstName()
+          + getId()
+          + getLastName()
+          + getOrganisation()
+          + getPassword()
+          + getPhone()
+          + getRoles()
+          + getTitle()
+          + getUpdatedDate()
+          + getUsername()
+          + hashCode()
+          + isDeleted()
+          + isEnabled()
+          + isLocked()
+          + setAuthorities()
+          + setAvatarUrl()
+          + setBlobUUID()
+          + setCreatedDate()
+          + setDeleted()
+          + setEmail()
+          + setEnabled()
+          + setFirstName()
+          + setId()
+          + setLastName()
+          + setLocked()
+          + setOrganisation()
+          + setPassword()
+          + setPhone()
+          + setRoles()
+          + setTitle()
+          + setUpdatedDate()
+          + setUsername()
+          + toString()
+          {static} + unverifiedUser()
+          # canEqual()
+      }
+    }
+  }
+  
+
+  namespace tech.eportfolio.server {
+    namespace model {
+      class tech.eportfolio.server.model.UserComment {
+          - content : String
+          - createdDate : Date
+          - deleted : boolean
+          - id : String
+          - inReplyTo : String
+          - portfolioId : String
+          - username : String
+          + UserComment()
+          + equals()
+          + getContent()
+          + getCreatedDate()
+          + getId()
+          + getInReplyTo()
+          + getPortfolioId()
+          + getUsername()
+          + hashCode()
+          + isDeleted()
+          + setContent()
+          + setCreatedDate()
+          + setDeleted()
+          + setId()
+          + setInReplyTo()
+          + setPortfolioId()
+          + setUsername()
+          + toString()
+          # canEqual()
+      }
+    }
+  }
+  
+
+  namespace tech.eportfolio.server {
+    namespace model {
+      class tech.eportfolio.server.model.UserFollow {
+          - createdDate : Date
+          - deleted : boolean
+          - destinationUsername : String
+          - id : String
+          - sourceUsername : String
+          + UserFollow()
+          + equals()
+          + getCreatedDate()
+          + getDestinationUsername()
+          + getId()
+          + getSourceUsername()
+          + hashCode()
+          + isDeleted()
+          + setCreatedDate()
+          + setDeleted()
+          + setDestinationUsername()
+          + setId()
+          + setSourceUsername()
+          + toString()
+          # canEqual()
+      }
+    }
+  }
+  
+
+  namespace tech.eportfolio.server {
+    namespace model {
+      class tech.eportfolio.server.model.UserLike {
+          - createdDate : Date
+          - deleted : boolean
+          - id : String
+          - portfolioId : String
+          - username : String
+          + UserLike()
+          + equals()
+          + getCreatedDate()
+          + getId()
+          + getPortfolioId()
+          + getUsername()
+          + hashCode()
+          + isDeleted()
+          + setCreatedDate()
+          + setDeleted()
+          + setId()
+          + setPortfolioId()
+          + setUsername()
+          + toString()
+          # canEqual()
+      }
+    }
+  }
+  
+
+  namespace tech.eportfolio.server {
+    namespace model {
+      class tech.eportfolio.server.model.UserPrincipal {
+          + UserPrincipal()
+          + getAuthorities()
+          + getPassword()
+          + getUsername()
+          + isAccountNonExpired()
+          + isAccountNonLocked()
+          + isCredentialsNonExpired()
+          + isEnabled()
+      }
+    }
+  }
+  
+
+  namespace tech.eportfolio.server {
+    namespace model {
+      class tech.eportfolio.server.model.UserTag {
+          - deleted : boolean
+          - id : String
+          - tagId : String
+          - userId : String
+          - username : String
+          + UserTag()
+          + equals()
+          + getId()
+          + getTagId()
+          + getUserId()
+          + getUsername()
+          + hashCode()
+          + isDeleted()
+          + setDeleted()
+          + setId()
+          + setTagId()
+          + setUserId()
+          + setUsername()
+          + toString()
+          # canEqual()
+      }
+    }
+  }
+  
+
+  tech.eportfolio.server.model.Portfolio o-- tech.eportfolio.server.common.constant.Visibility : visibility
+  tech.eportfolio.server.model.User .up.|> java.io.Serializable
+  tech.eportfolio.server.model.UserPrincipal .up.|> org.springframework.security.core.userdetails.UserDetails
+  tech.eportfolio.server.model.UserPrincipal o-- tech.eportfolio.server.model.User : user
+
+
+right footer
+
+
+PlantUML diagram generated by SketchIt! (https://bitbucket.org/pmesmeur/sketch.it)
+For more information about this tool, please contact philippe.mesmeur@gmail.com
+endfooter
+
+@enduml

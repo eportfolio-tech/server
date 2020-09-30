@@ -1,0 +1,202 @@
+@startuml
+
+title __CONTROLLER's Class Diagram__\n
+
+  namespace tech.eportfolio.server {
+    namespace controller {
+      class tech.eportfolio.server.controller.AuthenticationController {
+          - authenticationManager : AuthenticationManager
+          - logger : Logger
+          + AuthenticationController()
+          + deleteTest()
+          + generatePasswordRecoveryLink()
+          + generatePasswordRecoveryToken()
+          + letMeLogIn()
+          + login()
+          + quickTest()
+          + renewToken()
+          + sendPasswordRecoveryLink()
+          + signUp()
+          + verifyPasswordReset()
+          - authenticate()
+          - generateTokens()
+      }
+    }
+  }
+  
+
+  namespace tech.eportfolio.server {
+    namespace controller {
+      class tech.eportfolio.server.controller.BlobController {
+          - logger : Logger
+          + BlobController()
+          + deleteBlob()
+          + getBlobs()
+          + uploadBlob()
+          + uploadImage()
+      }
+    }
+  }
+  
+
+  namespace tech.eportfolio.server {
+    namespace controller {
+      class tech.eportfolio.server.controller.PortfolioController {
+          {static} + CONTENT : String
+          {static} + PORTFOLIO : String
+          - objectMapper : ObjectMapper
+          + PortfolioController()
+          + createNewPortfolio()
+          + deleteContent()
+          + findByUsername()
+          + findContentByUsername()
+          + updatePortfolio()
+          + uploadContent()
+      }
+    }
+  }
+  
+
+  namespace tech.eportfolio.server {
+    namespace controller {
+      class tech.eportfolio.server.controller.SearchController {
+          - objectMapper : ObjectMapper
+          + SearchController()
+          + searchByKeyword()
+          + searchByTag()
+          - addVisibilities()
+      }
+    }
+  }
+  
+
+  namespace tech.eportfolio.server {
+    namespace controller {
+      class tech.eportfolio.server.controller.TagController {
+          + createNewTag()
+          + findAll()
+          + findOneTag()
+      }
+    }
+  }
+  
+
+  namespace tech.eportfolio.server {
+    namespace controller {
+      class tech.eportfolio.server.controller.TemplateController {
+          - logger : Logger
+          + TemplateController()
+          + createTemplate()
+          + deleteTemplate()
+          + findAllTemplates()
+          + findOneById()
+      }
+    }
+  }
+  
+
+  namespace tech.eportfolio.server {
+    namespace controller {
+      class tech.eportfolio.server.controller.UserCommentController {
+          {static} - COMMENTS : String
+          + UserCommentController()
+          + createComment()
+          + findWhoCommentedThisPortfolio()
+          + reply()
+          + uncommentPortfolio()
+      }
+    }
+  }
+  
+
+  namespace tech.eportfolio.server {
+    namespace controller {
+      class tech.eportfolio.server.controller.UserController {
+          + UserController()
+          + addUserTag()
+          + deleteUserTags()
+          + findOneUser()
+          + getUserTags()
+          + passwordReset()
+          + updateUser()
+      }
+    }
+  }
+  
+
+  namespace tech.eportfolio.server {
+    namespace controller {
+      class tech.eportfolio.server.controller.UserFollowController {
+          + UserFollowController()
+          + findWhoFollowedThisUser()
+          + followUser()
+          + unlikePortfolio()
+      }
+    }
+  }
+  
+
+  namespace tech.eportfolio.server {
+    namespace controller {
+      class tech.eportfolio.server.controller.UserLikeController {
+          + UserLikeController()
+          + findWhoLikedThisPortfolio()
+          + likePortfolio()
+          + unlikePortfolio()
+      }
+    }
+  }
+  
+
+  namespace tech.eportfolio.server {
+    namespace controller {
+      class tech.eportfolio.server.controller.VerificationController {
+          + VerificationController()
+          + generateLink()
+          + generateToken()
+          + resend()
+          + verify()
+      }
+    }
+  }
+  
+
+  tech.eportfolio.server.controller.AuthenticationController -up-|> tech.eportfolio.server.common.exception.handler.AuthenticationExceptionHandler
+  tech.eportfolio.server.controller.AuthenticationController o-- tech.eportfolio.server.common.utility.JWTTokenProvider : jwtTokenProvider
+  tech.eportfolio.server.controller.AuthenticationController o-- tech.eportfolio.server.service.RecoveryService : recoveryService
+  tech.eportfolio.server.controller.AuthenticationController o-- tech.eportfolio.server.service.UserService : userService
+  tech.eportfolio.server.controller.AuthenticationController o-- tech.eportfolio.server.service.VerificationService : verificationService
+  tech.eportfolio.server.controller.BlobController -up-|> tech.eportfolio.server.common.exception.handler.AuthenticationExceptionHandler
+  tech.eportfolio.server.controller.BlobController o-- tech.eportfolio.server.service.AzureStorageService : azureStorageService
+  tech.eportfolio.server.controller.BlobController o-- tech.eportfolio.server.service.UserService : userService
+  tech.eportfolio.server.controller.PortfolioController o-- tech.eportfolio.server.service.PortfolioService : portfolioService
+  tech.eportfolio.server.controller.PortfolioController o-- tech.eportfolio.server.service.UserService : userService
+  tech.eportfolio.server.controller.SearchController o-- tech.eportfolio.server.service.PortfolioService : portfolioService
+  tech.eportfolio.server.controller.SearchController o-- tech.eportfolio.server.service.TagService : tagService
+  tech.eportfolio.server.controller.SearchController o-- tech.eportfolio.server.service.UserService : userService
+  tech.eportfolio.server.controller.SearchController o-- tech.eportfolio.server.service.UserTagService : userTagService
+  tech.eportfolio.server.controller.TagController o-- tech.eportfolio.server.service.TagService : tagService
+  tech.eportfolio.server.controller.TemplateController o-- tech.eportfolio.server.service.TemplateService : templateService
+  tech.eportfolio.server.controller.TemplateController o-- tech.eportfolio.server.service.UserService : userService
+  tech.eportfolio.server.controller.UserCommentController o-- tech.eportfolio.server.service.PortfolioService : portfolioService
+  tech.eportfolio.server.controller.UserCommentController o-- tech.eportfolio.server.service.UserCommentService : userCommentService
+  tech.eportfolio.server.controller.UserCommentController o-- tech.eportfolio.server.service.UserService : userService
+  tech.eportfolio.server.controller.UserController o-- tech.eportfolio.server.service.UserService : userService
+  tech.eportfolio.server.controller.UserController o-- tech.eportfolio.server.service.UserTagService : userTagService
+  tech.eportfolio.server.controller.UserFollowController o-- tech.eportfolio.server.service.UserFollowService : userFollowerService
+  tech.eportfolio.server.controller.UserFollowController o-- tech.eportfolio.server.service.UserService : userService
+  tech.eportfolio.server.controller.UserLikeController o-- tech.eportfolio.server.service.PortfolioService : portfolioService
+  tech.eportfolio.server.controller.UserLikeController o-- tech.eportfolio.server.service.UserLikeService : userLikeService
+  tech.eportfolio.server.controller.UserLikeController o-- tech.eportfolio.server.service.UserService : userService
+  tech.eportfolio.server.controller.VerificationController o-- tech.eportfolio.server.service.UserService : userService
+  tech.eportfolio.server.controller.VerificationController o-- tech.eportfolio.server.service.VerificationService : verificationService
+
+
+right footer
+
+
+PlantUML diagram generated by SketchIt! (https://bitbucket.org/pmesmeur/sketch.it)
+For more information about this tool, please contact philippe.mesmeur@gmail.com
+endfooter
+
+@enduml

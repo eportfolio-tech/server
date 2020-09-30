@@ -1,0 +1,198 @@
+@startuml
+
+title __SERVICE's Class Diagram__\n
+
+  namespace tech.eportfolio.server {
+    namespace service {
+      interface tech.eportfolio.server.service.AzureStorageService {
+          {abstract} + createContainer()
+          {abstract} + deleteBlob()
+          {abstract} + deleteContainer()
+          {abstract} + listBlob()
+          {abstract} + uploadBlob()
+          {abstract} + uploadBlobFromInputStream()
+          {abstract} + uploadPicture()
+      }
+    }
+  }
+  
+
+  namespace tech.eportfolio.server {
+    namespace service {
+      interface tech.eportfolio.server.service.EmailService {
+          {abstract} + sendSimpleMessage()
+      }
+    }
+  }
+  
+
+  namespace tech.eportfolio.server {
+    namespace service {
+      interface tech.eportfolio.server.service.PortfolioService {
+          {abstract} + create()
+          {abstract} + deleteContent()
+          {abstract} + findByUserIdIn()
+          {abstract} + findByUsername()
+          {abstract} + fromPortfolioDTO()
+          {abstract} + save()
+          {abstract} + searchByKeywordWithPaginationAndVisibilities()
+          {abstract} + searchByTagWithPaginationAndVisibilities()
+          {abstract} + searchWithPagination()
+          {abstract} + searchWithVisibilities()
+          {abstract} + searchWithVisibilities()
+          {abstract} + updateContent()
+      }
+    }
+  }
+  
+
+  namespace tech.eportfolio.server {
+    namespace service {
+      interface tech.eportfolio.server.service.RecoveryService {
+          {abstract} + buildRecoveryLink()
+          {abstract} + generatePasswordRecoveryToken()
+          {abstract} + getPasswordRecoverySecret()
+          {abstract} + passwordRecovery()
+          {abstract} + sendRecoveryEmail()
+      }
+    }
+  }
+  
+
+  namespace tech.eportfolio.server {
+    namespace service {
+      interface tech.eportfolio.server.service.TagService {
+          {abstract} + create()
+          {abstract} + findAll()
+          {abstract} + findById()
+          {abstract} + findByIdIn()
+          {abstract} + findByName()
+          {abstract} + findByNameIn()
+          {abstract} + save()
+          {abstract} + saveAll()
+          {abstract} + saveAllIfNotExist()
+      }
+    }
+  }
+  
+
+  namespace tech.eportfolio.server {
+    namespace service {
+      interface tech.eportfolio.server.service.TemplateService {
+          {abstract} + create()
+          {abstract} + delete()
+          {abstract} + findAvailableTemplates()
+          {abstract} + findTemplateById()
+          {abstract} + findTemplateByTitle()
+          {abstract} + save()
+      }
+    }
+  }
+  
+
+  namespace tech.eportfolio.server {
+    namespace service {
+      interface tech.eportfolio.server.service.UserCommentService {
+          {abstract} + create()
+          {abstract} + delete()
+          {abstract} + findById()
+          {abstract} + findByPortfolio()
+          {abstract} + findByUsernameAndIdAndDeleted()
+          {abstract} + findUsersByUserComments()
+          {abstract} + reply()
+      }
+    }
+  }
+  
+
+  namespace tech.eportfolio.server {
+    namespace service {
+      interface tech.eportfolio.server.service.UserFollowService {
+          {abstract} + delete()
+          {abstract} + findByDestinationUser()
+          {abstract} + findBySourceUsernameAndDestinationName()
+          {abstract} + findBySourceUsernameAndDestinationNameAndDeleted()
+          {abstract} + follow()
+          {abstract} + unfollow()
+      }
+    }
+  }
+  
+
+  namespace tech.eportfolio.server {
+    namespace service {
+      interface tech.eportfolio.server.service.UserLikeService {
+          {abstract} + delete()
+          {abstract} + findByPortfolio()
+          {abstract} + findByPortfolioAndUsername()
+          {abstract} + findByUser()
+          {abstract} + findByUsernameAndPortfolioId()
+          {abstract} + findByUsernameAndPortfolioIdAndDeleted()
+          {abstract} + like()
+          {abstract} + unlike()
+      }
+    }
+  }
+  
+
+  namespace tech.eportfolio.server {
+    namespace service {
+      interface tech.eportfolio.server.service.UserService {
+          {abstract} + changePassword()
+          {abstract} + createGithubAvatar()
+          {abstract} + delete()
+          {abstract} + encodePassword()
+          {abstract} + findByEmail()
+          {abstract} + findByIdIn()
+          {abstract} + findByUsername()
+          {abstract} + findByUsernameIn()
+          {abstract} + findDeletedUserWithContainer()
+          {abstract} + fromUserDTO()
+          {abstract} + register()
+          {abstract} + save()
+          {abstract} + saveAll()
+          {abstract} + verifyPassword()
+      }
+    }
+  }
+  
+
+  namespace tech.eportfolio.server {
+    namespace service {
+      interface tech.eportfolio.server.service.UserTagService {
+          {abstract} + batchAssign()
+          {abstract} + create()
+          {abstract} + delete()
+          {abstract} + findByTagId()
+          {abstract} + findByUsername()
+          {abstract} + findTagsByUser()
+          {abstract} + findUsersByTag()
+          {abstract} + saveAll()
+      }
+    }
+  }
+  
+
+  namespace tech.eportfolio.server {
+    namespace service {
+      interface tech.eportfolio.server.service.VerificationService {
+          {abstract} + buildLink()
+          {abstract} + generateVerificationToken()
+          {abstract} + sendVerificationEmail()
+          {abstract} + verify()
+          {abstract} + verify()
+      }
+    }
+  }
+  
+
+
+
+right footer
+
+
+PlantUML diagram generated by SketchIt! (https://bitbucket.org/pmesmeur/sketch.it)
+For more information about this tool, please contact philippe.mesmeur@gmail.com
+endfooter
+
+@enduml

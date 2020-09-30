@@ -1,0 +1,281 @@
+@startuml
+
+title __EXCEPTION's Class Diagram__\n
+
+  namespace tech.eportfolio.server {
+    namespace common {
+      namespace exception {
+        class tech.eportfolio.server.common.exception.CommentNotFoundException {
+            + CommentNotFoundException()
+        }
+      }
+    }
+  }
+  
+
+  namespace tech.eportfolio.server {
+    namespace common {
+      namespace exception {
+        class tech.eportfolio.server.common.exception.ContentNotExistException {
+            + ContentNotExistException()
+        }
+      }
+    }
+  }
+  
+
+  namespace tech.eportfolio.server {
+    namespace common {
+      namespace exception {
+        class tech.eportfolio.server.common.exception.EmailExistException {
+            {static} + SUBJECT : String
+            + EmailExistException()
+        }
+      }
+    }
+  }
+  
+
+  namespace tech.eportfolio.server {
+    namespace common {
+      namespace exception {
+        class tech.eportfolio.server.common.exception.EmailNotFoundException {
+            + EmailNotFoundException()
+        }
+      }
+    }
+  }
+  
+
+  namespace tech.eportfolio.server {
+    namespace common {
+      namespace exception {
+        class tech.eportfolio.server.common.exception.EmailVerificationFailException {
+            + EmailVerificationFailException()
+        }
+      }
+    }
+  }
+  
+
+  namespace tech.eportfolio.server {
+    namespace common {
+      namespace exception {
+        class tech.eportfolio.server.common.exception.PasswordResetException {
+            + PasswordResetException()
+            + PasswordResetException()
+        }
+      }
+    }
+  }
+  
+
+  namespace tech.eportfolio.server {
+    namespace common {
+      namespace exception {
+        class tech.eportfolio.server.common.exception.PortfolioExistException {
+            + PortfolioExistException()
+        }
+      }
+    }
+  }
+  
+
+  namespace tech.eportfolio.server {
+    namespace common {
+      namespace exception {
+        class tech.eportfolio.server.common.exception.PortfolioNotFoundException {
+            {static} + PROMPT : String
+            + PortfolioNotFoundException()
+            + PortfolioNotFoundException()
+        }
+      }
+    }
+  }
+  
+
+  namespace tech.eportfolio.server {
+    namespace common {
+      namespace exception {
+        class tech.eportfolio.server.common.exception.SelfFollowCanNotBeAllowedException {
+            + SelfFollowCanNotBeAllowedException()
+        }
+      }
+    }
+  }
+  
+
+  namespace tech.eportfolio.server {
+    namespace common {
+      namespace exception {
+        class tech.eportfolio.server.common.exception.SelfUnfollowCanNotBeAllowedException {
+            + SelfUnfollowCanNotBeAllowedException()
+        }
+      }
+    }
+  }
+  
+
+  namespace tech.eportfolio.server {
+    namespace common {
+      namespace exception {
+        class tech.eportfolio.server.common.exception.TagNotFoundException {
+            + TagNotFoundException()
+        }
+      }
+    }
+  }
+  
+
+  namespace tech.eportfolio.server {
+    namespace common {
+      namespace exception {
+        class tech.eportfolio.server.common.exception.TemplateNotFoundException {
+            {static} + PROMPT : String
+            + TemplateNotFoundException()
+            + TemplateNotFoundException()
+        }
+      }
+    }
+  }
+  
+
+  namespace tech.eportfolio.server {
+    namespace common {
+      namespace exception {
+        class tech.eportfolio.server.common.exception.TitleAlreadyExistException {
+            + TitleAlreadyExistException()
+        }
+      }
+    }
+  }
+  
+
+  namespace tech.eportfolio.server {
+    namespace common {
+      namespace exception {
+        class tech.eportfolio.server.common.exception.UploadBlobFailedException {
+            + UploadBlobFailedException()
+            + UploadBlobFailedException()
+        }
+      }
+    }
+  }
+  
+
+  namespace tech.eportfolio.server {
+    namespace common {
+      namespace exception {
+        class tech.eportfolio.server.common.exception.UserAlreadyExistException {
+            + UserAlreadyExistException()
+        }
+      }
+    }
+  }
+  
+
+  namespace tech.eportfolio.server {
+    namespace common {
+      namespace exception {
+        class tech.eportfolio.server.common.exception.UserDidNotCommentException {
+            + UserDidNotCommentException()
+        }
+      }
+    }
+  }
+  
+
+  namespace tech.eportfolio.server {
+    namespace common {
+      namespace exception {
+        class tech.eportfolio.server.common.exception.UserFollowExistException {
+            + UserFollowExistException()
+        }
+      }
+    }
+  }
+  
+
+  namespace tech.eportfolio.server {
+    namespace common {
+      namespace exception {
+        class tech.eportfolio.server.common.exception.UserFollowNotExistException {
+            + UserFollowNotExistException()
+        }
+      }
+    }
+  }
+  
+
+  namespace tech.eportfolio.server {
+    namespace common {
+      namespace exception {
+        class tech.eportfolio.server.common.exception.UserLikeExistException {
+            + UserLikeExistException()
+        }
+      }
+    }
+  }
+  
+
+  namespace tech.eportfolio.server {
+    namespace common {
+      namespace exception {
+        class tech.eportfolio.server.common.exception.UserLikeNotExistException {
+            + UserLikeNotExistException()
+        }
+      }
+    }
+  }
+  
+
+  namespace tech.eportfolio.server {
+    namespace common {
+      namespace exception {
+        class tech.eportfolio.server.common.exception.UserNotFoundException {
+            {static} + PROMPT : String
+            + UserNotFoundException()
+            + UserNotFoundException()
+        }
+      }
+    }
+  }
+  
+
+  namespace tech.eportfolio.server {
+    namespace common {
+      namespace exception {
+        class tech.eportfolio.server.common.exception.UserVerificationException {
+            {static} + PROMPT : String
+            + UserVerificationException()
+            + UserVerificationException()
+        }
+      }
+    }
+  }
+  
+
+  namespace tech.eportfolio.server {
+    namespace common {
+      namespace exception {
+        class tech.eportfolio.server.common.exception.UsernameExistException {
+            {static} + PROMPT : String
+            {static} + SUBJECT : String
+            + UsernameExistException()
+            + UsernameExistException()
+        }
+      }
+    }
+  }
+  
+
+
+
+right footer
+
+
+PlantUML diagram generated by SketchIt! (https://bitbucket.org/pmesmeur/sketch.it)
+For more information about this tool, please contact philippe.mesmeur@gmail.com
+endfooter
+
+@enduml
