@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import tech.eportfolio.server.common.constant.Role;
 import tech.eportfolio.server.common.constant.Visibility;
-import tech.eportfolio.server.common.exception.TagNotFoundException;
 import tech.eportfolio.server.common.exception.UserNotFoundException;
 import tech.eportfolio.server.common.jsend.SuccessResponse;
 import tech.eportfolio.server.model.Portfolio;
@@ -32,6 +31,7 @@ import javax.validation.constraints.NotBlank;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
@@ -79,12 +79,11 @@ public class SearchController {
     public ResponseEntity<SuccessResponse<Object>> searchByTag(@RequestParam @Valid @NotBlank String tagName, @RequestParam int page, @RequestParam int size) {
 
         List<Visibility> searchVisibilities = addVisibilities();
-
-        Tag tag = tagService.findByName(tagName).orElseThrow(() -> (new TagNotFoundException(tagName)));
-        List<UserTag> userTags = userTagService.findByTagId(tag.getId());
+        Optional<Tag> tag = tagService.findByName(tagName);
+        List<UserTag> userTags = new LinkedList<>();
+        tag.ifPresent(value -> userTags.addAll(userTagService.findByTagId(value.getId())));
         // Extract all userIds from userTags
         List<String> userIds = userTags.stream().map(UserTag::getUserId).collect(Collectors.toList());
-//        List<Portfolio> portfolios = portfolioService.findByUserIdIn(userTags.stream().map(UserTag::getUserId).collect(Collectors.toList()));
         Page<Portfolio> result = portfolioService.searchByTagWithPaginationAndVisibilities(PageRequest.of(page, size), searchVisibilities, userIds);
         @SuppressWarnings("unchecked")
         Map<String, Object> map = objectMapper.convertValue(result, Map.class);
