@@ -171,7 +171,7 @@ title __DTO's Class Diagram__\n
 
   namespace tech.eportfolio.server {
     namespace dto {
-      class tech.eportfolio.server.dto.UserCommentOutputBody {
+      class tech.eportfolio.server.dto.UserCommentResponseBody {
           - avatarUrl : String
           - content : String
           - createdDate : Date

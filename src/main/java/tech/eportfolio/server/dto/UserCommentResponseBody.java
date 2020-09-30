@@ -7,7 +7,7 @@ import java.util.Date;
 
 
 @Data
-public class UserCommentOutputBody {
+public class UserCommentResponseBody {
     private String id;
 
     private String username;
@@ -22,9 +22,11 @@ public class UserCommentOutputBody {
 
     private String avatarUrl;
 
+    private Date updatedDate;
+
     private String parentId;
 
-    public UserCommentOutputBody(UserComment userComment, String avatarUrl) {
+    public UserCommentResponseBody(UserComment userComment, String avatarUrl) {
         this.id = userComment.getId();
         this.username = userComment.getUsername();
         this.portfolioId = userComment.getPortfolioId();
@@ -32,6 +34,7 @@ public class UserCommentOutputBody {
         this.createdDate = userComment.getCreatedDate();
         this.deleted = userComment.isDeleted();
         this.avatarUrl = avatarUrl;
+        this.updatedDate = userComment.getUpdatedDate();
         this.parentId = userComment.getParentId();
     }
 }
