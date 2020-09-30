@@ -81,7 +81,7 @@ public class UserFollowController {
 
     @DeleteMapping("/follow")
     @ApiOperation(value = "", authorizations = {@Authorization(value = "JWT")})
-    public ResponseEntity<SuccessResponse<Object>> unlikePortfolio(@PathVariable String destinationUsername) {
+    public ResponseEntity<SuccessResponse<Object>> unfollowPortfolio(@PathVariable String destinationUsername) {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
 
         // The condition when a user is following himself/herself

@@ -120,7 +120,7 @@ public class SearchControllerTest {
 
     @Test
     @WithMockUser(username = "test")
-    public void ifNotFoundTagThenReturn500() throws Exception {
+    public void ifNotFoundTagThenReturn200AndExpectEmpty() throws Exception {
         String tagName = RandomStringUtils.randomAlphabetic(8);
         this.mockMvc.perform(get(BASE_PATH + "/tag")
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
@@ -128,8 +128,9 @@ public class SearchControllerTest {
                 .param("page", "0")
                 .param("size", "10")
         ).andDo(print())
-                .andExpect(status().isInternalServerError())
-                .andExpect(jsonPath("$.status").value("error"));
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value("success"))
+                .andExpect(jsonPath("$.data.content").isEmpty());
     }
 
     @Test
