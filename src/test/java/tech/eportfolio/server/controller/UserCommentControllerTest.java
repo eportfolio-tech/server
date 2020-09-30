@@ -80,11 +80,11 @@ public class UserCommentControllerTest {
         this.mockMvc.perform(post("/portfolios/test/comments/")
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
                 .param("ownerUsername", "test")
-                .param("comment", comment)
+                .param("content", comment)
         ).andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.status").value("success"))
-                .andExpect(jsonPath("$.data.user-comment").isNotEmpty());
+                .andExpect(jsonPath("$.data.comments").isNotEmpty());
     }
 
     /**
