@@ -22,7 +22,7 @@ public class UserCommentOutputBody {
 
     private String avatarUrl;
 
-    private String inReplyTo;
+    private String parentId;
 
     public UserCommentOutputBody(UserComment userComment, String avatarUrl) {
         this.id = userComment.getId();
@@ -32,6 +32,6 @@ public class UserCommentOutputBody {
         this.createdDate = userComment.getCreatedDate();
         this.deleted = userComment.isDeleted();
         this.avatarUrl = avatarUrl;
-        this.inReplyTo = userComment.getInReplyTo();
+        this.parentId = userComment.getParentId();
     }
 }

@@ -37,12 +37,12 @@ public class UserCommentServiceImpl implements UserCommentService {
     }
 
     @Override
-    public UserComment reply(User user, UserComment inReplyTo, String content) {
+    public UserComment reply(User user, UserComment parent, String content) {
         UserComment userComment = new UserComment();
         userComment.setUsername(user.getUsername());
-        userComment.setPortfolioId(inReplyTo.getPortfolioId());
+        userComment.setPortfolioId(parent.getPortfolioId());
         userComment.setContent(content);
-        userComment.setInReplyTo(inReplyTo.getId());
+        userComment.setParentId(parent.getId());
         return userCommentRepository.save(userComment);
     }
 
@@ -58,7 +58,7 @@ public class UserCommentServiceImpl implements UserCommentService {
         userComment.setUsername(user.getUsername());
         userComment.setPortfolioId(portfolio.getId());
         userComment.setContent(content);
-        userComment.setInReplyTo(null);
+        userComment.setParentId(null);
         return userCommentRepository.save(userComment);
     }
 

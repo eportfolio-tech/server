@@ -20,7 +20,7 @@ public class UserComment {
     @Indexed
     private String portfolioId;
 
-    private String inReplyTo;
+    private String parentId;
 
     private String content;
 
