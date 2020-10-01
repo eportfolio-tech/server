@@ -22,6 +22,9 @@ public class PortfolioDTO {
     private String description;
 
     @NotBlank
+    private String coverImage;
+
+    @NotBlank
     private Visibility visibility;
 
     public static PortfolioDTO mock() {

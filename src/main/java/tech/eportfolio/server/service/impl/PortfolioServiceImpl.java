@@ -65,6 +65,7 @@ public class PortfolioServiceImpl implements PortfolioService {
         toCreate.setVisibility(portfolio.getVisibility());
         toCreate.setUsername(user.getUsername());
         toCreate.setUserId(user.getId());
+        toCreate.setCoverImage(portfolio.getCoverImage());
         return portfolioRepository.save(toCreate);
     }
 

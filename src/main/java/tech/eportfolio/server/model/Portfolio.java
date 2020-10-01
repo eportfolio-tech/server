@@ -21,6 +21,8 @@ public class Portfolio {
     @TextIndexed
     private String title;
 
+    private String coverImage;
+
     @Indexed(unique = true)
     @TextIndexed
     private String username;
