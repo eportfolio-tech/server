@@ -113,6 +113,8 @@ public class PortfolioControllerTest {
     @WithMockUser("test")
     public void IfPatchPortfolioThenUpdateMetaInfo() throws Exception {
         String updatedDescription = MockNeat.threadLocal().celebrities().actors().val();
+        String imageUrl = "https://images.unsplash.com/photo-1511496920016-89698ccce955?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1650&q=80";
+        portfolioDTO.setCoverImage(imageUrl);
         portfolioDTO.setDescription(updatedDescription);
         String body = (new ObjectMapper()).valueToTree(portfolioDTO).toString();
         this.mockMvc.perform(patch(BASE_PATH + "/test")
@@ -121,7 +123,8 @@ public class PortfolioControllerTest {
         ).andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.status").value("success"))
-                .andExpect(jsonPath("$.data.portfolio.description").value(updatedDescription));
+                .andExpect(jsonPath("$.data.portfolio.description").value(updatedDescription))
+                .andExpect(jsonPath("$.data.portfolio.coverImage").value(imageUrl));
     }
 
     @Test
