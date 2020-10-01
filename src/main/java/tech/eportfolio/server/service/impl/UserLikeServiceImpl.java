@@ -57,6 +57,7 @@ public class UserLikeServiceImpl implements UserLikeService {
         UserLike newUserLike = new UserLike();
         newUserLike.setUsername(user.getUsername());
         newUserLike.setPortfolioId(portfolio.getId());
+        newUserLike.setUserId(user.getId());
         return userLikeRepository.save(newUserLike);
     }
 

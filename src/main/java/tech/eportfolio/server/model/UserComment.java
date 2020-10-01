@@ -15,6 +15,8 @@ public class UserComment {
     @Id
     private String id;
 
+    private String userId;
+
     @Indexed
     private String username;
 

@@ -14,6 +14,8 @@ public class UserFollow {
     @Id
     private String id;
 
+    private String sourceUserId;
+
     // source user follows destination user
     @Indexed
     private String sourceUsername;

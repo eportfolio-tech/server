@@ -46,6 +46,7 @@ public class UserFollowServiceImpl implements UserFollowService {
         UserFollow newUserFollower = new UserFollow();
         newUserFollower.setSourceUsername(sourceUser.getUsername());
         newUserFollower.setDestinationUsername(destinationUsername);
+        newUserFollower.setSourceUserId(sourceUser.getId());
         return userFollowerRepository.save(newUserFollower);
     }
 

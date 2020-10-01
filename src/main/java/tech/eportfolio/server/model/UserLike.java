@@ -14,6 +14,8 @@ public class UserLike {
     @Id
     private String id;
 
+    private String userId;
+
     @Indexed
     private String username;
 

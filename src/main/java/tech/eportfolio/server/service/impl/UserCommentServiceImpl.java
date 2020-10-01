@@ -40,6 +40,7 @@ public class UserCommentServiceImpl implements UserCommentService {
     public UserComment reply(User user, UserComment parent, String content) {
         UserComment userComment = new UserComment();
         userComment.setUsername(user.getUsername());
+        userComment.setUserId(user.getId());
         userComment.setPortfolioId(parent.getPortfolioId());
         userComment.setContent(content);
         userComment.setParentId(parent.getId());
@@ -56,6 +57,7 @@ public class UserCommentServiceImpl implements UserCommentService {
     public UserComment create(User user, Portfolio portfolio, String content) {
         UserComment userComment = new UserComment();
         userComment.setUsername(user.getUsername());
+        userComment.setUserId(user.getId());
         userComment.setPortfolioId(portfolio.getId());
         userComment.setContent(content);
         userComment.setParentId(null);
