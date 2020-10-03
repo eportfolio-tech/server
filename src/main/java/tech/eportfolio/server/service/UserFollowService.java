@@ -20,4 +20,6 @@ public interface UserFollowService {
 
     List<UserFollow> findByDestinationUser(User destinationUser);
 
+    List<UserFollow> findBySourceUser(User sourceUser);
+
 }

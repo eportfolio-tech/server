@@ -23,6 +23,10 @@ public class UserFollowServiceImpl implements UserFollowService {
         this.userFollowerRepository = userFollowerRepository;
     }
 
+    @Override
+    public List<UserFollow> findBySourceUser(User sourceUser) {
+        return userFollowerRepository.findBySourceUsernameAndDeleted(sourceUser.getUsername(), false);
+    }
 
     @Override
     public List<UserFollow> findByDestinationUser(User destinationUser) {

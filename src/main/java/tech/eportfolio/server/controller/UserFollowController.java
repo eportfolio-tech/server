@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/users/{destinationUsername}")
+@RequestMapping("/users")
 public class UserFollowController {
 
     private final UserFollowService userFollowerService;
@@ -37,7 +37,7 @@ public class UserFollowController {
         this.userFollowerService = userFollowerService;
     }
 
-    @GetMapping("/follow")
+    @GetMapping("/{destinationUsername}/followers")
     @ApiOperation(value = "", authorizations = {@Authorization(value = "JWT")})
     public ResponseEntity<SuccessResponse<Object>> findWhoFollowedThisUser(@PathVariable String destinationUsername) {
 
@@ -48,7 +48,7 @@ public class UserFollowController {
         User follower = userService.findByUsername(destinationUsername).orElseThrow(() -> new UserNotFoundException(destinationUsername));
         List<UserFollow> userFollows = userFollowerService.findByDestinationUser(follower);
         HashMap<String, Object> hashMap = new HashMap<>();
-        hashMap.put("user-follow", userFollows);
+        hashMap.put("follower", userFollows);
 
         if (authentication instanceof AnonymousAuthenticationToken) {
             hashMap.put("followed", false);
@@ -62,8 +62,17 @@ public class UserFollowController {
         return response.toOk();
     }
 
+    @GetMapping("/{username}/following")
+    @ApiOperation(value = "", authorizations = {@Authorization(value = "JWT")})
+    public ResponseEntity<SuccessResponse<Object>> findWhoIamFollowing(@PathVariable String username) {
+        User user = userService.findByUsername(username).orElseThrow(() -> new UserNotFoundException(username));
+        List<UserFollow> following = userFollowerService.findBySourceUser(user);
+        SuccessResponse<Object> response = new SuccessResponse<>("following", following);
+        return response.toOk();
+    }
 
-    @PostMapping("/follow")
+
+    @PostMapping("/{destinationUsername}/follow")
     @ApiOperation(value = "", authorizations = {@Authorization(value = "JWT")})
     public ResponseEntity<SuccessResponse<Object>> followUser(@PathVariable String destinationUsername) {
         String sourceUsername = SecurityContextHolder.getContext().getAuthentication().getName();
@@ -79,7 +88,7 @@ public class UserFollowController {
         return new SuccessResponse<>().toOk();
     }
 
-    @DeleteMapping("/follow")
+    @DeleteMapping("/{destinationUsername}/follow")
     @ApiOperation(value = "", authorizations = {@Authorization(value = "JWT")})
     public ResponseEntity<SuccessResponse<Object>> unfollowPortfolio(@PathVariable String destinationUsername) {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
