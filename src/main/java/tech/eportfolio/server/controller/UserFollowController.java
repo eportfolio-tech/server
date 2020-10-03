@@ -8,7 +8,6 @@ import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
-import tech.eportfolio.server.common.exception.PortfolioNotFoundException;
 import tech.eportfolio.server.common.exception.SelfFollowCanNotBeAllowedException;
 import tech.eportfolio.server.common.exception.SelfUnfollowCanNotBeAllowedException;
 import tech.eportfolio.server.common.exception.UserNotFoundException;
@@ -48,12 +47,12 @@ public class UserFollowController {
         User follower = userService.findByUsername(destinationUsername).orElseThrow(() -> new UserNotFoundException(destinationUsername));
         List<UserFollow> userFollows = userFollowerService.findByDestinationUser(follower);
         HashMap<String, Object> hashMap = new HashMap<>();
-        hashMap.put("follower", userFollows);
+        hashMap.put("followers", userFollows);
 
         if (authentication instanceof AnonymousAuthenticationToken) {
             hashMap.put("followed", false);
         } else {
-            Optional<UserFollow> loginUserFollower = userFollowerService.findBySourceUsernameAndDestinationNameAndDeleted(sourceUsername, destinationUsername);
+            Optional<UserFollow> loginUserFollower = userFollowerService.findBySourceUsernameAndDestinationNameAndDeleted(sourceUsername, destinationUsername, false);
             hashMap.put("followed", loginUserFollower.isPresent());
         }
 
@@ -72,7 +71,7 @@ public class UserFollowController {
     }
 
 
-    @PostMapping("/{destinationUsername}/follow")
+    @PostMapping("/{destinationUsername}/followers")
     @ApiOperation(value = "", authorizations = {@Authorization(value = "JWT")})
     public ResponseEntity<SuccessResponse<Object>> followUser(@PathVariable String destinationUsername) {
         String sourceUsername = SecurityContextHolder.getContext().getAuthentication().getName();
@@ -83,12 +82,12 @@ public class UserFollowController {
         }
 
         User sourceUser = userService.findByUsername(sourceUsername).orElseThrow(() -> new UserNotFoundException(sourceUsername));
-        User destinationUser = userService.findByUsername(destinationUsername).orElseThrow(() -> new PortfolioNotFoundException(destinationUsername));
+        User destinationUser = userService.findByUsername(destinationUsername).orElseThrow(() -> new UserNotFoundException(destinationUsername));
         userFollowerService.follow(sourceUser, destinationUser.getUsername());
-        return new SuccessResponse<>().toOk();
+        return new SuccessResponse<>().toCreated();
     }
 
-    @DeleteMapping("/{destinationUsername}/follow")
+    @DeleteMapping("/{destinationUsername}/followers")
     @ApiOperation(value = "", authorizations = {@Authorization(value = "JWT")})
     public ResponseEntity<SuccessResponse<Object>> unfollowPortfolio(@PathVariable String destinationUsername) {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
@@ -99,7 +98,7 @@ public class UserFollowController {
         }
 
         User sourceUser = userService.findByUsername(username).orElseThrow(() -> new UserNotFoundException(username));
-        User destinationUser = userService.findByUsername(destinationUsername).orElseThrow(() -> new PortfolioNotFoundException(destinationUsername));
+        User destinationUser = userService.findByUsername(destinationUsername).orElseThrow(() -> new UserNotFoundException(destinationUsername));
         userFollowerService.unfollow(sourceUser, destinationUser.getUsername());
         return new SuccessResponse<>().toOk();
     }
