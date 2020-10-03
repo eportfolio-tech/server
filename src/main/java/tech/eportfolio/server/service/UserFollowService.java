@@ -12,9 +12,7 @@ public interface UserFollowService {
 
     UserFollow unfollow(User sourceUser, String destinationUsername);
 
-    Optional<UserFollow> findBySourceUsernameAndDestinationName(String sourceUsername, String destinationUsername);
-
-    Optional<UserFollow> findBySourceUsernameAndDestinationNameAndDeleted(String sourceUsername, String destinationUsername);
+    Optional<UserFollow> findBySourceUsernameAndDestinationNameAndDeleted(String sourceUsername, String destinationUsername, boolean deleted);
 
     UserFollow delete(UserFollow userFollow);
 
