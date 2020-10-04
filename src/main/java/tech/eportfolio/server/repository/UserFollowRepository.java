@@ -17,4 +17,5 @@ public interface UserFollowRepository extends MongoRepository<UserFollow, String
 
     List<UserFollow> findByDestinationUsernameAndDeleted(String destinationUsername, boolean deleted);
 
+    List<UserFollow> findBySourceUsernameAndDeleted(String sourceUsername, boolean deleted);
 }
