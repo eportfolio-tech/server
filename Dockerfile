@@ -8,8 +8,9 @@ RUN addgroup -S spring && adduser -S spring -G spring
 #RUN chmod 775 /data/index/default
 USER spring:spring
 ARG JAR_FILE=target/*.jar
+ARG PROFILE
 WORKDIR "/home/spring/"
 COPY ${JAR_FILE} app.jar
-ENV PROFILE=dev
+ENV PROFILE=$PROFILE
 EXPOSE 8090
 ENTRYPOINT ["java", "-jar","-Dspring.profiles.active=${PROFILE}", "app.jar"]
