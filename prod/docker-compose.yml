@@ -18,19 +18,18 @@ services:
     command: --interval 60  --cleanup
     restart: unless-stopped
 
-  mongodb:
-    image: mongo:latest 
-    container_name: mongodb
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: hN1pdA3Ygw9I
-      MONGO_INITDB_DATABASE: eportfolio
-    ports:
-      - 27017:27017
-    volumes:
-      - mongodb_data:/data/db
-    command: [--auth]
-    restart: unless-stopped
+  # mongodb:
+  #   image: mongo:latest 
+  #   environment:
+  #     MONGO_INITDB_ROOT_USERNAME: root
+  #     MONGO_INITDB_ROOT_PASSWORD: hN1pdA3Ygw9I
+  #     MONGO_INITDB_DATABASE: eportfolio
+  #   ports:
+  #     - 37018:27017
+  #   volumes:
+  #     - mongodb_data:/data/db
+  #   command: [--auth]
+  #   restart: unless-stopped
 
   prod:
     container_name: prod
