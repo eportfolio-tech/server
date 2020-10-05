@@ -10,6 +10,5 @@ USER spring:spring
 ARG JAR_FILE=target/*.jar
 WORKDIR "/home/spring/"
 COPY ${JAR_FILE} app.jar
-ENV PROFILE=dev
 EXPOSE 8090
 ENTRYPOINT ["java", "-jar","-Dspring.profiles.active=${PROFILE}", "app.jar"]
