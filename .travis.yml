@@ -29,7 +29,7 @@ after_success:
   - export PROFILE=`if [ "$TRAVIS_BRANCH" == "master" ]; then echo "prod"; else echo "dev"; fi`
   - echo $COMMIT
   - echo $PROFILE
-  - docker build --build-arg JAR_FILE=build/libs/*.jar PROFILE=$PROFILE -t $IMAGE_NAME:$TAG .
+  - docker build --build-arg JAR_FILE=build/libs/*.jar --build-arg PROFILE=$PROFILE -t $IMAGE_NAME:$TAG .
   - docker tag $IMAGE_NAME:$TAG
   - docker push $IMAGE_NAME
 before_cache:
