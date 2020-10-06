@@ -32,7 +32,7 @@ public class SpringFoxConfig {
 
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
-                .title("Sig-Predict REST API Document")
+                .title("eportfolio.tech API Document")
                 .description("eportfolio")
                 .termsOfServiceUrl("")
                 .version("1.0")
