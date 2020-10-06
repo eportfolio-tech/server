@@ -12,13 +12,18 @@ import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
 @Configuration
 @EnableSwagger2
 public class SpringFoxConfig {
     @Bean
     public Docket apiDocket() {
-        return new Docket(DocumentationType.SWAGGER_2)
+        Set<String> protocols = new HashSet<>();
+        protocols.add("https");
+        protocols.add("http");
+        return new Docket(DocumentationType.SWAGGER_2).protocols(protocols)
                 .select()
                 // scan only the package of your project
                 // See https://stackoverflow.com/questions/32941917/remove-basic-error-controller-in-springfox-swaggerui
