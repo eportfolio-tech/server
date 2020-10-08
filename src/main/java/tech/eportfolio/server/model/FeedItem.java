@@ -1,28 +1,29 @@
 package tech.eportfolio.server.model;
 
-import com.mongodb.DBObject;
+import lombok.Builder;
 import lombok.Data;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.mongodb.core.mapping.Document;
-import tech.eportfolio.server.common.constant.ActivityType;
+import tech.eportfolio.server.common.constant.FeedType;
 import tech.eportfolio.server.common.constant.ParentType;
 
 import javax.persistence.Id;
 import java.util.Date;
+import java.util.Map;
 
 @Data
 @Document
-
-public class Activity {
+@Builder
+public class FeedItem {
     @Id
     private String id;
 
-    // type of activity (tag, portfolio, update)
-    private ActivityType activityType;
+    // type of feed (tag, portfolio, update)
+    private FeedType feedType;
 
     // user who generated activity
-    private String userId;
+    private String username;
 
     // the parent activity type (tag, portfolio)
     private ParentType parentType;
@@ -31,7 +32,7 @@ public class Activity {
     private String parentId;
 
     // serialized object with meta-data
-    private DBObject data;
+    private Map<String, Object> data;
 
     private boolean deleted = false;
 

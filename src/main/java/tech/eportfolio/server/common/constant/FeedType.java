@@ -1,6 +1,6 @@
 package tech.eportfolio.server.common.constant;
 
-public enum ActivityType {
+public enum FeedType {
     TAG,
     PORTFOLIO,
     UPDATE,
