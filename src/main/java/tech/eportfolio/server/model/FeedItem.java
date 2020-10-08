@@ -3,14 +3,12 @@ package tech.eportfolio.server.model;
 import lombok.Builder;
 import lombok.Data;
 import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.mongodb.core.mapping.Document;
 import tech.eportfolio.server.common.constant.FeedType;
 import tech.eportfolio.server.common.constant.ParentType;
 
 import javax.persistence.Id;
 import java.util.Date;
-import java.util.Map;
 
 @Data
 @Document
@@ -31,14 +29,8 @@ public class FeedItem {
     // primary key of related portfolio or tag
     private String parentId;
 
-    // serialized object with meta-data
-    private Map<String, Object> data;
-
     private boolean deleted = false;
 
     @CreatedDate
     private Date createdDate;
-
-    @LastModifiedDate
-    private Date updatedDate;
 }
