@@ -1,9 +1,11 @@
 package tech.eportfolio.server.service.impl;
 
-import org.apache.commons.lang3.SerializationUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.amqp.core.*;
+import org.springframework.amqp.core.AmqpAdmin;
+import org.springframework.amqp.core.Binding;
+import org.springframework.amqp.core.FanoutExchange;
+import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,8 +15,10 @@ import tech.eportfolio.server.model.Activity;
 import tech.eportfolio.server.model.User;
 import tech.eportfolio.server.model.UserFollow;
 import tech.eportfolio.server.repository.UserFollowRepository;
+import tech.eportfolio.server.service.FeedHistoryService;
 import tech.eportfolio.server.service.UserFollowService;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -30,11 +34,14 @@ public class UserFollowServiceImpl implements UserFollowService {
 
     private final UserFollowRepository userFollowerRepository;
 
+    private final FeedHistoryService feedHistoryService;
+
     @Autowired
-    public UserFollowServiceImpl(AmqpAdmin admin, RabbitTemplate rabbitTemplate, UserFollowRepository userFollowerRepository) {
+    public UserFollowServiceImpl(AmqpAdmin admin, RabbitTemplate rabbitTemplate, UserFollowRepository userFollowerRepository, FeedHistoryService feedHistoryService) {
         this.admin = admin;
         this.rabbitTemplate = rabbitTemplate;
         this.userFollowerRepository = userFollowerRepository;
+        this.feedHistoryService = feedHistoryService;
     }
 
     @Override
@@ -49,12 +56,11 @@ public class UserFollowServiceImpl implements UserFollowService {
      * @param username the username of the related user who created this activity
      */
     @Override
-    public void notifyFollower(Activity activity, String username) {
-        byte[] payload = SerializationUtils.serialize(activity);
-        Message message = MessageBuilder.withBody(payload).build();
-        logger.info("Message send to exchange: {} body: {}", username, activity);
+    public synchronized void sendActivityToFollowers(Activity activity, String username) {
         // Send a message to the user's exchange, which will send one message to each follower's queue
-        rabbitTemplate.send(username, message);
+        rabbitTemplate.setExchange(username);
+        rabbitTemplate.convertAndSend("", activity);
+        logger.info("Message send to exchange: {} body: {}", username, activity);
     }
 
     /**
@@ -75,6 +81,17 @@ public class UserFollowServiceImpl implements UserFollowService {
             admin.declareExchange(exchange);
             logger.info("{} exchange created: {}", exchange.getType(), exchange.getName());
         }
+    }
+
+
+    @Override
+    public List<Activity> getActivitiesFromQueue(User user) {
+        Integer count = (Integer) admin.getQueueProperties(user.getUsername()).get("QUEUE_MESSAGE_COUNT");
+        List<Activity> activities = new ArrayList<>();
+        for (int i = 0; i < count; i++) {
+            activities.add((Activity) rabbitTemplate.receiveAndConvert(user.getUsername()));
+        }
+        return activities;
     }
 
     @Override

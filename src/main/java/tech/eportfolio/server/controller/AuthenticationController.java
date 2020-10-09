@@ -5,7 +5,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.validation.annotation.Validated;
@@ -16,7 +15,6 @@ import tech.eportfolio.server.common.exception.EmailNotFoundException;
 import tech.eportfolio.server.common.exception.UserNotFoundException;
 import tech.eportfolio.server.common.exception.handler.AuthenticationExceptionHandler;
 import tech.eportfolio.server.common.jsend.SuccessResponse;
-import tech.eportfolio.server.common.mock.EditorState;
 import tech.eportfolio.server.common.utility.JWTTokenProvider;
 import tech.eportfolio.server.dto.LoginRequestBody;
 import tech.eportfolio.server.dto.RenewRequestBody;
@@ -24,6 +22,7 @@ import tech.eportfolio.server.dto.UserDTO;
 import tech.eportfolio.server.model.User;
 import tech.eportfolio.server.model.UserPrincipal;
 import tech.eportfolio.server.service.RecoveryService;
+import tech.eportfolio.server.service.UserFollowService;
 import tech.eportfolio.server.service.UserService;
 import tech.eportfolio.server.service.VerificationService;
 
@@ -49,8 +48,9 @@ public class AuthenticationController extends AuthenticationExceptionHandler {
 
     private final RecoveryService recoveryService;
 
+
     @Autowired
-    public AuthenticationController(UserService userService, AuthenticationManager authenticationManager, VerificationService verificationService, JWTTokenProvider jwtTokenProvider, RecoveryService recoveryService) {
+    public AuthenticationController(UserService userService, AuthenticationManager authenticationManager, VerificationService verificationService, JWTTokenProvider jwtTokenProvider, RecoveryService recoveryService, UserFollowService userFollowService) {
         this.userService = userService;
         this.authenticationManager = authenticationManager;
         this.verificationService = verificationService;
@@ -100,8 +100,8 @@ public class AuthenticationController extends AuthenticationExceptionHandler {
     }
 
     @GetMapping("/quick-test")
-    public ResponseEntity<SuccessResponse<EditorState>> quickTest() {
-        throw new AccessDeniedException("23");
+    public ResponseEntity<SuccessResponse<Object>> quickTest() {
+        return new SuccessResponse<>().toOk();
     }
 
     @GetMapping("/loginAsTest")

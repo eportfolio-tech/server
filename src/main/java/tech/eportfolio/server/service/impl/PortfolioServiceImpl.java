@@ -20,6 +20,7 @@ import tech.eportfolio.server.model.Activity;
 import tech.eportfolio.server.model.Portfolio;
 import tech.eportfolio.server.model.User;
 import tech.eportfolio.server.repository.PortfolioRepository;
+import tech.eportfolio.server.service.ActivityService;
 import tech.eportfolio.server.service.PortfolioService;
 import tech.eportfolio.server.service.UserFollowService;
 
@@ -40,6 +41,9 @@ public class PortfolioServiceImpl implements PortfolioService {
 
     @Autowired
     private MongoTemplate mongoTemplate;
+
+    @Autowired
+    private ActivityService activityService;
 
     @Autowired
     public PortfolioServiceImpl(PortfolioRepository portfolioRepository) {
@@ -121,9 +125,10 @@ public class PortfolioServiceImpl implements PortfolioService {
         TypeReference<HashMap<String, Object>> typeRef = new TypeReference<>() {
         };
         portfolio.setContent(new BasicDBObject(mapper.convertValue(map, typeRef)));
-        // Notify followers
-        // TODO: Create a new activity instead of an empty one
-        userFollowService.notifyFollower(Activity.builder().build(), portfolio.getUsername());
+        // Create an new activity for the update
+        Activity activity = activityService.addPortfolioUpdate(portfolio);
+        // Send a message to followers with this Activity
+        userFollowService.sendActivityToFollowers(activity, portfolio.getUsername());
         return this.save(portfolio);
     }
 

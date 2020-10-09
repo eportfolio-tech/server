@@ -12,6 +12,8 @@ public interface ActivityService {
 
     Activity addPortfolio(Portfolio portfolio);
 
+    Activity addPortfolioUpdate(Portfolio portfolio);
+
     Activity addTag(Tag tag);
 
     Activity save(Activity activity);

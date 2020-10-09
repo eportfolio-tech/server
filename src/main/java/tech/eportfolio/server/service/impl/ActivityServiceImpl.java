@@ -1,5 +1,9 @@
 package tech.eportfolio.server.service.impl;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.amqp.core.AmqpAdmin;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import tech.eportfolio.server.common.constant.FeedType;
@@ -20,10 +24,18 @@ public class ActivityServiceImpl implements ActivityService {
 
     private final FeedHistoryService feedHistoryService;
 
+    private final RabbitTemplate rabbitTemplate;
+
+    private final AmqpAdmin amqpAdmin;
+
+    private final Logger logger = LoggerFactory.getLogger(getClass());
+
     @Autowired
-    public ActivityServiceImpl(ActivityRepository activityRepository, FeedHistoryService feedHistoryService) {
+    public ActivityServiceImpl(ActivityRepository activityRepository, FeedHistoryService feedHistoryService, RabbitTemplate rabbitTemplate, AmqpAdmin amqpAdmin) {
         this.activityRepository = activityRepository;
         this.feedHistoryService = feedHistoryService;
+        this.rabbitTemplate = rabbitTemplate;
+        this.amqpAdmin = amqpAdmin;
     }
 
     @Override
@@ -36,28 +48,38 @@ public class ActivityServiceImpl implements ActivityService {
         return feed;
     }
 
+    @Override
+    public Activity addPortfolio(Portfolio portfolio) {
+        return activityRepository.save(Activity.builder()
+                .feedType(FeedType.PORTFOLIO)
+                .parentType(ParentType.PORTFOLIO)
+                .parentId(portfolio.getId())
+                .username(portfolio.getUsername())
+                .deleted(false).build());
+    }
+
     private void updateHistory(String userId, List<Activity> activities) {
         feedHistoryService.appendToHistory(userId, activities);
     }
 
     @Override
-    public Activity addPortfolio(Portfolio portfolio) {
-        return Activity.builder()
-                .feedType(FeedType.PORTFOLIO)
+    public Activity addPortfolioUpdate(Portfolio portfolio) {
+        return activityRepository.save(Activity.builder()
+                .feedType(FeedType.UPDATE)
                 .parentType(ParentType.PORTFOLIO)
                 .parentId(portfolio.getId())
                 .username(portfolio.getUsername())
-                .deleted(false).build();
+                .deleted(false).build());
     }
 
     @Override
     public Activity addTag(Tag tag) {
-        return Activity.builder()
+        return activityRepository.save(Activity.builder()
                 .feedType(FeedType.TAG)
                 .parentType(ParentType.TAG)
                 .parentId(tag.getId())
                 .username(tag.getCreatedBy())
-                .deleted(false).build();
+                .deleted(false).build());
     }
 
     @Override

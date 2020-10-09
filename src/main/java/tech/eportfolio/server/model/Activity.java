@@ -1,7 +1,9 @@
 package tech.eportfolio.server.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.mongodb.core.mapping.Document;
 import tech.eportfolio.server.common.constant.FeedType;
@@ -14,6 +16,8 @@ import java.util.Date;
 @Data
 @Document
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class Activity implements Serializable {
 
     @Id

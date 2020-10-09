@@ -21,8 +21,10 @@ public interface UserFollowService {
 
     List<UserFollow> findBySourceUser(User sourceUser);
 
-    void notifyFollower(Activity activity, String username);
+    void sendActivityToFollowers(Activity activity, String username);
 
     void createQueueAndExchange(String username);
+
+    List<Activity> getActivitiesFromQueue(User user);
 
 }
