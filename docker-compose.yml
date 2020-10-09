@@ -34,7 +34,7 @@ services:
     volumes:
       - /var/log/eportfolio/:/var/log/eportfolio/
     restart: unless-stopped
-  
+
   sonarqube:
     image: sonarqube:7.9.4-community
     ports:
@@ -45,7 +45,12 @@ services:
       - sonarqube_logs:/opt/sonarqube/logs
       - ./sonarqube:/opt/sonarqube/conf
     restart: unless-stopped
-  
+  rabbitmq:
+    image: rabbitmq:management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    restart: always
 
 volumes:
   sonarqube_data:

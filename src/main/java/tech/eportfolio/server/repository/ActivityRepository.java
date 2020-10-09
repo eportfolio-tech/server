@@ -2,12 +2,12 @@ package tech.eportfolio.server.repository;
 
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
-import tech.eportfolio.server.model.FeedItem;
+import tech.eportfolio.server.model.Activity;
 
 import java.util.List;
 
 @Repository
-public interface FeedItemRepository extends MongoRepository<FeedItem, String> {
+public interface ActivityRepository extends MongoRepository<Activity, String> {
 
     /**
      * Find feed items by feed type
@@ -17,7 +17,7 @@ public interface FeedItemRepository extends MongoRepository<FeedItem, String> {
      * @return
      */
 
-    List<FeedItem> findFeedItemsByFeedTypeAndDeleted(String findByActivityType, boolean deleted);
+    List<Activity> findFeedItemsByFeedTypeAndDeleted(String findByActivityType, boolean deleted);
 
     /**
      * Find feed items by parent type
@@ -26,7 +26,7 @@ public interface FeedItemRepository extends MongoRepository<FeedItem, String> {
      * @param deleted    deleted
      * @return
      */
-    List<FeedItem> findFeedItemByParentTypeAndDeleted(String parentType, boolean deleted);
+    List<Activity> findFeedItemByParentTypeAndDeleted(String parentType, boolean deleted);
 
     /**
      * Find feed items which are not in given feed history
@@ -35,6 +35,6 @@ public interface FeedItemRepository extends MongoRepository<FeedItem, String> {
      * @param deleted deleted
      * @return
      */
-    List<FeedItem> findFeedItemsByIdNotInAndDeleted(List<String> history, boolean deleted);
+    List<Activity> findFeedItemsByIdNotInAndDeleted(List<String> history, boolean deleted);
 
 }

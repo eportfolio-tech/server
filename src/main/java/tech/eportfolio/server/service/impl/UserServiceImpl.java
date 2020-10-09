@@ -20,6 +20,7 @@ import tech.eportfolio.server.model.User;
 import tech.eportfolio.server.model.UserPrincipal;
 import tech.eportfolio.server.repository.UserRepository;
 import tech.eportfolio.server.service.AzureStorageService;
+import tech.eportfolio.server.service.UserFollowService;
 import tech.eportfolio.server.service.UserService;
 
 import java.io.InputStream;
@@ -42,6 +43,12 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     private AvatarGenerator avatarGenerator;
 
+    private UserFollowService userFollowService;
+
+    @Autowired
+    public void setUserFollowService(UserFollowService userFollowService) {
+        this.userFollowService = userFollowService;
+    }
 
     @Autowired
     public void setAzureStorageService(AzureStorageService azureStorageService) {
@@ -90,6 +97,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         if (createAvatar) {
             user.setAvatarUrl(createGithubAvatar(user));
         }
+        userFollowService.createQueueAndExchange(user.getUsername());
         return userRepository.save(user);
     }
 
