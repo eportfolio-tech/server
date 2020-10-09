@@ -4,6 +4,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.amqp.rabbit.core.RabbitAdmin;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.mongo.AutoConfigureDataMongo;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -41,6 +42,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class FeedControllerTest {
 
     @Autowired
+    RabbitAdmin rabbitAdmin;
+    @Autowired
     MongoTemplate mongoTemplate;
     @Autowired
     private MockMvc mockMvc;
@@ -62,6 +65,8 @@ public class FeedControllerTest {
         testUserDTO = UserDTO.mock();
         testUserDTO.setUsername("test");
         testUser = userService.register(userService.fromUserDTO(testUserDTO), false);
+        // Purge the remaining messages in the queue
+        rabbitAdmin.purgeQueue("test");
 
         followingUserDTO = UserDTO.mock();
         followingUser = userService.register(userService.fromUserDTO(followingUserDTO), false);

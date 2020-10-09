@@ -45,6 +45,7 @@ public class UserControllerTest {
 
     private UserDTO testUserDTO;
 
+
     @Autowired
     MongoTemplate mongoTemplate;
 
@@ -52,6 +53,8 @@ public class UserControllerTest {
     public void init() {
         testUserDTO = UserDTO.mock();
         testUserDTO.setUsername("test");
+        userService.register(userService.fromUserDTO(testUserDTO), false);
+
     }
 
     @Test
