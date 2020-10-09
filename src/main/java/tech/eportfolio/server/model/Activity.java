@@ -8,12 +8,14 @@ import tech.eportfolio.server.common.constant.FeedType;
 import tech.eportfolio.server.common.constant.ParentType;
 
 import javax.persistence.Id;
+import java.io.Serializable;
 import java.util.Date;
 
 @Data
 @Document
 @Builder
-public class FeedItem {
+public class Activity implements Serializable {
+
     @Id
     private String id;
 
@@ -29,7 +31,7 @@ public class FeedItem {
     // primary key of related portfolio or tag
     private String parentId;
 
-    private boolean deleted = false;
+    private boolean deleted;
 
     @CreatedDate
     private Date createdDate;

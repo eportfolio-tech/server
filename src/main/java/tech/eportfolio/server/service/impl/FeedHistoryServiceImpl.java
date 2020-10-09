@@ -2,8 +2,8 @@ package tech.eportfolio.server.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import tech.eportfolio.server.model.Activity;
 import tech.eportfolio.server.model.FeedHistory;
-import tech.eportfolio.server.model.FeedItem;
 import tech.eportfolio.server.repository.FeedHistoryRepository;
 import tech.eportfolio.server.service.FeedHistoryService;
 
@@ -28,12 +28,12 @@ public class FeedHistoryServiceImpl implements FeedHistoryService {
     }
 
     @Override
-    public FeedHistory appendToHistory(String userId, List<FeedItem> feedItems) {
+    public FeedHistory appendToHistory(String userId, List<Activity> activities) {
         FeedHistory feedHistory = feedHistoryRepository.findFeedHistoryByUserId(userId, false).
                 orElse(FeedHistory.builder().userId(userId).build());
         Set<String> items = feedHistory.getFeedItems();
         // add ids of newly pushed feed items to the history set
-        items.addAll(feedItems.stream().map(FeedItem::getId).collect(Collectors.toSet()));
+        items.addAll(activities.stream().map(Activity::getId).collect(Collectors.toSet()));
         feedHistory.setFeedItems(items);
 
         // save the history

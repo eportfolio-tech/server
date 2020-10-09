@@ -5,44 +5,44 @@ import org.springframework.stereotype.Service;
 import tech.eportfolio.server.common.constant.FeedType;
 import tech.eportfolio.server.common.constant.ParentType;
 import tech.eportfolio.server.model.*;
-import tech.eportfolio.server.repository.FeedItemRepository;
+import tech.eportfolio.server.repository.ActivityRepository;
+import tech.eportfolio.server.service.ActivityService;
 import tech.eportfolio.server.service.FeedHistoryService;
-import tech.eportfolio.server.service.FeedItemService;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 @Service
-public class FeedItemServiceImpl implements FeedItemService {
+public class ActivityServiceImpl implements ActivityService {
 
-    private final FeedItemRepository feedItemRepository;
+    private final ActivityRepository activityRepository;
 
     private final FeedHistoryService feedHistoryService;
 
     @Autowired
-    public FeedItemServiceImpl(FeedItemRepository feedItemRepository, FeedHistoryService feedHistoryService) {
-        this.feedItemRepository = feedItemRepository;
+    public ActivityServiceImpl(ActivityRepository activityRepository, FeedHistoryService feedHistoryService) {
+        this.activityRepository = activityRepository;
         this.feedHistoryService = feedHistoryService;
     }
 
     @Override
-    public List<FeedItem> getFeedItems(User user) {
+    public List<Activity> getFeedItems(User user) {
         Optional<FeedHistory> history = feedHistoryService.findByUserId(user.getId());
         List<String> historyFeedItemIds = new ArrayList<>();
         history.ifPresent(feedHistory -> historyFeedItemIds.addAll(feedHistory.getFeedItems()));
-        List<FeedItem> feed = feedItemRepository.findFeedItemsByIdNotInAndDeleted(historyFeedItemIds, false);
+        List<Activity> feed = activityRepository.findFeedItemsByIdNotInAndDeleted(historyFeedItemIds, false);
         updateHistory(user.getId(), feed);
         return feed;
     }
 
-    private void updateHistory(String userId, List<FeedItem> feedItems) {
-        feedHistoryService.appendToHistory(userId, feedItems);
+    private void updateHistory(String userId, List<Activity> activities) {
+        feedHistoryService.appendToHistory(userId, activities);
     }
 
     @Override
-    public FeedItem addPortfolio(Portfolio portfolio) {
-        return FeedItem.builder()
+    public Activity addPortfolio(Portfolio portfolio) {
+        return Activity.builder()
                 .feedType(FeedType.PORTFOLIO)
                 .parentType(ParentType.PORTFOLIO)
                 .parentId(portfolio.getId())
@@ -51,8 +51,8 @@ public class FeedItemServiceImpl implements FeedItemService {
     }
 
     @Override
-    public FeedItem addTag(Tag tag) {
-        return FeedItem.builder()
+    public Activity addTag(Tag tag) {
+        return Activity.builder()
                 .feedType(FeedType.TAG)
                 .parentType(ParentType.TAG)
                 .parentId(tag.getId())
@@ -61,8 +61,8 @@ public class FeedItemServiceImpl implements FeedItemService {
     }
 
     @Override
-    public FeedItem save(FeedItem item) {
-        return feedItemRepository.save(item);
+    public Activity save(Activity item) {
+        return activityRepository.save(item);
     }
 
 

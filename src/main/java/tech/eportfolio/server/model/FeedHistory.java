@@ -21,7 +21,7 @@ public class FeedHistory {
 
     private Set<String> feedItems;
 
-    private boolean deleted = false;
+    private boolean deleted;
 
     @CreatedDate
     private Date createdDate;
