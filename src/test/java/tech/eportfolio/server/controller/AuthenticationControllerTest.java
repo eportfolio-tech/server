@@ -7,6 +7,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.amqp.core.AmqpAdmin;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.mongo.AutoConfigureDataMongo;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -27,6 +28,7 @@ import tech.eportfolio.server.model.User;
 import tech.eportfolio.server.model.UserPrincipal;
 import tech.eportfolio.server.service.UserService;
 
+import static org.junit.Assert.assertNotNull;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -55,6 +57,9 @@ public class AuthenticationControllerTest {
 
     @Autowired
     private JWTTokenProvider jwtTokenProvider;
+
+    @Autowired
+    AmqpAdmin amqpAdmin;
 
     @Before
     public void init() {
@@ -120,6 +125,8 @@ public class AuthenticationControllerTest {
         ).andDo(print())
                 .andExpect(status().isOk())
                 .andReturn();
+        // should have created a queue for new user
+        assertNotNull(amqpAdmin.getQueueProperties(userDTO.getUsername()));
     }
 
     @Test

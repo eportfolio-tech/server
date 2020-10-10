@@ -22,7 +22,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import tech.eportfolio.server.dto.PasswordResetRequestBody;
 import tech.eportfolio.server.dto.UserDTO;
 import tech.eportfolio.server.dto.UserPatchRequestBody;
-import tech.eportfolio.server.model.User;
 import tech.eportfolio.server.service.UserService;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -44,9 +43,8 @@ public class UserControllerTest {
     @Autowired
     private UserService userService;
 
-    private User testUser;
-
     private UserDTO testUserDTO;
+
 
     @Autowired
     MongoTemplate mongoTemplate;
@@ -55,7 +53,8 @@ public class UserControllerTest {
     public void init() {
         testUserDTO = UserDTO.mock();
         testUserDTO.setUsername("test");
-        testUser = userService.register(userService.fromUserDTO(testUserDTO), false);
+        userService.register(userService.fromUserDTO(testUserDTO), false);
+
     }
 
     @Test
@@ -179,7 +178,6 @@ public class UserControllerTest {
     }
 
     @After
-
     public void afterClass() {
         mongoTemplate.getDb().drop();
     }

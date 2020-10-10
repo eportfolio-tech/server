@@ -1,5 +1,6 @@
 package tech.eportfolio.server.service;
 
+import tech.eportfolio.server.model.Activity;
 import tech.eportfolio.server.model.User;
 import tech.eportfolio.server.model.UserFollow;
 
@@ -19,5 +20,11 @@ public interface UserFollowService {
     List<UserFollow> findByDestinationUser(User destinationUser);
 
     List<UserFollow> findBySourceUser(User sourceUser);
+
+    void sendActivityToFollowers(Activity activity, String username);
+
+    void createQueueAndExchange(String username);
+
+    List<Activity> getActivitiesFromQueue(User user);
 
 }

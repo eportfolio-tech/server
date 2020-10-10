@@ -16,10 +16,13 @@ import org.springframework.stereotype.Service;
 import tech.eportfolio.server.common.constant.Visibility;
 import tech.eportfolio.server.common.utility.NullAwareBeanUtilsBean;
 import tech.eportfolio.server.dto.PortfolioDTO;
+import tech.eportfolio.server.model.Activity;
 import tech.eportfolio.server.model.Portfolio;
 import tech.eportfolio.server.model.User;
 import tech.eportfolio.server.repository.PortfolioRepository;
+import tech.eportfolio.server.service.ActivityService;
 import tech.eportfolio.server.service.PortfolioService;
+import tech.eportfolio.server.service.UserFollowService;
 
 import java.util.HashMap;
 import java.util.List;
@@ -31,8 +34,16 @@ public class PortfolioServiceImpl implements PortfolioService {
 
     private final PortfolioRepository portfolioRepository;
 
+    private static final String VISIBILITY = "visibility";
+
+    @Autowired
+    private UserFollowService userFollowService;
+
     @Autowired
     private MongoTemplate mongoTemplate;
+
+    @Autowired
+    private ActivityService activityService;
 
     @Autowired
     public PortfolioServiceImpl(PortfolioRepository portfolioRepository) {
@@ -41,7 +52,7 @@ public class PortfolioServiceImpl implements PortfolioService {
 
     @Override
     public Optional<Portfolio> findByUsername(String username) {
-        return Optional.ofNullable(portfolioRepository.findByUsername(username));
+        return portfolioRepository.findByUsername(username);
     }
 
     @Override
@@ -72,7 +83,7 @@ public class PortfolioServiceImpl implements PortfolioService {
     @Override
     public Page<Portfolio> searchByKeywordWithPaginationAndVisibilities(String text, Pageable pageable, List<Visibility> visibilities) {
         Query query = TextQuery.queryText(new TextCriteria().matchingAny(text)).sortByScore()
-                .addCriteria(Criteria.where("visibility").in(visibilities)).with(pageable);
+                .addCriteria(Criteria.where(VISIBILITY).in(visibilities)).with(pageable);
         return this.searchWithPagination(query, pageable);
     }
 
@@ -80,7 +91,7 @@ public class PortfolioServiceImpl implements PortfolioService {
     public Page<Portfolio> searchByTagWithPaginationAndVisibilities(Pageable pageable, List<Visibility> visibilities, List<String> userIds) {
         Query query = new Query()
                 .addCriteria(Criteria.where("userId").in(userIds))
-                .addCriteria(Criteria.where("visibility").in(visibilities)).with(pageable);
+                .addCriteria(Criteria.where(VISIBILITY).in(visibilities)).with(pageable);
         return this.searchWithPagination(query, pageable);
     }
 
@@ -97,14 +108,14 @@ public class PortfolioServiceImpl implements PortfolioService {
     @Override
     public List<Portfolio> searchWithVisibilities(String text, List<Visibility> visibilities) {
         Query query = TextQuery.queryText(new TextCriteria().matchingAny(text)).sortByScore()
-                .addCriteria(Criteria.where("visibility").in(visibilities));
+                .addCriteria(Criteria.where(VISIBILITY).in(visibilities));
         return mongoTemplate.find(query, Portfolio.class);
     }
 
     @Override
     public List<Portfolio> searchWithVisibilities(List<Visibility> visibilities) {
         Query query = new Query()
-                .addCriteria(Criteria.where("visibility").in(visibilities));
+                .addCriteria(Criteria.where(VISIBILITY).in(visibilities));
         return mongoTemplate.find(query, Portfolio.class);
     }
 
@@ -114,6 +125,10 @@ public class PortfolioServiceImpl implements PortfolioService {
         TypeReference<HashMap<String, Object>> typeRef = new TypeReference<>() {
         };
         portfolio.setContent(new BasicDBObject(mapper.convertValue(map, typeRef)));
+        // Create an new activity for the update
+        Activity activity = activityService.addPortfolioUpdate(portfolio);
+        // Send a message to followers with this Activity
+        userFollowService.sendActivityToFollowers(activity, portfolio.getUsername());
         return this.save(portfolio);
     }
 
