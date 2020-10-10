@@ -1,7 +1,6 @@
 package tech.eportfolio.server.config;
 
 import org.springframework.amqp.core.AmqpAdmin;
-import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitAdmin;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -14,29 +13,14 @@ import org.springframework.retry.support.RetryTemplate;
 @Configuration
 public class RabbitMQConfig {
 
-    public static final String topicExchangeName = "spring-boot-exchange";
-
-    public static final String queueName = "spring-boot";
-
-
-    @Bean
-    public ConnectionFactory connectionFactory() {
-        CachingConnectionFactory connectionFactory = new CachingConnectionFactory("localhost");
-//        connectionFactory.setUsername("gregg");
-//        connectionFactory.setPassword("gregg");
-//        connectionFactory.setPort(5672);
-//        connectionFactory.setVirtualHost("dlxtest");
-        return connectionFactory;
-    }
-
     @Bean
     public Jackson2JsonMessageConverter converter() {
         return new Jackson2JsonMessageConverter();
     }
 
     @Bean
-    public RabbitTemplate rabbitTemplate() {
-        RabbitTemplate template = new RabbitTemplate(connectionFactory());
+    public RabbitTemplate rabbitTemplate(ConnectionFactory connectionFactory) {
+        RabbitTemplate template = new RabbitTemplate(connectionFactory);
         RetryTemplate retryTemplate = new RetryTemplate();
         ExponentialBackOffPolicy backOffPolicy = new ExponentialBackOffPolicy();
         backOffPolicy.setInitialInterval(500);
@@ -80,7 +64,7 @@ public class RabbitMQConfig {
 //    }
 
     /**
-     * Required for executing adminstration functions against an AMQP Broker
+     * Required for executing administration functions against an AMQP Broker
      */
     @Bean
     public AmqpAdmin amqpAdmin(ConnectionFactory connectionFactory) {
