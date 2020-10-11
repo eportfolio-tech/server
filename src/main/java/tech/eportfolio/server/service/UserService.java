@@ -1,5 +1,6 @@
 package tech.eportfolio.server.service;
 
+import org.springframework.security.core.userdetails.UserDetails;
 import tech.eportfolio.server.dto.UserDTO;
 import tech.eportfolio.server.model.User;
 
@@ -35,4 +36,6 @@ public interface UserService {
     List<User> findDeletedUserWithContainer(Date deleteBeforeDate);
 
     List<User> saveAll(List<User> users);
+
+    UserDetails loadUserByUsername(String username);
 }
