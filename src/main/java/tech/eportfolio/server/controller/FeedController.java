@@ -3,6 +3,7 @@ package tech.eportfolio.server.controller;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.Authorization;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
@@ -32,7 +33,7 @@ public class FeedController {
 
 
     @Autowired
-    public FeedController(UserFollowService userFollowService, UserService userService, FeedHistoryService feedHistoryService) {
+    public FeedController(UserFollowService userFollowService, @Qualifier("UserServiceCacheImpl") UserService userService, FeedHistoryService feedHistoryService) {
         this.userFollowService = userFollowService;
         this.userService = userService;
         this.feedHistoryService = feedHistoryService;

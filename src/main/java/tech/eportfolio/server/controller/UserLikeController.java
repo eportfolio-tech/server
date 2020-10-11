@@ -3,6 +3,7 @@ package tech.eportfolio.server.controller;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.Authorization;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -33,7 +34,7 @@ public class UserLikeController {
     private final UserLikeService userLikeService;
 
     @Autowired
-    public UserLikeController(PortfolioService portfolioService, UserService userService, UserLikeService userLikeService, PortfolioService portfolioRepository) {
+    public UserLikeController(PortfolioService portfolioService, @Qualifier("UserServiceCacheImpl") UserService userService, UserLikeService userLikeService, PortfolioService portfolioRepository) {
         this.portfolioService = portfolioService;
         this.userService = userService;
         this.userLikeService = userLikeService;

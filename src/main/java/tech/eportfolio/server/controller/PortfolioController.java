@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mongodb.DBObject;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.Authorization;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -38,7 +39,7 @@ public class PortfolioController {
 
     public static final String PORTFOLIO = "portfolio";
 
-    public PortfolioController(PortfolioService portfolioService, UserService userService, ObjectMapper objectMapper) {
+    public PortfolioController(PortfolioService portfolioService, @Qualifier("UserServiceCacheImpl") UserService userService, ObjectMapper objectMapper) {
         this.portfolioService = portfolioService;
         this.userService = userService;
         this.objectMapper = objectMapper;
