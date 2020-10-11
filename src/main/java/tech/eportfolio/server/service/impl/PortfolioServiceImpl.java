@@ -4,8 +4,6 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mongodb.BasicDBObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.CacheConfig;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -32,7 +30,6 @@ import java.util.Map;
 import java.util.Optional;
 
 @Service
-@CacheConfig(cacheNames = {"portfolios"})
 public class PortfolioServiceImpl implements PortfolioService {
 
     private final PortfolioRepository portfolioRepository;
@@ -83,7 +80,6 @@ public class PortfolioServiceImpl implements PortfolioService {
         return portfolioRepository.save(toCreate);
     }
 
-    @Cacheable
     @Override
     public Page<Portfolio> searchByKeywordWithPaginationAndVisibilities(String text, Pageable pageable, List<Visibility> visibilities) {
         Query query = TextQuery.queryText(new TextCriteria().matchingAny(text)).sortByScore()
@@ -139,6 +135,12 @@ public class PortfolioServiceImpl implements PortfolioService {
     @Override
     public Portfolio deleteContent(Portfolio portfolio) {
         portfolio.setContent(null);
+        return this.save(portfolio);
+    }
+
+    @Override
+    public Portfolio updatePortfolio(Portfolio portfolio, PortfolioDTO portfolioDTO) {
+        NullAwareBeanUtilsBean.copyProperties(portfolioDTO, portfolio);
         return this.save(portfolio);
     }
 

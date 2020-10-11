@@ -32,6 +32,8 @@ public interface PortfolioService {
 
     Portfolio deleteContent(Portfolio portfolio);
 
+    Portfolio updatePortfolio(Portfolio portfolio, PortfolioDTO portfolioDTO);
+
     Portfolio save(Portfolio portfolio);
 
     List<Portfolio> searchWithVisibilities(String text, List<Visibility> visibilities);

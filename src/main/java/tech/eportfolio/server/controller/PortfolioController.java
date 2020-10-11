@@ -14,7 +14,6 @@ import tech.eportfolio.server.common.exception.PortfolioExistException;
 import tech.eportfolio.server.common.exception.PortfolioNotFoundException;
 import tech.eportfolio.server.common.exception.UserNotFoundException;
 import tech.eportfolio.server.common.jsend.SuccessResponse;
-import tech.eportfolio.server.common.utility.NullAwareBeanUtilsBean;
 import tech.eportfolio.server.dto.PortfolioDTO;
 import tech.eportfolio.server.model.Portfolio;
 import tech.eportfolio.server.model.User;
@@ -39,7 +38,7 @@ public class PortfolioController {
 
     public static final String PORTFOLIO = "portfolio";
 
-    public PortfolioController(PortfolioService portfolioService, @Qualifier("UserServiceCacheImpl") UserService userService, ObjectMapper objectMapper) {
+    public PortfolioController(@Qualifier("PortfolioServiceCacheImpl") PortfolioService portfolioService, @Qualifier("UserServiceCacheImpl") UserService userService, ObjectMapper objectMapper) {
         this.portfolioService = portfolioService;
         this.userService = userService;
         this.objectMapper = objectMapper;
@@ -74,8 +73,7 @@ public class PortfolioController {
     @ApiOperation(value = "", authorizations = {@Authorization(value = "JWT")})
     public ResponseEntity<SuccessResponse<Portfolio>> updatePortfolio(@PathVariable String username, @RequestBody PortfolioDTO update) {
         Portfolio portfolio = portfolioService.findByUsername(username).orElseThrow(() -> new PortfolioNotFoundException(username));
-        NullAwareBeanUtilsBean.copyProperties(update, portfolio);
-        Portfolio result = portfolioService.save(portfolio);
+        Portfolio result = portfolioService.updatePortfolio(portfolio, update);
         return new SuccessResponse<>(PORTFOLIO, result).toOk();
     }
 
