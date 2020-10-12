@@ -108,8 +108,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         return azureStorageService.uploadBlobFromInputStream(containerName, avatar, "avatar.png").toString();
     }
 
-    @Override
-    public String encodePassword(String raw) {
+    private String encodePassword(String raw) {
         return bCryptPasswordEncoder.encode(raw);
     }
 
@@ -150,6 +149,11 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     public Optional<User> findByUsername(String username) {
         return Optional.ofNullable(userRepository.findByUsernameAndDeleted(username, false));
+    }
+
+    @Override
+    public User foundUserByUsername(String username) {
+        return this.findByUsername(username).orElseThrow(() -> (new UserNotFoundException(username)));
     }
 
     @Override
