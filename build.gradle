@@ -108,3 +108,9 @@ jacocoTestReport {
         xml.enabled true
     }
 }
+test {
+    testLogging {
+        events "failed"
+        exceptionFormat "full"
+    }
+}
