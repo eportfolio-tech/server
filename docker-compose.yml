@@ -27,6 +27,13 @@ services:
     command: azurite-blob --blobHost 0.0.0.0 --blobPort 10000
     restart: unless-stopped
 
+  rabbitmq:
+    image: rabbitmq:management
+    ports:
+      #      - "5672:5672"
+      - "15672:15672"
+    restart: always
+
   dev:
     image: docker.pkg.github.com/haswf/comp30022backenddev/eportfolio-server-docker:dev
     ports:
@@ -34,6 +41,10 @@ services:
     volumes:
       - /var/log/eportfolio/:/var/log/eportfolio/
     restart: unless-stopped
+    environment:
+      SPRING_RABBITMQ_HOST: rabbitmq
+    depends_on:
+      - rabbitmq
 
   sonarqube:
     image: sonarqube:7.9.4-community
@@ -45,12 +56,7 @@ services:
       - sonarqube_logs:/opt/sonarqube/logs
       - ./sonarqube:/opt/sonarqube/conf
     restart: unless-stopped
-  rabbitmq:
-    image: rabbitmq:management
-    ports:
-      - "5672:5672"
-      - "15672:15672"
-    restart: always
+
 
 volumes:
   sonarqube_data:
