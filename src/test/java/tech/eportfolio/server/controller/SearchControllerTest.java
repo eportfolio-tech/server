@@ -75,6 +75,7 @@ public class SearchControllerTest {
 
     @Before
     public void init() {
+        mongoTemplate.getDb().drop();
         UserDTO userDTO = UserDTO.mock();
         userDTO.setUsername("test");
         tags = new LinkedList<>();
