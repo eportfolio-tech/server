@@ -10,11 +10,12 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import tech.eportfolio.server.common.constant.Visibility;
 
 import javax.persistence.Id;
+import java.io.Serializable;
 import java.util.Date;
 
 @Data
 @Document
-public class Portfolio {
+public class Portfolio implements Serializable {
     @Id
     private String id;
 
