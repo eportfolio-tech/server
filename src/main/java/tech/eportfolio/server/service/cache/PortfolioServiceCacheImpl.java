@@ -69,13 +69,13 @@ public class PortfolioServiceCacheImpl implements PortfolioService {
     }
 
     @Override
-    @Cacheable
+//    @Cacheable
     public Page<Portfolio> searchByKeywordWithPaginationAndVisibilities(String text, Pageable pageable, List<Visibility> visibilities) {
         return portfolioService.searchByKeywordWithPaginationAndVisibilities(text, pageable, visibilities);
     }
 
     @Override
-    @Cacheable
+//    @Cacheable(key = "#userIds")
     public Page<Portfolio> searchByTagWithPaginationAndVisibilities(Pageable pageable, List<Visibility> visibilities, List<String> userIds) {
         return portfolioService.searchByTagWithPaginationAndVisibilities(pageable, visibilities, userIds);
     }
