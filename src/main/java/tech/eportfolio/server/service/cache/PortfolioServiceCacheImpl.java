@@ -83,6 +83,11 @@ public class PortfolioServiceCacheImpl implements PortfolioService {
     }
 
     @Override
+    public List<Portfolio> findByIdIn(List<String> ids) {
+        return portfolioService.findByIdIn(ids);
+    }
+
+    @Override
     @CachePut(key = "#portfolio.username")
     public Portfolio updateContent(Portfolio portfolio, Map<String, Object> map) {
         return portfolioService.updateContent(portfolio, map);

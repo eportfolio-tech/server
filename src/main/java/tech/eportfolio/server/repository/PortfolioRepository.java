@@ -14,4 +14,6 @@ public interface PortfolioRepository extends MongoRepository<Portfolio, String> 
 
     Optional<Portfolio> findByUsername(String username);
 
+    List<Portfolio> findByIdInAndDeleted(List<String> ids, boolean deleted);
+
 }

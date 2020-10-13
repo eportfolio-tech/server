@@ -39,4 +39,6 @@ public interface PortfolioService {
     List<Portfolio> searchWithVisibilities(String text, List<Visibility> visibilities);
 
     List<Portfolio> searchWithVisibilities(List<Visibility> visibilities);
+
+    List<Portfolio> findByIdIn(List<String> ids);
 }

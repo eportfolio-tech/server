@@ -122,6 +122,11 @@ public class PortfolioServiceImpl implements PortfolioService {
     }
 
     @Override
+    public List<Portfolio> findByIdIn(List<String> ids) {
+        return portfolioRepository.findByIdInAndDeleted(ids, false);
+    }
+
+    @Override
     public Portfolio updateContent(Portfolio portfolio, Map<String, Object> map) {
         ObjectMapper mapper = new ObjectMapper();
         TypeReference<HashMap<String, Object>> typeRef = new TypeReference<>() {

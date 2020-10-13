@@ -4,7 +4,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.amqp.rabbit.core.RabbitAdmin;
+import org.springframework.amqp.core.AmqpAdmin;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.mongo.AutoConfigureDataMongo;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -44,9 +44,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class FeedControllerTest {
 
     @Autowired
-    RabbitAdmin rabbitAdmin;
+    private AmqpAdmin rabbitAdmin;
     @Autowired
-    MongoTemplate mongoTemplate;
+    private MongoTemplate mongoTemplate;
     @Autowired
     private CacheManager cacheManager;
     @Autowired
@@ -91,7 +91,8 @@ public class FeedControllerTest {
         ).andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.status").value("success"))
-                .andExpect(jsonPath("$.data.activities", hasSize(1)));
+                .andExpect(jsonPath("$.data.activities", hasSize(1)))
+                .andExpect(jsonPath("$.data.activities[0].portfolio").exists());
     }
 
 
