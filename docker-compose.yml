@@ -34,6 +34,12 @@ services:
       - "15672:15672"
     restart: always
 
+  redis:
+    image: redis:alpine
+    ports:
+      - "6379:6379"
+    restart: always
+
   dev:
     image: docker.pkg.github.com/haswf/comp30022backenddev/eportfolio-server-docker:dev
     ports:
@@ -43,8 +49,10 @@ services:
     restart: unless-stopped
     environment:
       SPRING_RABBITMQ_HOST: rabbitmq
+      SPRING_REDIS_HOST: redis
     depends_on:
       - rabbitmq
+      - redis
 
   sonarqube:
     image: sonarqube:7.9.4-community
