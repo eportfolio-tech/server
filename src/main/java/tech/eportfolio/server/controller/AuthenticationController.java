@@ -5,6 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -49,6 +50,12 @@ public class AuthenticationController extends AuthenticationExceptionHandler {
 
     private final RecoveryService recoveryService;
 
+    @Value("$security.jwt.token.sign")
+    private String signKey;
+
+    @Value("$security.jwt.token.refresh")
+    private String refreshKey;
+
 
     @Autowired
     public AuthenticationController(@Qualifier("UserServiceCacheImpl") UserService userService, AuthenticationManager authenticationManager, VerificationService verificationService, JWTTokenProvider jwtTokenProvider, RecoveryService recoveryService, UserFollowService userFollowService) {
@@ -90,9 +97,9 @@ public class AuthenticationController extends AuthenticationExceptionHandler {
 
     @PostMapping("/renew")
     public ResponseEntity<SuccessResponse<Object>> renewToken(@RequestBody @Valid RenewRequestBody renewRequestBody) {
-        String username = jwtTokenProvider.getSubject(renewRequestBody.getRefreshToken(), SecurityConstant.REFRESH_SECRET);
+        String username = jwtTokenProvider.getSubject(renewRequestBody.getRefreshToken(), refreshKey);
         User refreshUser = userService.findByUsername(username).orElseThrow(() -> new UserNotFoundException(username));
-        if (!jwtTokenProvider.isTokenValid(username, renewRequestBody.getRefreshToken(), SecurityConstant.REFRESH_SECRET)) {
+        if (!jwtTokenProvider.isTokenValid(username, renewRequestBody.getRefreshToken(), refreshKey)) {
             throw new JWTVerificationException("Refresh token has expired");
         }
         UserPrincipal userPrincipal = new UserPrincipal(refreshUser);
