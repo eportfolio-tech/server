@@ -1,7 +1,6 @@
 version: "3.3"
 services:
   watchtower:
-    container_name: watchtower
     image: containrrr/watchtower
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
@@ -18,27 +17,42 @@ services:
     command: --interval 60  --cleanup
     restart: unless-stopped
 
-  # mongodb:
-  #   image: mongo:latest 
-  #   environment:
-  #     MONGO_INITDB_ROOT_USERNAME: root
-  #     MONGO_INITDB_ROOT_PASSWORD: hN1pdA3Ygw9I
-  #     MONGO_INITDB_DATABASE: eportfolio
-  #   ports:
-  #     - 37018:27017
-  #   volumes:
-  #     - mongodb_data:/data/db
-  #   command: [--auth]
-  #   restart: unless-stopped
-
-  prod:
-    container_name: prod
-    image: docker.pkg.github.com/haswf/comp30022backenddev/eportfolio-server-docker:latest
+  azurite:
+    image: mcr.microsoft.com/azure-storage/azurite
     ports:
-      - "8080:8090"
+      - "10000:10000"
+      - "10001:10001"
     volumes:
-      - /var/log/eportfolio/:/var/log/eportfolio/
+      - azure_blob_data:/data
+    command: azurite-blob --blobHost 0.0.0.0 --blobPort 10000
     restart: unless-stopped
 
+  rabbitmq:
+    image: rabbitmq:management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    restart: always
+
+  redis:
+    image: redis:alpine
+    ports:
+      - "6379:6379"
+    restart: always
+
+  dev:
+    image: docker.pkg.github.com/haswf/comp30022backenddev/eportfolio-server-docker:dev
+    ports:
+      - "8090:8090"
+    volumes:
+      - /var/log/eportfolio/:/var/log/eportfolio/
+    restart: always
+    environment:
+      SPRING_RABBITMQ_HOST: rabbitmq
+      SPRING_REDIS_HOST: redis
+    depends_on:
+      - rabbitmq
+      - redis
+
 volumes:
-  mongodb_data:
+  azure_blob_data:
