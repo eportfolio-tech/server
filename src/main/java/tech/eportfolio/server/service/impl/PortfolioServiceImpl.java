@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mongodb.BasicDBObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -30,6 +31,7 @@ import java.util.Map;
 import java.util.Optional;
 
 @Service
+@Qualifier("PortfolioServiceImpl")
 public class PortfolioServiceImpl implements PortfolioService {
 
     private final PortfolioRepository portfolioRepository;
@@ -135,6 +137,12 @@ public class PortfolioServiceImpl implements PortfolioService {
     @Override
     public Portfolio deleteContent(Portfolio portfolio) {
         portfolio.setContent(null);
+        return this.save(portfolio);
+    }
+
+    @Override
+    public Portfolio updatePortfolio(Portfolio portfolio, PortfolioDTO portfolioDTO) {
+        NullAwareBeanUtilsBean.copyProperties(portfolioDTO, portfolio);
         return this.save(portfolio);
     }
 

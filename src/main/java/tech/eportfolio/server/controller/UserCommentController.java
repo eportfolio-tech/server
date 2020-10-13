@@ -3,6 +3,7 @@ package tech.eportfolio.server.controller;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.Authorization;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
@@ -35,7 +36,7 @@ public class UserCommentController {
     private static final String COMMENTS = "comments";
 
     @Autowired
-    public UserCommentController(PortfolioService portfolioService, UserService userService, UserCommentService userCommentService, PortfolioService portfolioRepository) {
+    public UserCommentController(PortfolioService portfolioService, @Qualifier("UserServiceCacheImpl") UserService userService, UserCommentService userCommentService, PortfolioService portfolioRepository) {
         this.portfolioService = portfolioService;
         this.userService = userService;
         this.userCommentService = userCommentService;

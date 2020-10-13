@@ -3,6 +3,7 @@ package tech.eportfolio.server.controller;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.Authorization;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -31,7 +32,7 @@ public class UserFollowController {
 
 
     @Autowired
-    public UserFollowController(UserService userService, UserFollowService userFollowerService) {
+    public UserFollowController(@Qualifier("UserServiceCacheImpl") UserService userService, UserFollowService userFollowerService) {
         this.userService = userService;
         this.userFollowerService = userFollowerService;
     }
@@ -89,7 +90,7 @@ public class UserFollowController {
 
     @DeleteMapping("/{destinationUsername}/followers")
     @ApiOperation(value = "", authorizations = {@Authorization(value = "JWT")})
-    public ResponseEntity<SuccessResponse<Object>> unfollowPortfolio(@PathVariable String destinationUsername) {
+    public ResponseEntity<SuccessResponse<Object>> unfollowUser(@PathVariable String destinationUsername) {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
 
         // The condition when a user is following himself/herself

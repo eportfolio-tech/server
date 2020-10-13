@@ -108,8 +108,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         return azureStorageService.uploadBlobFromInputStream(containerName, avatar, "avatar.png").toString();
     }
 
-    @Override
-    public String encodePassword(String raw) {
+    private String encodePassword(String raw) {
         return bCryptPasswordEncoder.encode(raw);
     }
 

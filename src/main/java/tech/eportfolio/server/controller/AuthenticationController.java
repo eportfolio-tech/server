@@ -4,6 +4,7 @@ import com.auth0.jwt.exceptions.JWTVerificationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -50,7 +51,7 @@ public class AuthenticationController extends AuthenticationExceptionHandler {
 
 
     @Autowired
-    public AuthenticationController(UserService userService, AuthenticationManager authenticationManager, VerificationService verificationService, JWTTokenProvider jwtTokenProvider, RecoveryService recoveryService, UserFollowService userFollowService) {
+    public AuthenticationController(@Qualifier("UserServiceCacheImpl") UserService userService, AuthenticationManager authenticationManager, VerificationService verificationService, JWTTokenProvider jwtTokenProvider, RecoveryService recoveryService, UserFollowService userFollowService) {
         this.userService = userService;
         this.authenticationManager = authenticationManager;
         this.verificationService = verificationService;
@@ -131,7 +132,7 @@ public class AuthenticationController extends AuthenticationExceptionHandler {
     @DeleteMapping("/deleteTest")
     public ResponseEntity<SuccessResponse<Object>> deleteTest() {
         String username = "test";
-        User user = userService.findByUsername(username).orElseThrow(() -> new EmailNotFoundException(username));
+        User user = userService.findByUsername(username).orElseThrow(() -> new UserNotFoundException(username));
         userService.delete(user);
         // Generate URI to be embedded into email
         return new SuccessResponse<>().toOk();
