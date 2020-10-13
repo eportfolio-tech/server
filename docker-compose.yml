@@ -29,8 +29,11 @@ services:
 
   rabbitmq:
     image: rabbitmq:management
+    environment:
+      - RABBITMQ_DEFAULT_USER: "comp30022"
+      - RABBITMQ_DEFAULT_PASS: "renlord"
     ports:
-      #      - "5672:5672"
+      - "5672:5672"
       - "15672:15672"
     restart: always
 
@@ -46,9 +49,11 @@ services:
       - "8090:8090"
     volumes:
       - /var/log/eportfolio/:/var/log/eportfolio/
-    restart: unless-stopped
+    restart: always
     environment:
-      SPRING_RABBITMQ_HOST: rabbitmq
+      SPRING_RABBITMQ_HOST: rabbitmq 
+      SPRING_RABBITMQ_USER: "comp30022"
+      SPRING_RABBIT_PASS: "renlord"
       SPRING_REDIS_HOST: redis
     depends_on:
       - rabbitmq

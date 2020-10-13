@@ -13,6 +13,28 @@ import org.springframework.retry.support.RetryTemplate;
 @Configuration
 public class RabbitMQConfig {
 
+//    @Value("${spring.rabbitmq.username}")
+//    String username;
+//
+//    @Value("${spring.rabbitmq.password}")
+//    private String password;
+//
+//    @Value("${spring.rabbitmq.host}")
+//    private String host;
+//
+//    @Value("${spring.rabbitmq.port}")
+//    private int port;
+//
+//    //create custom connection factory
+//	@Bean
+//	ConnectionFactory connectionFactory() {
+//		CachingConnectionFactory cachingConnectionFactory = new CachingConnectionFactory(host, port);
+//		cachingConnectionFactory.setUsername(username);
+//		cachingConnectionFactory.setUsername(password);
+//		return cachingConnectionFactory;
+//	}
+
+
     @Bean
     public Jackson2JsonMessageConverter converter() {
         return new Jackson2JsonMessageConverter();
