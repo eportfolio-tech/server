@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import tech.eportfolio.server.common.exception.PortfolioExistException;
+import tech.eportfolio.server.common.exception.PortfolioNotFoundException;
 import tech.eportfolio.server.common.exception.UserNotFoundException;
 import tech.eportfolio.server.common.jsend.SuccessResponse;
 import tech.eportfolio.server.dto.PortfolioDTO;
@@ -48,7 +49,7 @@ public class PortfolioController {
     // Find portfolio by username
     @GetMapping("/{ownerUsername}")
     public ResponseEntity<SuccessResponse<Map<String, Object>>> findByUsername(@PathVariable String ownerUsername) {
-        Portfolio result = portfolioService.foundPortfolioByUsername(ownerUsername);
+        Portfolio result = portfolioService.findByUsername(ownerUsername).orElseThrow(() -> new PortfolioNotFoundException(ownerUsername));
         User user = userService.findByUsername(result.getUsername()).orElseThrow(() -> new UserNotFoundException(ownerUsername));
         @SuppressWarnings("unchecked")
         Map<String, Object> map = objectMapper.convertValue(result, Map.class);
@@ -73,7 +74,7 @@ public class PortfolioController {
     @PatchMapping("/{username}")
     @ApiOperation(value = "", authorizations = {@Authorization(value = "JWT")})
     public ResponseEntity<SuccessResponse<Portfolio>> updatePortfolio(@PathVariable String username, @RequestBody PortfolioDTO update) {
-        Portfolio portfolio = portfolioService.foundPortfolioByUsername(username);
+        Portfolio portfolio = portfolioService.findByUsername(username).orElseThrow(() -> new PortfolioNotFoundException(username));
         Portfolio result = portfolioService.updatePortfolio(portfolio, update);
         return new SuccessResponse<>(PORTFOLIO, result).toOk();
     }
@@ -82,7 +83,7 @@ public class PortfolioController {
     @GetMapping("/{username}/content")
     @ApiOperation(value = "", authorizations = {@Authorization(value = "JWT")})
     public ResponseEntity<SuccessResponse<DBObject>> findContentByUsername(@PathVariable String username) {
-        Portfolio result = portfolioService.foundPortfolioByUsername(username);
+        Portfolio result = portfolioService.findByUsername(username).orElseThrow(() -> new PortfolioNotFoundException(username));
         return new SuccessResponse<>(CONTENT, result.getContent()).toOk();
     }
 
@@ -90,7 +91,7 @@ public class PortfolioController {
     @PutMapping("/{username}/content")
     @ApiOperation(value = "", authorizations = {@Authorization(value = "JWT")})
     public ResponseEntity<SuccessResponse<DBObject>> uploadContent(@PathVariable String username, @RequestBody JsonNode jsonPayload) {
-        Portfolio result = portfolioService.foundPortfolioByUsername(username);
+        Portfolio result = portfolioService.findByUsername(username).orElseThrow(() -> new PortfolioNotFoundException(username));
 
         ObjectMapper mapper = new ObjectMapper();
         TypeReference<HashMap<String, Object>> typeRef = new TypeReference<>() {
@@ -104,7 +105,7 @@ public class PortfolioController {
     @DeleteMapping("/{username}/content")
     @ApiOperation(value = "", authorizations = {@Authorization(value = "JWT")})
     public ResponseEntity<SuccessResponse<Portfolio>> deleteContent(@PathVariable String username) {
-        Portfolio result = portfolioService.foundPortfolioByUsername(username);
+        Portfolio result = portfolioService.findByUsername(username).orElseThrow(() -> new PortfolioNotFoundException(username));
         Portfolio resultContent = portfolioService.deleteContent(result);
         return new SuccessResponse<>(CONTENT, resultContent).toOk();
     }

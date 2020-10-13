@@ -73,7 +73,7 @@ public class AuthenticationController extends AuthenticationExceptionHandler {
     @PostMapping("/login")
     public ResponseEntity<SuccessResponse<Object>> login(@RequestBody @Valid LoginRequestBody loginRequestBody) {
         String username = loginRequestBody.getUsername();
-        User loginUser = userService.foundUserByUsername(username);
+        User loginUser = userService.findByUsername(username).orElseThrow(() -> new UserNotFoundException(username));
         authenticate(username, loginRequestBody.getPassword());
         UserPrincipal userPrincipal = new UserPrincipal(loginUser);
         Map<String, Object> tokens = generateTokens(userPrincipal);
@@ -132,7 +132,7 @@ public class AuthenticationController extends AuthenticationExceptionHandler {
     @DeleteMapping("/deleteTest")
     public ResponseEntity<SuccessResponse<Object>> deleteTest() {
         String username = "test";
-        User user = userService.foundUserByUsername(username);
+        User user = userService.findByUsername(username).orElseThrow(() -> new UserNotFoundException(username));
         userService.delete(user);
         // Generate URI to be embedded into email
         return new SuccessResponse<>().toOk();

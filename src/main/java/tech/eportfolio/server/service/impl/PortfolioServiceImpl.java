@@ -15,7 +15,6 @@ import org.springframework.data.mongodb.core.query.TextQuery;
 import org.springframework.data.repository.support.PageableExecutionUtils;
 import org.springframework.stereotype.Service;
 import tech.eportfolio.server.common.constant.Visibility;
-import tech.eportfolio.server.common.exception.PortfolioNotFoundException;
 import tech.eportfolio.server.common.utility.NullAwareBeanUtilsBean;
 import tech.eportfolio.server.dto.PortfolioDTO;
 import tech.eportfolio.server.model.Activity;
@@ -56,11 +55,6 @@ public class PortfolioServiceImpl implements PortfolioService {
     @Override
     public Optional<Portfolio> findByUsername(String username) {
         return portfolioRepository.findByUsername(username);
-    }
-
-    @Override
-    public Portfolio foundPortfolioByUsername(String username) {
-        return this.findByUsername(username).orElseThrow(() -> new PortfolioNotFoundException(username));
     }
 
     @Override

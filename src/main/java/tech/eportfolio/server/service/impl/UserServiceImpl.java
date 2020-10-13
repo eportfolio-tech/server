@@ -152,11 +152,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public User foundUserByUsername(String username) {
-        return this.findByUsername(username).orElseThrow(() -> (new UserNotFoundException(username)));
-    }
-
-    @Override
     public void delete(User user) {
         user.setDeleted(true);
         userRepository.save(user);

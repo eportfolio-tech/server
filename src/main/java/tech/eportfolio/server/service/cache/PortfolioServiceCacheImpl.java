@@ -11,7 +11,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 import tech.eportfolio.server.common.constant.Visibility;
-import tech.eportfolio.server.common.exception.PortfolioNotFoundException;
 import tech.eportfolio.server.dto.PortfolioDTO;
 import tech.eportfolio.server.model.Portfolio;
 import tech.eportfolio.server.model.User;
@@ -35,22 +34,9 @@ public class PortfolioServiceCacheImpl implements PortfolioService {
     }
 
     @Override
+    @Cacheable(unless = "#result == null")
     public Optional<Portfolio> findByUsername(String username) {
         return portfolioService.findByUsername(username);
-    }
-
-    /**
-     * This is a wrapper method to wrap Optional<Portfolio> findByUsername(String username)
-     * The reason is that, the previous way made Redis store cache even if the portfolio is not present
-     * A dirty data will then be written in. It may then fail the process of creating the portfolio
-     *
-     * @param username
-     * @return
-     */
-    @Override
-    @Cacheable
-    public Portfolio foundPortfolioByUsername(String username) {
-        return this.findByUsername(username).orElseThrow(() -> new PortfolioNotFoundException(username));
     }
 
     @Override
@@ -115,6 +101,7 @@ public class PortfolioServiceCacheImpl implements PortfolioService {
     }
 
     @Override
+    @CachePut(key = "#portfolio.username")
     public Portfolio save(Portfolio portfolio) {
         return portfolioService.save(portfolio);
     }

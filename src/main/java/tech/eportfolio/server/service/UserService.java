@@ -21,8 +21,6 @@ public interface UserService {
 
     Optional<User> findByUsername(String username);
 
-    User foundUserByUsername(String username);
-
     boolean verifyPassword(User user, String password);
 
     User changePassword(User user, String password);

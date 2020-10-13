@@ -12,7 +12,6 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
-import tech.eportfolio.server.common.exception.UserNotFoundException;
 import tech.eportfolio.server.dto.UserDTO;
 import tech.eportfolio.server.model.User;
 import tech.eportfolio.server.service.UserService;
@@ -58,6 +57,7 @@ public class UserServiceCacheImpl implements UserService, UserDetailsService {
     }
 
     @Override
+    @CachePut(key = "#user.username")
     public User save(User user) {
         return userService.save(user);
     }
@@ -84,26 +84,9 @@ public class UserServiceCacheImpl implements UserService, UserDetailsService {
     }
 
     @Override
+    @Cacheable(unless = "#result == null")
     public Optional<User> findByUsername(String username) {
         return userService.findByUsername(username);
-    }
-
-    /**
-     * This is a wrapper method to wrap Optional<User> findByUsername(String username)
-     * The reason is that, the previous way made Redis store cache even if the user is not present
-     * A dirty data will then be written in. It may then fail the process of registering
-     * E.g. User not in database but in cache with an empty value
-     * <p>
-     * Also, if UserA wants to search the portfolio of UserB, the previous method will store both
-     * user cache and portfolio cache of the user. While not it can only store the portfolio cache
-     *
-     * @param username
-     * @return
-     */
-    @Override
-    @Cacheable
-    public User foundUserByUsername(String username) {
-        return userService.findByUsername(username).orElseThrow(() -> (new UserNotFoundException(username)));
     }
 
 
