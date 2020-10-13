@@ -23,7 +23,7 @@ public class RedisConfig {
     @Bean
     JedisConnectionFactory jedisConnectionFactory() {
         RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration(redisHostName, redisPort);
-        logger.info(redisStandaloneConfiguration.toString());
+        logger.info("redis host: " + redisStandaloneConfiguration.getHostName());
         return new JedisConnectionFactory(redisStandaloneConfiguration);
     }
 
