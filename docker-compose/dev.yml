@@ -1,21 +1,21 @@
 version: "3.3"
 services:
-  watchtower:
-    image: containrrr/watchtower
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-      - /home/haswell/.docker/config.json:/config.json
-    environment:
-      WATCHTOWER_NOTIFICATIONS: slack
-      WATCHTOWER_NOTIFICATION_SLACK_HOOK_URL: https://hooks.slack.com/services/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
-      WATCHTOWER_NOTIFICATION_SLACK_IDENTIFIER: watchtower
-      WATCHTOWER_NOTIFICATION_SLACK_CHANNEL: #build-deployment
-      WATCHTOWER_NOTIFICATION_SLACK_ICON_EMOJI: ":whale:"
-      WATCHTOWER_NOTIFICATIONS_LEVEL: info
-      #  Check if new docker image exist every 300 seconds
-      # clean-up old images
-    command: --interval 60  --cleanup
-    restart: unless-stopped
+#  watchtower:
+  #    image: containrrr/watchtower
+  #    volumes:
+  #      - /var/run/docker.sock:/var/run/docker.sock
+  #      - /home/haswell/.docker/config.json:/config.json
+  #    environment:
+  #      WATCHTOWER_NOTIFICATIONS: slack
+  #      WATCHTOWER_NOTIFICATION_SLACK_HOOK_URL: https://hooks.slack.com/services/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
+  #      WATCHTOWER_NOTIFICATION_SLACK_IDENTIFIER: watchtower
+  #      WATCHTOWER_NOTIFICATION_SLACK_CHANNEL: #build-deployment
+  #      WATCHTOWER_NOTIFICATION_SLACK_ICON_EMOJI: ":whale:"
+  #      WATCHTOWER_NOTIFICATIONS_LEVEL: info
+  #      #  Check if new docker image exist every 300 seconds
+  #      # clean-up old images
+  #    command: --interval 60  --cleanup
+  #    restart: unless-stopped
 
   azurite:
     image: mcr.microsoft.com/azure-storage/azurite
@@ -37,9 +37,11 @@ services:
   redis:
     image: redis:alpine
     ports:
-      - "26379:26379"
+      - "127.0.0.1:26379:26379"
     volumes:
       - ./redis.conf:/usr/local/etc/redis/redis.conf
+      - redis-data:/data
+    entrypoint: redis-server /usr/local/etc/redis/redis.conf
     restart: always
 
   dev:
@@ -58,3 +60,4 @@ services:
 
 volumes:
   azure_blob_data:
+  redis-data:
