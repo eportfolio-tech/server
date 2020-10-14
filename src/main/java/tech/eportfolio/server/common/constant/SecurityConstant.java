@@ -23,9 +23,6 @@ public class SecurityConstant {
     // Swagger resources
     public static final String[] API_DOC = {"/swagger-ui.html", "/v2/api-docs", "/configuration/ui", "/swagger-resources/**", "/configuration/**", "/webjars/**", "/h2-console/**"};
 
-    public static final String AUTHENTICATION_SECRET = "This is a JWT secret";
-    public static final String REFRESH_SECRET = "This is a refresh token secret";
-
     public static final String[] POST_ONLY = {"/blobs/image/**", "/verification/verify/**"};
     public static final String[] GET_ONLY = {"/tags/",
             "/search/**",

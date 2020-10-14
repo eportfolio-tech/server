@@ -1,5 +1,6 @@
 package tech.eportfolio.server.security;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
@@ -23,6 +24,12 @@ public class JWTAuthorizationFilter extends OncePerRequestFilter {
 
     private final JWTTokenProvider jwtTokenProvider;
 
+    @Value("$security.jwt.token.sign")
+    private String signKey;
+
+    @Value("$security.jwt.token.refresh")
+    private String refreshKey;
+
     public JWTAuthorizationFilter(JWTTokenProvider tokenProvider) {
         this.jwtTokenProvider = tokenProvider;
     }
@@ -42,11 +49,10 @@ public class JWTAuthorizationFilter extends OncePerRequestFilter {
             // Remove bearer from authentication header
             String token = authorizationHeader.substring(SecurityConstant.TOKEN_HEADER.length());
             // Retrieve username from JWT
-            final String secret = SecurityConstant.AUTHENTICATION_SECRET;
-            String username = jwtTokenProvider.getSubject(token, secret);
+            String username = jwtTokenProvider.getSubject(token, signKey);
             // Set SecurityContext if JWT token is valid and there is no authentication in SecurityContext
-            if (jwtTokenProvider.isTokenValid(username, token, secret) && SecurityContextHolder.getContext().getAuthentication() == null) {
-                List<GrantedAuthority> authorityList = jwtTokenProvider.getAuthorities(token, secret);
+            if (jwtTokenProvider.isTokenValid(username, token, signKey) && SecurityContextHolder.getContext().getAuthentication() == null) {
+                List<GrantedAuthority> authorityList = jwtTokenProvider.getAuthorities(token, signKey);
                 Authentication authentication = jwtTokenProvider.getAuthentication(username, authorityList, request);
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             } else {
