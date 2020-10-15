@@ -127,7 +127,7 @@ public class UserFollowControllerTest {
         ).andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.status").value("success"))
-                .andExpect(jsonPath("$.data.following", hasSize(1)));
+                .andExpect(jsonPath("$.data.followings", hasSize(1)));
     }
 
     @Test
