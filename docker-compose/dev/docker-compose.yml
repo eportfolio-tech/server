@@ -47,7 +47,7 @@ services:
     ports:
       - "127.0.0.1:26379:26379"
     volumes:
-      - ./redis.conf:/usr/local/etc/redis/redis.conf
+      - ../redis.conf:/usr/local/etc/redis/redis.conf
       - redis_data:/data
     entrypoint: redis-server /usr/local/etc/redis/redis.conf
     restart: always
