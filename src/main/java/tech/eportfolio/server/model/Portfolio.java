@@ -16,6 +16,9 @@ import java.util.Date;
 @Data
 @Document
 public class Portfolio implements Serializable {
+
+    private static final long serialVersionUID = 1234567L;
+
     @Id
     private String id;
 
