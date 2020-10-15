@@ -11,6 +11,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.cache.RedisCacheConfiguration;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
+import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
+import org.springframework.data.redis.serializer.RedisSerializationContext;
 
 import java.time.Duration;
 import java.util.HashMap;
@@ -44,10 +46,12 @@ public class RedisConfig {
 
     @Bean
     RedisCacheManagerBuilderCustomizer redisCacheManagerBuilderCustomizer() {
+        RedisSerializationContext.SerializationPair<Object> jsonSerializer =
+                RedisSerializationContext.SerializationPair.fromSerializer(new GenericJackson2JsonRedisSerializer());
         return (builder) -> {
             Map<String, RedisCacheConfiguration> configurationMap = new HashMap<>();
-            configurationMap.put("users", RedisCacheConfiguration.defaultCacheConfig().entryTtl(Duration.ofHours(2)));
-            configurationMap.put("portfolios", RedisCacheConfiguration.defaultCacheConfig().entryTtl(Duration.ofHours(1)));
+            configurationMap.put("users", RedisCacheConfiguration.defaultCacheConfig().entryTtl(Duration.ofHours(2)).serializeValuesWith(jsonSerializer));
+            configurationMap.put("portfolios", RedisCacheConfiguration.defaultCacheConfig().entryTtl(Duration.ofHours(1)).serializeValuesWith(jsonSerializer));
             builder.withInitialCacheConfigurations(configurationMap);
         };
     }
