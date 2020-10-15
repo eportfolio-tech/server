@@ -1,5 +1,6 @@
 package tech.eportfolio.server.config;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -32,7 +33,9 @@ public class RedisConfig {
     @Bean
     JedisConnectionFactory jedisConnectionFactory() {
         RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration(redisHostName, redisPort);
-        redisStandaloneConfiguration.setPassword(password);
+        if (StringUtils.isNotBlank(password)) {
+            redisStandaloneConfiguration.setPassword(password);
+        }
         logger.info("redis host: " + redisStandaloneConfiguration.getHostName());
         return new JedisConnectionFactory(redisStandaloneConfiguration);
     }
