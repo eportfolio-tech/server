@@ -20,7 +20,9 @@ import tech.eportfolio.server.service.UserService;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/users")
@@ -47,18 +49,39 @@ public class UserFollowController {
 
         User follower = userService.findByUsername(destinationUsername).orElseThrow(() -> new UserNotFoundException(destinationUsername));
         List<UserFollow> userFollows = userFollowerService.findByDestinationUser(follower);
-        HashMap<String, Object> hashMap = new HashMap<>();
-        hashMap.put("followers", userFollows);
+
+        List<User> sourceUsers = userService.findByIdIn(userFollows.stream().map(UserFollow::getSourceUserId).collect(Collectors.toList()));
+
+        Map<String, Object> map = sourceUsers.stream().collect(Collectors.toMap(User::getUsername,
+                e -> new HashMap<String, Object>() {
+                    {
+                        put("name", e.getFirstName() + ' ' + e.getLastName());
+                        put("url", e.getAvatarUrl());
+                    }
+                }));
+
+        List<Object> result = userFollows.stream()
+                .map(userFollow -> new HashMap<String, Object>() {
+                    {
+                        put("user_follow", userFollow);
+                        put("source_user", map.get(userFollow.getSourceUsername()));
+                    }
+                }).collect(Collectors.toList());
+
+        HashMap<String, Object> hashmap = new HashMap<>();
+        hashmap.put("followers", result);
+        hashmap.put("name", follower.getFirstName() + ' ' + follower.getLastName());
+        hashmap.put("avatarUrl", follower.getAvatarUrl());
 
         if (authentication instanceof AnonymousAuthenticationToken) {
-            hashMap.put("followed", false);
+            hashmap.put("followed", false);
         } else {
             Optional<UserFollow> loginUserFollower = userFollowerService.findBySourceUsernameAndDestinationNameAndDeleted(sourceUsername, destinationUsername, false);
-            hashMap.put("followed", loginUserFollower.isPresent());
+            hashmap.put("followed", loginUserFollower.isPresent());
         }
 
         SuccessResponse<Object> response = new SuccessResponse<>();
-        response.setData(hashMap);
+        response.setData(hashmap);
         return response.toOk();
     }
 
@@ -66,8 +89,33 @@ public class UserFollowController {
     @ApiOperation(value = "", authorizations = {@Authorization(value = "JWT")})
     public ResponseEntity<SuccessResponse<Object>> findWhoIamFollowing(@PathVariable String username) {
         User user = userService.findByUsername(username).orElseThrow(() -> new UserNotFoundException(username));
-        List<UserFollow> following = userFollowerService.findBySourceUser(user);
-        SuccessResponse<Object> response = new SuccessResponse<>("following", following);
+        List<UserFollow> followings = userFollowerService.findBySourceUser(user);
+
+        List<User> destinationUsers = userService.findByUsernameIn(followings.stream().map(UserFollow::getDestinationUsername).collect(Collectors.toList()));
+
+        Map<String, Object> map = destinationUsers.stream().collect(Collectors.toMap(User::getUsername,
+                e -> new HashMap<String, Object>() {
+                    {
+                        put("name", e.getFirstName() + ' ' + e.getLastName());
+                        put("url", e.getAvatarUrl());
+                    }
+                }));
+
+        List<Object> result = followings.stream()
+                .map(following -> new HashMap<String, Object>() {
+                    {
+                        put("user_follow", following);
+                        put("destination_user", map.get(following.getDestinationUsername()));
+                    }
+                }).collect(Collectors.toList());
+
+        HashMap<String, Object> hashmap = new HashMap<>();
+        hashmap.put("followings", result);
+        hashmap.put("name", user.getFirstName() + ' ' + user.getLastName());
+        hashmap.put("avatarUrl", user.getAvatarUrl());
+
+        SuccessResponse<Object> response = new SuccessResponse<>();
+        response.setData(hashmap);
         return response.toOk();
     }
 
