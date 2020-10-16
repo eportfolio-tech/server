@@ -35,6 +35,15 @@ services:
     entrypoint: redis-server /usr/local/etc/redis/redis.conf --requirepass ${REDIS_PASS}
     restart: always
 
+  mongodb:
+    image: mongo:latest
+    ports:
+      - 27017:27017
+    volumes:
+      - mongodb_data:/data/db
+    restart: unless-stopped
+
+
 #  server:
 #    image: docker.pkg.github.com/haswf/comp30022backenddev/eportfolio-server-docker:dev
 #    ports:
@@ -57,3 +66,4 @@ volumes:
   redis_data:
   rabbit_data:
   rabbit_log:
+  mongodb_data:
