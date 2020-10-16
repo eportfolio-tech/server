@@ -7,6 +7,7 @@ import tech.eportfolio.server.model.FeedHistory;
 import tech.eportfolio.server.repository.FeedHistoryRepository;
 import tech.eportfolio.server.service.FeedHistoryService;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -30,7 +31,7 @@ public class FeedHistoryServiceImpl implements FeedHistoryService {
     @Override
     public FeedHistory appendToHistory(String userId, List<Activity> activities) {
         FeedHistory feedHistory = feedHistoryRepository.findFeedHistoryByUserId(userId, false).
-                orElse(FeedHistory.builder().userId(userId).build());
+                orElse(FeedHistory.builder().userId(userId).feedItems(new HashSet<>()).build());
         Set<String> items = feedHistory.getFeedItems();
         // add ids of newly pushed feed items to the history set
         items.addAll(activities.stream().map(Activity::getId).collect(Collectors.toSet()));

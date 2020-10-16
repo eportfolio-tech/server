@@ -3,8 +3,12 @@ package tech.eportfolio.server.service.impl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import tech.eportfolio.server.common.constant.FeedType;
+import tech.eportfolio.server.common.constant.ParentType;
+import tech.eportfolio.server.model.Activity;
 import tech.eportfolio.server.model.Tag;
 import tech.eportfolio.server.repository.TagRepository;
+import tech.eportfolio.server.service.ActivityService;
 import tech.eportfolio.server.service.TagService;
 
 import javax.validation.constraints.NotEmpty;
@@ -17,6 +21,9 @@ import java.util.stream.StreamSupport;
 public class TagServiceImpl implements TagService {
     @Autowired
     private TagRepository tagRepository;
+
+    @Autowired
+    private ActivityService activityService;
 
     @Override
     public Tag save(Tag tag) {
@@ -49,14 +56,18 @@ public class TagServiceImpl implements TagService {
         Tag tag = new Tag();
         tag.setName(name);
         tag.setCreatedBy(SecurityContextHolder.getContext().getAuthentication().getName());
-        tagRepository.save(tag);
+        tag = tagRepository.save(tag);
+        pushToActivity(tag);
         return tag;
     }
 
     @Override
     public List<Tag> saveAll(List<Tag> tags) {
         Iterable<Tag> iterable = tagRepository.saveAll(tags);
-        return StreamSupport.stream(iterable.spliterator(), false).collect(Collectors.toList());
+        List<Tag> created = StreamSupport.stream(iterable.spliterator(), false).collect(Collectors.toList());
+        // Add created tags to activities
+        activityService.saveAll(created.stream().map(this::toTagActivity).collect(Collectors.toList()));
+        return created;
     }
 
     @Override
@@ -72,8 +83,30 @@ public class TagServiceImpl implements TagService {
             }
         }
         exist.addAll(saveAll(toCreate));
-
         return exist;
+    }
+
+    @Override
+    public Activity toTagActivity(Tag tag) {
+        return Activity.builder()
+                .feedType(FeedType.TAG)
+                .parentType(ParentType.TAG)
+                .parentId(tag.getId())
+                .username(tag.getCreatedBy())
+                .deleted(false).build();
+    }
+
+    @Override
+    public Activity pushToActivity(Tag tag) {
+        // Create an new activity for the portfolio update
+        Activity tagActivity = toTagActivity(tag);
+        return activityService.save(tagActivity);
+    }
+
+    @Override
+    public List<Activity> pushToActivity(List<Tag> tags) {
+        // Create an new activity for the portfolio update
+        return activityService.saveAll(tags.stream().map(this::toTagActivity).collect(Collectors.toList()));
     }
 
     @Override

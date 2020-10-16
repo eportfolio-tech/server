@@ -5,6 +5,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.core.query.Query;
 import tech.eportfolio.server.common.constant.Visibility;
 import tech.eportfolio.server.dto.PortfolioDTO;
+import tech.eportfolio.server.model.Activity;
 import tech.eportfolio.server.model.Portfolio;
 import tech.eportfolio.server.model.User;
 
@@ -41,4 +42,19 @@ public interface PortfolioService {
     List<Portfolio> searchWithVisibilities(List<Visibility> visibilities);
 
     List<Portfolio> findByIdIn(List<String> ids);
+
+    Activity toUpdateActivity(Portfolio portfolio);
+
+    Activity toPortfolioActivity(Portfolio portfolio);
+
+    List<Activity> pushUpdateToActivity(List<Portfolio> portfolios);
+
+    Activity pushUpdateToActivity(Portfolio portfolio);
+
+    List<Activity> pushPortfolioToActivity(List<Portfolio> portfolios);
+
+    Activity pushPortfolioToActivity(Portfolio portfolio);
+
+    List<Portfolio> saveAll(List<Portfolio> portfolios);
+
 }

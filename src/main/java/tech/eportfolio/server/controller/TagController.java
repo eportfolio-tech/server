@@ -27,8 +27,8 @@ public class TagController {
     @PostMapping("/")
     @ApiOperation(value = "", authorizations = {@Authorization(value = "JWT")})
     public ResponseEntity<SuccessResponse<Tag>> createNewTag(@RequestParam String name) {
-        return new SuccessResponse<>("tag", tagService.create(name)).toOk();
-
+        Tag tag = tagService.save(tagService.create(name));
+        return new SuccessResponse<>("tag", tag).toOk();
     }
 
     // Single item

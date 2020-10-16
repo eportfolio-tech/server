@@ -1,5 +1,6 @@
 package tech.eportfolio.server.service;
 
+import tech.eportfolio.server.model.Activity;
 import tech.eportfolio.server.model.Tag;
 
 import javax.validation.constraints.NotEmpty;
@@ -26,4 +27,9 @@ public interface TagService {
 
     List<Tag> saveAllIfNotExist(List<Tag> tags);
 
+    Activity toTagActivity(Tag tag);
+
+    Activity pushToActivity(Tag tag);
+
+    List<Activity> pushToActivity(List<Tag> tags);
 }

@@ -14,6 +14,8 @@ import org.springframework.data.mongodb.core.query.TextCriteria;
 import org.springframework.data.mongodb.core.query.TextQuery;
 import org.springframework.data.repository.support.PageableExecutionUtils;
 import org.springframework.stereotype.Service;
+import tech.eportfolio.server.common.constant.FeedType;
+import tech.eportfolio.server.common.constant.ParentType;
 import tech.eportfolio.server.common.constant.Visibility;
 import tech.eportfolio.server.common.utility.NullAwareBeanUtilsBean;
 import tech.eportfolio.server.dto.PortfolioDTO;
@@ -29,6 +31,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Qualifier("PortfolioServiceImpl")
@@ -79,7 +82,9 @@ public class PortfolioServiceImpl implements PortfolioService {
         toCreate.setUsername(user.getUsername());
         toCreate.setUserId(user.getId());
         toCreate.setCoverImage(portfolio.getCoverImage());
-        return portfolioRepository.save(toCreate);
+        Portfolio created = portfolioRepository.save(toCreate);
+        pushPortfolioToActivity(created);
+        return created;
     }
 
     @Override
@@ -127,15 +132,36 @@ public class PortfolioServiceImpl implements PortfolioService {
     }
 
     @Override
+    public Activity toUpdateActivity(Portfolio portfolio) {
+        return Activity.builder()
+                .feedType(FeedType.UPDATE)
+                .parentType(ParentType.PORTFOLIO)
+                .parentId(portfolio.getId())
+                .username(portfolio.getUsername())
+                .deleted(false).build();
+    }
+
+    @Override
+    public Activity toPortfolioActivity(Portfolio portfolio) {
+        return Activity.builder()
+                .feedType(FeedType.PORTFOLIO)
+                .parentType(ParentType.PORTFOLIO)
+                .parentId(portfolio.getId())
+                .username(portfolio.getUsername())
+                .deleted(false).build();
+    }
+
+    @Override
     public Portfolio updateContent(Portfolio portfolio, Map<String, Object> map) {
         ObjectMapper mapper = new ObjectMapper();
         TypeReference<HashMap<String, Object>> typeRef = new TypeReference<>() {
         };
         portfolio.setContent(new BasicDBObject(mapper.convertValue(map, typeRef)));
-        // Create an new activity for the update
-        Activity activity = activityService.addPortfolioUpdate(portfolio);
-        // Send a message to followers with this Activity
-        userFollowService.sendActivityToFollowers(activity, portfolio.getUsername());
+
+        // Create an update for portfolio
+        Activity update = pushUpdateToActivity(portfolio);
+        // Push the activity to followers
+        userFollowService.sendActivityToFollowers(update, portfolio.getUsername());
         return this.save(portfolio);
     }
 
@@ -152,9 +178,35 @@ public class PortfolioServiceImpl implements PortfolioService {
     }
 
     @Override
+    public Activity pushUpdateToActivity(Portfolio portfolio) {
+        // Create an new activity for the portfolio update
+        Activity updateActivity = toUpdateActivity(portfolio);
+        return activityService.save(updateActivity);
+    }
+
+    @Override
+    public List<Activity> pushUpdateToActivity(List<Portfolio> portfolios) {
+        return portfolios.stream().map(this::toUpdateActivity).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Activity> pushPortfolioToActivity(List<Portfolio> portfolios) {
+        return activityService.saveAll(portfolios.stream().map(this::toPortfolioActivity).collect(Collectors.toList()));
+    }
+
+    @Override
+    public Activity pushPortfolioToActivity(Portfolio portfolio) {
+        Activity activity = toPortfolioActivity(portfolio);
+        return activityService.save(activity);
+    }
+
+    @Override
     public Portfolio save(Portfolio portfolio) {
         return portfolioRepository.save(portfolio);
     }
 
-
+    @Override
+    public List<Portfolio> saveAll(List<Portfolio> portfolios) {
+        return portfolioRepository.saveAll(portfolios);
+    }
 }

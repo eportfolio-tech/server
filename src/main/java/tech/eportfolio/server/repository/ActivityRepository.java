@@ -1,5 +1,6 @@
 package tech.eportfolio.server.repository;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 import tech.eportfolio.server.model.Activity;
@@ -31,10 +32,9 @@ public interface ActivityRepository extends MongoRepository<Activity, String> {
     /**
      * Find feed items which are not in given feed history
      *
-     * @param history
+     * @param ids
      * @param deleted deleted
      * @return
      */
-    List<Activity> findFeedItemsByIdNotInAndDeleted(List<String> history, boolean deleted);
-
+    List<Activity> findFeedItemsByIdNotInAndDeleted(List<String> ids, boolean deleted, Pageable pageable);
 }
