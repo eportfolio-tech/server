@@ -3,7 +3,7 @@ package tech.eportfolio.server.service.impl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import tech.eportfolio.server.common.constant.FeedType;
+import tech.eportfolio.server.common.constant.ActivityType;
 import tech.eportfolio.server.common.constant.ParentType;
 import tech.eportfolio.server.model.Activity;
 import tech.eportfolio.server.model.Tag;
@@ -89,7 +89,7 @@ public class TagServiceImpl implements TagService {
     @Override
     public Activity toTagActivity(Tag tag) {
         return Activity.builder()
-                .feedType(FeedType.TAG)
+                .activityType(ActivityType.TAG)
                 .parentType(ParentType.TAG)
                 .parentId(tag.getId())
                 .username(tag.getCreatedBy())

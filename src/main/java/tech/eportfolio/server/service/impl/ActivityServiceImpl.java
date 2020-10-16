@@ -3,7 +3,7 @@ package tech.eportfolio.server.service.impl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
-import tech.eportfolio.server.common.constant.FeedType;
+import tech.eportfolio.server.common.constant.ActivityType;
 import tech.eportfolio.server.model.Activity;
 import tech.eportfolio.server.model.FeedHistory;
 import tech.eportfolio.server.model.User;
@@ -35,8 +35,8 @@ public class ActivityServiceImpl implements ActivityService {
         List<String> historyFeedItemIds = new ArrayList<>();
         history.ifPresent(feedHistory -> historyFeedItemIds.addAll(feedHistory.getFeedItems()));
         List<Activity> feed = new LinkedList<>();
-        feed.addAll(activityRepository.findByIdNotInAndFeedTypeAndDeleted(historyFeedItemIds, FeedType.PORTFOLIO, false, PageRequest.of(0, portfolioCount)));
-        feed.addAll(activityRepository.findByIdNotInAndFeedTypeAndDeleted(historyFeedItemIds, FeedType.TAG, false, PageRequest.of(0, tagCount)));
+        feed.addAll(activityRepository.findByIdNotInAndActivityTypeAndDeleted(historyFeedItemIds, ActivityType.PORTFOLIO, false, PageRequest.of(0, portfolioCount)));
+        feed.addAll(activityRepository.findByIdNotInAndActivityTypeAndDeleted(historyFeedItemIds, ActivityType.TAG, false, PageRequest.of(0, tagCount)));
         updateHistory(user.getId(), feed);
         return feed;
     }

@@ -18,6 +18,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import tech.eportfolio.server.common.constant.ActivityType;
 import tech.eportfolio.server.dto.PortfolioDTO;
 import tech.eportfolio.server.dto.UserDTO;
 import tech.eportfolio.server.model.Activity;
@@ -99,12 +100,13 @@ public class FeedControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.status").value("success"))
                 .andExpect(jsonPath("$.data.activities", hasSize(1)))
+                .andExpect(jsonPath("$.data.activities[0].activityType").value(ActivityType.UPDATE.toString()))
                 .andExpect(jsonPath("$.data.activities[0].portfolio").exists());
     }
 
     @Test
     @WithMockUser(username = "test")
-    public void ifAddNewTagThenShouldSeeItInFeed() throws Exception {
+    public void ifAddNewTagThenAppearInFeed() throws Exception {
         tagService.create("test");
         this.mockMvc.perform(get("/feed/")
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
@@ -112,7 +114,23 @@ public class FeedControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.status").value("success"))
                 .andExpect(jsonPath("$.data.activities", hasSize(1)))
+                .andExpect(jsonPath("$.data.activities[0].activityType").value(ActivityType.TAG.toString()))
                 .andExpect(jsonPath("$.data.activities[0].tag").exists());
+    }
+
+    @Test
+    @WithMockUser(username = "test")
+    public void ifAddNewPortfolioThenAppearInFeed() throws Exception {
+        Portfolio portfolio = portfolioService.create(testUser, portfolioService.fromPortfolioDTO(portfolioDTO));
+        portfolioService.updateContent(portfolio, new HashMap<>());
+        this.mockMvc.perform(get("/feed/")
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
+        ).andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value("success"))
+                .andExpect(jsonPath("$.data.activities", hasSize(1)))
+                .andExpect(jsonPath("$.data.activities[0].activityType").value(ActivityType.PORTFOLIO.toString()))
+                .andExpect(jsonPath("$.data.activities[0].portfolio").exists());
     }
 
 

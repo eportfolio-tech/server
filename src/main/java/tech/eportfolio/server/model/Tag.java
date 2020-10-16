@@ -27,7 +27,7 @@ public class Tag {
 
     private String icon;
 
-    private boolean deleted = false;
+    private boolean deleted;
 
     @Column(nullable = false, updatable = false)
     private String createdBy;

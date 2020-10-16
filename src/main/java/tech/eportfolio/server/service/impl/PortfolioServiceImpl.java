@@ -14,7 +14,7 @@ import org.springframework.data.mongodb.core.query.TextCriteria;
 import org.springframework.data.mongodb.core.query.TextQuery;
 import org.springframework.data.repository.support.PageableExecutionUtils;
 import org.springframework.stereotype.Service;
-import tech.eportfolio.server.common.constant.FeedType;
+import tech.eportfolio.server.common.constant.ActivityType;
 import tech.eportfolio.server.common.constant.ParentType;
 import tech.eportfolio.server.common.constant.Visibility;
 import tech.eportfolio.server.common.utility.NullAwareBeanUtilsBean;
@@ -134,7 +134,7 @@ public class PortfolioServiceImpl implements PortfolioService {
     @Override
     public Activity toUpdateActivity(Portfolio portfolio) {
         return Activity.builder()
-                .feedType(FeedType.UPDATE)
+                .activityType(ActivityType.UPDATE)
                 .parentType(ParentType.PORTFOLIO)
                 .parentId(portfolio.getId())
                 .username(portfolio.getUsername())
@@ -144,7 +144,7 @@ public class PortfolioServiceImpl implements PortfolioService {
     @Override
     public Activity toPortfolioActivity(Portfolio portfolio) {
         return Activity.builder()
-                .feedType(FeedType.PORTFOLIO)
+                .activityType(ActivityType.PORTFOLIO)
                 .parentType(ParentType.PORTFOLIO)
                 .parentId(portfolio.getId())
                 .username(portfolio.getUsername())
