@@ -53,20 +53,25 @@ public class UserFollowController {
         List<User> sourceUsers = userService.findByIdIn(userFollows.stream().map(UserFollow::getSourceUserId).collect(Collectors.toList()));
 
         Map<String, Object> map = sourceUsers.stream().collect(Collectors.toMap(User::getUsername,
-                e -> new HashMap<String, Object>() {
-                    {
-                        put("firstName", e.getFirstName());
-                        put("lastName", e.getLastName());
-                        put("avatarUrl", e.getAvatarUrl());
-                    }
+                e -> {
+                    HashMap<String, Object> hashmap = new HashMap<>();
+
+                    hashmap.put("firstName", e.getFirstName());
+                    hashmap.put("lastName", e.getLastName());
+                    hashmap.put("avatarUrl", e.getAvatarUrl());
+
+                    return hashmap;
                 }));
 
         List<Object> result = userFollows.stream()
-                .map(userFollow -> new HashMap<String, Object>() {
-                    {
-                        put("user_follow", userFollow);
-                        put("source_user", map.get(userFollow.getSourceUsername()));
-                    }
+                .map(userFollow -> {
+                    HashMap<String, Object> hashmap = new HashMap<>();
+
+                    hashmap.put("user_follow", userFollow);
+                    hashmap.put("source_user", map.get(userFollow.getSourceUsername()));
+
+                    return hashmap;
+
                 }).collect(Collectors.toList());
 
         HashMap<String, Object> hashmap = new HashMap<>();
@@ -96,20 +101,25 @@ public class UserFollowController {
         List<User> destinationUsers = userService.findByUsernameIn(followings.stream().map(UserFollow::getDestinationUsername).collect(Collectors.toList()));
 
         Map<String, Object> map = destinationUsers.stream().collect(Collectors.toMap(User::getUsername,
-                e -> new HashMap<String, Object>() {
-                    {
-                        put("firstName", e.getFirstName());
-                        put("lastName", e.getLastName());
-                        put("avatarUrl", e.getAvatarUrl());
-                    }
+                e -> {
+                    HashMap<String, Object> hashmap = new HashMap<>();
+
+                    hashmap.put("firstName", e.getFirstName());
+                    hashmap.put("lastName", e.getLastName());
+                    hashmap.put("avatarUrl", e.getAvatarUrl());
+
+                    return hashmap;
                 }));
 
         List<Object> result = followings.stream()
-                .map(following -> new HashMap<String, Object>() {
-                    {
-                        put("user_follow", following);
-                        put("destination_user", map.get(following.getDestinationUsername()));
-                    }
+                .map(following -> {
+                    HashMap<String, Object> hashmap = new HashMap<>();
+
+                    hashmap.put("user_follow", following);
+                    hashmap.put("destination_user", map.get(following.getSourceUsername()));
+
+                    return hashmap;
+
                 }).collect(Collectors.toList());
 
         HashMap<String, Object> hashmap = new HashMap<>();
