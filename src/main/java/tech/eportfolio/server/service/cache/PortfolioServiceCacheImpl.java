@@ -12,6 +12,7 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 import tech.eportfolio.server.common.constant.Visibility;
 import tech.eportfolio.server.dto.PortfolioDTO;
+import tech.eportfolio.server.model.Activity;
 import tech.eportfolio.server.model.Portfolio;
 import tech.eportfolio.server.model.User;
 import tech.eportfolio.server.service.PortfolioService;
@@ -55,13 +56,11 @@ public class PortfolioServiceCacheImpl implements PortfolioService {
     }
 
     @Override
-//    @Cacheable
     public Page<Portfolio> searchByKeywordWithPaginationAndVisibilities(String text, Pageable pageable, List<Visibility> visibilities) {
         return portfolioService.searchByKeywordWithPaginationAndVisibilities(text, pageable, visibilities);
     }
 
     @Override
-//    @Cacheable(key = "#userIds")
     public Page<Portfolio> searchByTagWithPaginationAndVisibilities(Pageable pageable, List<Visibility> visibilities, List<String> userIds) {
         return portfolioService.searchByTagWithPaginationAndVisibilities(pageable, visibilities, userIds);
     }
@@ -85,6 +84,41 @@ public class PortfolioServiceCacheImpl implements PortfolioService {
     @Override
     public List<Portfolio> findByIdIn(List<String> ids) {
         return portfolioService.findByIdIn(ids);
+    }
+
+    @Override
+    public Activity toUpdateActivity(Portfolio portfolio) {
+        return null;
+    }
+
+    @Override
+    public Activity toPortfolioActivity(Portfolio portfolio) {
+        return portfolioService.toPortfolioActivity(portfolio);
+    }
+
+    @Override
+    public List<Activity> pushUpdateToActivity(List<Portfolio> portfolios) {
+        return portfolioService.pushUpdateToActivity(portfolios);
+    }
+
+    @Override
+    public Activity pushUpdateToActivity(Portfolio portfolio) {
+        return portfolioService.pushUpdateToActivity(portfolio);
+    }
+
+    @Override
+    public List<Activity> pushPortfolioToActivity(List<Portfolio> portfolios) {
+        return portfolioService.pushPortfolioToActivity(portfolios);
+    }
+
+    @Override
+    public Activity pushPortfolioToActivity(Portfolio portfolio) {
+        return portfolioService.pushPortfolioToActivity(portfolio);
+    }
+
+    @Override
+    public List<Portfolio> saveAll(List<Portfolio> portfolios) {
+        return portfolioService.saveAll(portfolios);
     }
 
     @Override

@@ -6,7 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.mongodb.core.mapping.Document;
-import tech.eportfolio.server.common.constant.FeedType;
+import tech.eportfolio.server.common.constant.ActivityType;
 import tech.eportfolio.server.common.constant.ParentType;
 
 import javax.persistence.Id;
@@ -24,7 +24,7 @@ public class Activity implements Serializable {
     private String id;
 
     // type of feed (tag, portfolio, update)
-    private FeedType feedType;
+    private ActivityType activityType;
 
     // user who generated activity
     private String username;

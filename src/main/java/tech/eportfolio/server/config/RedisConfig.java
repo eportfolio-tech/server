@@ -33,14 +33,13 @@ public class RedisConfig {
     @Value("${spring.redis.password}")
     private String password;
 
-
     @Bean
     JedisConnectionFactory jedisConnectionFactory() {
         RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration(redisHostName, redisPort);
         if (StringUtils.isNotBlank(password)) {
             redisStandaloneConfiguration.setPassword(password);
         }
-        logger.info("redis host: " + redisStandaloneConfiguration.getHostName());
+        logger.info("Connect to Redis host {} on port {}", redisHostName, redisPort);
         return new JedisConnectionFactory(redisStandaloneConfiguration);
     }
 
@@ -48,13 +47,11 @@ public class RedisConfig {
     RedisCacheManagerBuilderCustomizer redisCacheManagerBuilderCustomizer() {
         RedisSerializationContext.SerializationPair<Object> jsonSerializer =
                 RedisSerializationContext.SerializationPair.fromSerializer(new GenericJackson2JsonRedisSerializer());
-        return (builder) -> {
+        return builder -> {
             Map<String, RedisCacheConfiguration> configurationMap = new HashMap<>();
             configurationMap.put("users", RedisCacheConfiguration.defaultCacheConfig().entryTtl(Duration.ofHours(2)).serializeValuesWith(jsonSerializer));
             configurationMap.put("portfolios", RedisCacheConfiguration.defaultCacheConfig().entryTtl(Duration.ofHours(1)).serializeValuesWith(jsonSerializer));
             builder.withInitialCacheConfigurations(configurationMap);
         };
     }
-
-
 }

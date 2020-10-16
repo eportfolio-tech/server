@@ -116,7 +116,6 @@ public class TemplateControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.status").value("success"))
                 .andExpect(jsonPath("$.data.template.id").value(template.getId()))
-                .andExpect(jsonPath("$.data.template.userId").value(testUser.getId()))
                 .andExpect(jsonPath("$.data.template.title").value(template.getTitle()))
                 .andExpect(jsonPath("$.data.template.description").value(template.getDescription()))
                 .andExpect(jsonPath("$.data.template.boilerplate").value(template.getBoilerplate()));

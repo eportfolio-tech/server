@@ -18,11 +18,14 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import tech.eportfolio.server.common.constant.ActivityType;
 import tech.eportfolio.server.dto.PortfolioDTO;
 import tech.eportfolio.server.dto.UserDTO;
+import tech.eportfolio.server.model.Activity;
 import tech.eportfolio.server.model.Portfolio;
 import tech.eportfolio.server.model.User;
 import tech.eportfolio.server.service.PortfolioService;
+import tech.eportfolio.server.service.TagService;
 import tech.eportfolio.server.service.UserFollowService;
 import tech.eportfolio.server.service.UserService;
 
@@ -57,6 +60,9 @@ public class FeedControllerTest {
     private PortfolioService portfolioService;
     @Autowired
     private UserFollowService userFollowService;
+    @Autowired
+    private TagService tagService;
+
     private User testUser;
     private User followingUser;
     private UserDTO followingUserDTO;
@@ -77,6 +83,8 @@ public class FeedControllerTest {
 
         portfolioDTO = PortfolioDTO.mock();
         followingPortfolio = portfolioService.create(followingUser, portfolioService.fromPortfolioDTO(portfolioDTO));
+        // drop table after each test
+        mongoTemplate.dropCollection(Activity.class);
     }
 
     @Test
@@ -92,6 +100,36 @@ public class FeedControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.status").value("success"))
                 .andExpect(jsonPath("$.data.activities", hasSize(1)))
+                .andExpect(jsonPath("$.data.activities[0].activityType").value(ActivityType.UPDATE.toString()))
+                .andExpect(jsonPath("$.data.activities[0].portfolio").exists());
+    }
+
+    @Test
+    @WithMockUser(username = "test")
+    public void ifAddNewTagThenAppearInFeed() throws Exception {
+        tagService.create("test");
+        this.mockMvc.perform(get("/feed/")
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
+        ).andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value("success"))
+                .andExpect(jsonPath("$.data.activities", hasSize(1)))
+                .andExpect(jsonPath("$.data.activities[0].activityType").value(ActivityType.TAG.toString()))
+                .andExpect(jsonPath("$.data.activities[0].tag").exists());
+    }
+
+    @Test
+    @WithMockUser(username = "test")
+    public void ifAddNewPortfolioThenAppearInFeed() throws Exception {
+        Portfolio portfolio = portfolioService.create(testUser, portfolioService.fromPortfolioDTO(portfolioDTO));
+        portfolioService.updateContent(portfolio, new HashMap<>());
+        this.mockMvc.perform(get("/feed/")
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
+        ).andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value("success"))
+                .andExpect(jsonPath("$.data.activities", hasSize(1)))
+                .andExpect(jsonPath("$.data.activities[0].activityType").value(ActivityType.PORTFOLIO.toString()))
                 .andExpect(jsonPath("$.data.activities[0].portfolio").exists());
     }
 
