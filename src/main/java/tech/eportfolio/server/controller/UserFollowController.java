@@ -57,7 +57,7 @@ public class UserFollowController {
                     {
                         put("firstName", e.getFirstName());
                         put("lastName", e.getLastName());
-                        put("AvatarUrl", e.getAvatarUrl());
+                        put("avatarUrl", e.getAvatarUrl());
                     }
                 }));
 
@@ -100,7 +100,7 @@ public class UserFollowController {
                     {
                         put("firstName", e.getFirstName());
                         put("lastName", e.getLastName());
-                        put("AvatarUrl", e.getAvatarUrl());
+                        put("avatarUrl", e.getAvatarUrl());
                     }
                 }));
 
