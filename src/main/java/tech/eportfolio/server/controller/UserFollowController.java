@@ -55,8 +55,9 @@ public class UserFollowController {
         Map<String, Object> map = sourceUsers.stream().collect(Collectors.toMap(User::getUsername,
                 e -> new HashMap<String, Object>() {
                     {
-                        put("name", e.getFirstName() + ' ' + e.getLastName());
-                        put("url", e.getAvatarUrl());
+                        put("firstName", e.getFirstName());
+                        put("lastName", e.getLastName());
+                        put("AvatarUrl", e.getAvatarUrl());
                     }
                 }));
 
@@ -70,7 +71,8 @@ public class UserFollowController {
 
         HashMap<String, Object> hashmap = new HashMap<>();
         hashmap.put("followers", result);
-        hashmap.put("name", follower.getFirstName() + ' ' + follower.getLastName());
+        hashmap.put("firstName", follower.getFirstName());
+        hashmap.put("lastName", follower.getLastName());
         hashmap.put("avatarUrl", follower.getAvatarUrl());
 
         if (authentication instanceof AnonymousAuthenticationToken) {
@@ -96,8 +98,9 @@ public class UserFollowController {
         Map<String, Object> map = destinationUsers.stream().collect(Collectors.toMap(User::getUsername,
                 e -> new HashMap<String, Object>() {
                     {
-                        put("name", e.getFirstName() + ' ' + e.getLastName());
-                        put("url", e.getAvatarUrl());
+                        put("firstName", e.getFirstName());
+                        put("lastName", e.getLastName());
+                        put("AvatarUrl", e.getAvatarUrl());
                     }
                 }));
 
@@ -111,7 +114,8 @@ public class UserFollowController {
 
         HashMap<String, Object> hashmap = new HashMap<>();
         hashmap.put("followings", result);
-        hashmap.put("name", user.getFirstName() + ' ' + user.getLastName());
+        hashmap.put("firstName", user.getFirstName());
+        hashmap.put("lastName", user.getLastName());
         hashmap.put("avatarUrl", user.getAvatarUrl());
 
         SuccessResponse<Object> response = new SuccessResponse<>();
