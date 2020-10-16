@@ -28,13 +28,13 @@ spring:
         type: redis
     data:
         mongodb:
-            authentication-database: eportfolio-dev
+            authentication-database: ${SPRING_DATA_MONGODB_AUTH_DATABASE}
             auto-index-creation: true
-            database: eportfolio-dev
-            host: haswf.com
-            password: renlord
-            port: 37017
-            username: comp30022
+            database: ${SPRING_DATA_MONGODB_DATABASE}
+            host: ${SPRING_DATA_MONGODB_HOST}
+            password: ${SPRING_DATA_MONGODB_PASSWORD}
+            port: ${SPRING_DATA_MONGODB_PORT}
+            username: ${SPRING_DATA_MONGODB_USER}
     devtools:
         restart:
             enabled: false
@@ -72,12 +72,12 @@ spring:
     rabbitmq:
         host: ${SPRING_RABBITMQ_HOST}
         password: ${SPRING_RABBITMQ_PASSWORD}
-        port: 5672
+        port: ${SPRING_RABBITMQ_PORT}
         username: ${SPRING_RABBITMQ_USERNAME}
     redis:
         host: ${SPRING_REDIS_HOST}
         password: ${SPRING_REDIS_PASSWORD}
-        port: 26379
+        port: ${SPRING_REDIS_PORT}
     servlet:
         multipart:
             max-file-size: 15MB

@@ -59,15 +59,11 @@ services:
     volumes:
       - /var/log/eportfolio/:/var/log/eportfolio/
     restart: always
-    environment:
-      SPRING_RABBITMQ_HOST: rabbitmq
-      SPRING_RABBITMQ_USERNAME: ${RABBITMQ_DEFAULT_USER}
-      SPRING_RABBITMQ_PASSWORD: ${RABBITMQ_DEFAULT_PASS}
-      SPRING_REDIS_HOST: redis
-      SPRING_REDIS_PASSWORD: ${REDIS_PASS}
     depends_on:
       - rabbitmq
       - redis
+    env_file:
+      - .env
 
 volumes:
   azure_blob_data:
