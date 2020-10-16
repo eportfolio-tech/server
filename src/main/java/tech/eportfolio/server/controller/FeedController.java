@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.Authorization;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
@@ -59,16 +58,21 @@ public class FeedController {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = userService.findByUsername(username).orElseThrow(() -> new UserNotFoundException(username));
         List<Activity> update = userFollowService.getActivitiesFromQueue(user);
-        List<Activity> recommendation = activityService.pull(user, PageRequest.of(0, 10));
+        List<Activity> recommendation = activityService.pull(user, 3, 10);
 
         List<Map<String, Object>> result = new ArrayList<>();
+        update.addAll(recommendation);
+
         List<String> portfolioIds = update.stream().filter(e -> e.getParentType().equals(ParentType.PORTFOLIO)).map(Activity::getParentId).collect(Collectors.toList());
         Map<String, Portfolio> portfolioMap = portfolioService.findByIdIn(portfolioIds).stream().collect(Collectors.toMap(Portfolio::getId, Function.identity()));
         update.stream().filter(e -> e.getParentType().equals(ParentType.PORTFOLIO)).forEach(e -> {
             @SuppressWarnings("unchecked")
             Map<String, Object> map = objectMapper.convertValue(e, Map.class);
+            @SuppressWarnings("unchecked")
+            Map<String, Object> portFolioMap = objectMapper.convertValue(portfolioMap.get(e.getParentId()), Map.class);
+            portFolioMap.remove("content");
             // Add portfolio detail to the map
-            map.put(ParentType.PORTFOLIO.toString().toLowerCase(), portfolioMap.get(e.getParentId()));
+            map.put(ParentType.PORTFOLIO.toString().toLowerCase(), portFolioMap);
             result.add(map);
         });
 

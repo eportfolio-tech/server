@@ -45,17 +45,17 @@ public class TagServiceImpl implements TagService {
         return tagRepository.findByDeleted(false);
     }
 
-    /**
-     * Create a new tag if given tag is not found
-     *
-     * @param name tag name
-     * @return Tag
-     */
     @Override
     public Tag create(@NotEmpty @NotNull String name) {
-        Tag tag = new Tag();
-        tag.setName(name);
-        tag.setCreatedBy(SecurityContextHolder.getContext().getAuthentication().getName());
+        Tag tag = Tag.builder().name(name).createdBy(SecurityContextHolder.getContext().getAuthentication().getName()).build();
+        tag = tagRepository.save(tag);
+        pushToActivity(tag);
+        return tag;
+    }
+
+    @Override
+    public Tag create(@NotEmpty @NotNull String name, String icon) {
+        Tag tag = Tag.builder().name(name).createdBy(SecurityContextHolder.getContext().getAuthentication().getName()).icon(icon).build();
         tag = tagRepository.save(tag);
         pushToActivity(tag);
         return tag;

@@ -3,6 +3,7 @@ package tech.eportfolio.server.service.impl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import tech.eportfolio.server.common.constant.FeedType;
 import tech.eportfolio.server.model.Activity;
 import tech.eportfolio.server.model.FeedHistory;
 import tech.eportfolio.server.model.User;
@@ -11,6 +12,7 @@ import tech.eportfolio.server.service.ActivityService;
 import tech.eportfolio.server.service.FeedHistoryService;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,11 +30,13 @@ public class ActivityServiceImpl implements ActivityService {
     }
 
     @Override
-    public List<Activity> pull(User user, PageRequest pageRequest) {
+    public List<Activity> pull(User user, int tagCount, int portfolioCount) {
         Optional<FeedHistory> history = feedHistoryService.findByUserId(user.getId());
         List<String> historyFeedItemIds = new ArrayList<>();
         history.ifPresent(feedHistory -> historyFeedItemIds.addAll(feedHistory.getFeedItems()));
-        List<Activity> feed = activityRepository.findFeedItemsByIdNotInAndDeleted(historyFeedItemIds, false, pageRequest);
+        List<Activity> feed = new LinkedList<>();
+        feed.addAll(activityRepository.findByIdNotInAndFeedTypeAndDeleted(historyFeedItemIds, FeedType.PORTFOLIO, false, PageRequest.of(0, portfolioCount)));
+        feed.addAll(activityRepository.findByIdNotInAndFeedTypeAndDeleted(historyFeedItemIds, FeedType.TAG, false, PageRequest.of(0, tagCount)));
         updateHistory(user.getId(), feed);
         return feed;
     }

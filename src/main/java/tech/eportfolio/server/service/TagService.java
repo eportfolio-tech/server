@@ -32,4 +32,6 @@ public interface TagService {
     Activity pushToActivity(Tag tag);
 
     List<Activity> pushToActivity(List<Tag> tags);
+
+    Tag create(@NotEmpty @NotNull String name, String icon);
 }
