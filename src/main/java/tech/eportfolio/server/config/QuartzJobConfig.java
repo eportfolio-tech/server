@@ -10,7 +10,7 @@ import tech.eportfolio.server.job.MockContentJob;
  * https://www.baeldung.com/spring-quartz-schedule
  */
 @Configuration
-public class ConfigureQuartzJob {
+public class QuartzJobConfig {
 
     @Bean(name = "DeleteUserContainerJob")
     public JobDetail deleteUserContainerJobDetails() {
@@ -39,10 +39,8 @@ public class ConfigureQuartzJob {
 
         return TriggerBuilder.newTrigger().forJob(mockContentJob)
                 .withIdentity("mockContentJob")
-                // Every Minute
-//                .withSchedule(CronScheduleBuilder.cronSchedule("0 * * ? * *"))
-                // Execute every day at mid night
-                .withSchedule(CronScheduleBuilder.cronSchedule("0 0 0 * * ?"))
+//               Every 30 minutes
+                .withSchedule(CronScheduleBuilder.cronSchedule("0 */30 * ? * *"))
                 .build();
     }
 }
