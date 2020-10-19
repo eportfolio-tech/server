@@ -3,9 +3,8 @@ package tech.eportfolio.server.common.constant;
 import org.springframework.web.util.UriComponentsBuilder;
 
 public class VerificationConstant {
-    public static final String PATH = UriComponentsBuilder.newInstance().path("verification").path("verify").toUriString();
+    public static final String PATH = UriComponentsBuilder.newInstance().path("/verification").path("/verify").toUriString();
 
-    public static final String HOST = "dev.eportfolio.tech";
     public static final String SCHEME_HTTPS = "https";
 
     private VerificationConstant() {

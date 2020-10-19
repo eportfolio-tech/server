@@ -4,6 +4,7 @@ import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -30,6 +31,9 @@ public class VerificationServiceImpl implements VerificationService {
     private UserService userService;
 
     private JWTTokenProvider verificationTokenProvider;
+
+    @Value("${server.host}")
+    private String host;
 
     @Autowired
     public void setEmailService(EmailService emailService) {
@@ -62,7 +66,7 @@ public class VerificationServiceImpl implements VerificationService {
     public String buildLink(User user, String token) {
         UriComponents uriComponents = UriComponentsBuilder.newInstance()
                 .scheme(VerificationConstant.SCHEME_HTTPS).
-                        host(VerificationConstant.HOST).path(VerificationConstant.PATH).
+                        host(host).path(VerificationConstant.PATH).
                         queryParam(VerificationConstant.TOKEN, token).
                         queryParam(VerificationConstant.USERNAME, user.getUsername()).build();
         return uriComponents.toUriString();

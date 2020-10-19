@@ -23,6 +23,7 @@ server:
     port: 8090
     servlet:
         context-path: /api
+    host: eportfolio.tech
 spring:
     cache:
         type: redis
