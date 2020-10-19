@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.mongo.AutoConfigureDataMongo;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.cache.CacheManager;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -27,6 +28,7 @@ import tech.eportfolio.server.service.TemplateService;
 import tech.eportfolio.server.service.UserService;
 
 import java.util.HashMap;
+import java.util.Objects;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -43,6 +45,8 @@ public class TemplateControllerTest {
 
     @Autowired
     MongoTemplate mongoTemplate;
+    @Autowired
+    private CacheManager cacheManager;
     @Autowired
     private MockMvc mockMvc;
     @Autowired
@@ -112,7 +116,6 @@ public class TemplateControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.status").value("success"))
                 .andExpect(jsonPath("$.data.template.id").value(template.getId()))
-                .andExpect(jsonPath("$.data.template.userId").value(testUser.getId()))
                 .andExpect(jsonPath("$.data.template.title").value(template.getTitle()))
                 .andExpect(jsonPath("$.data.template.description").value(template.getDescription()))
                 .andExpect(jsonPath("$.data.template.boilerplate").value(template.getBoilerplate()));
@@ -161,6 +164,7 @@ public class TemplateControllerTest {
 
     @After
     public void afterClass() {
+        cacheManager.getCacheNames().forEach(cacheName -> Objects.requireNonNull(cacheManager.getCache(cacheName)).clear());
         mongoTemplate.getDb().drop();
     }
 

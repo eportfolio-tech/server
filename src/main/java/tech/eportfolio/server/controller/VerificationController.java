@@ -2,6 +2,7 @@ package tech.eportfolio.server.controller;
 
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.Authorization;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
@@ -19,7 +20,7 @@ public class VerificationController {
 
     private final VerificationService verificationService;
 
-    public VerificationController(UserService userService, VerificationService verificationService) {
+    public VerificationController(@Qualifier("UserServiceCacheImpl") UserService userService, VerificationService verificationService) {
         this.userService = userService;
         this.verificationService = verificationService;
     }

@@ -61,7 +61,7 @@ dependencies {
     testImplementation('org.springframework.boot:spring-boot-starter-test') {
         exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
     }
-    implementation 'org.mockito:mockito-core:3.5.10'
+    implementation 'org.mockito:mockito-core:3.5.13'
     implementation 'org.springframework.boot:spring-boot-starter-data-mongodb:2.3.3.RELEASE'
     implementation 'com.microsoft.azure:azure-storage:8.6.5'
     implementation 'commons-io:commons-io:20030203.000550'
@@ -69,6 +69,10 @@ dependencies {
     implementation 'com.talanlabs:avatar-generator:1.1.0'
     implementation 'com.h2database:h2:1.4.200'
     implementation 'com.github.javafaker:javafaker:1.0.2'
+    implementation 'org.springframework.amqp:spring-amqp:2.2.11.RELEASE'
+    implementation 'org.springframework.boot:spring-boot-starter-amqp:2.3.4.RELEASE'
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis:2.3.4.RELEASE'
+    implementation 'redis.clients:jedis:3.3.0'
 }
 
 dependencyManagement {
@@ -104,5 +108,11 @@ sonarqube {
 jacocoTestReport {
     reports {
         xml.enabled true
+    }
+}
+test {
+    testLogging {
+        events "failed"
+        exceptionFormat "full"
     }
 }

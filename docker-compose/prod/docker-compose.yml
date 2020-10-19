@@ -1,0 +1,75 @@
+version: "3.3"
+services:
+  watchtower:
+    container_name: watchtower
+    image: containrrr/watchtower
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /home/haswell/.docker/config.json:/config.json
+    environment:
+      WATCHTOWER_NOTIFICATIONS: slack
+      WATCHTOWER_NOTIFICATION_SLACK_HOOK_URL: https://hooks.slack.com/services/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
+      WATCHTOWER_NOTIFICATION_SLACK_IDENTIFIER: watchtower
+      WATCHTOWER_NOTIFICATION_SLACK_CHANNEL: #build-deployment
+      WATCHTOWER_NOTIFICATION_SLACK_ICON_EMOJI: ":whale:"
+      WATCHTOWER_NOTIFICATIONS_LEVEL: info
+      #  Check if new docker image exist every 300 seconds
+      # clean-up old images
+    command: --interval 60  --cleanup
+    restart: unless-stopped
+
+  #   mongodb:
+  #     image: mongo:latest
+  #     environment:
+  #       MONGO_INITDB_ROOT_USERNAME: root
+  #       MONGO_INITDB_ROOT_PASSWORD: hN1pdA3Ygw9I
+  #       MONGO_INITDB_DATABASE: eportfolio
+  #     ports:
+  #       - 37018:27017
+  #     volumes:
+  #       - mongodb_data:/data/db
+  #     restart: unless-stopped
+
+  rabbitmq:
+    image: rabbitmq:management
+    volumes:
+      #      - ./.docker/rabbitmq/etc/:/etc/rabbitmq/
+      - rabbit_data:/var/lib/rabbitmq/
+      - rabbit_log:/var/log/rabbitmq/
+    environment:
+      #        RABBITMQ_ERLANG_COOKIE: ${RABBITMQ_ERLANG_COOKIE}
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_DEFAULT_USER}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_PASS}
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    restart: always
+  redis:
+    image: redis:alpine
+    ports:
+      - "127.0.0.1:26379:26379"
+    volumes:
+      - ../redis.conf:/usr/local/etc/redis/redis.conf
+      - redis_data:/data
+    entrypoint: redis-server /usr/local/etc/redis/redis.conf
+    restart: always
+
+  prod:
+    container_name: prod
+    image: docker.pkg.github.com/haswf/comp30022backenddev/eportfolio-server-docker:latest
+    ports:
+      - "8080:8090"
+    volumes:
+      - /var/log/eportfolio/:/var/log/eportfolio/
+    restart: always
+    environment:
+      SPRING_RABBITMQ_HOST: rabbitmq
+      SPRING_REDIS_HOST: redis
+    depends_on:
+      - rabbitmq
+      - redis
+
+volumes:
+  redis_data:
+  rabbit_data:
+  rabbit_log:

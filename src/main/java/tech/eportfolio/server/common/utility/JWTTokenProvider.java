@@ -7,6 +7,7 @@ import com.auth0.jwt.exceptions.JWTVerificationException;
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
 import org.joda.time.Period;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -24,15 +25,23 @@ import java.util.stream.Collectors;
 
 @Component
 public class JWTTokenProvider {
+
+    @Value("$security.jwt.token.sign")
+    public String signKey;
+
+    @Value("$security.jwt.token.refresh")
+    public String refreshKey;
+
+
     public String generateAccessToken(UserPrincipal userPrincipal) {
         return generateJWTToken(userPrincipal,
-                SecurityConstant.AUTHENTICATION_SECRET,
+                signKey,
                 SecurityConstant.ACCESS_TOKEN_VALIDITY);
     }
 
     public String generateRefreshToken(UserPrincipal userPrincipal) {
         return generateJWTToken(userPrincipal,
-                SecurityConstant.REFRESH_SECRET,
+                refreshKey,
                 SecurityConstant.REFRESH_TOKEN_VALIDITY);
     }
 

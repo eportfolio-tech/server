@@ -4,8 +4,9 @@ import com.auth0.jwt.exceptions.JWTVerificationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.validation.annotation.Validated;
@@ -16,7 +17,6 @@ import tech.eportfolio.server.common.exception.EmailNotFoundException;
 import tech.eportfolio.server.common.exception.UserNotFoundException;
 import tech.eportfolio.server.common.exception.handler.AuthenticationExceptionHandler;
 import tech.eportfolio.server.common.jsend.SuccessResponse;
-import tech.eportfolio.server.common.mock.EditorState;
 import tech.eportfolio.server.common.utility.JWTTokenProvider;
 import tech.eportfolio.server.dto.LoginRequestBody;
 import tech.eportfolio.server.dto.RenewRequestBody;
@@ -24,6 +24,7 @@ import tech.eportfolio.server.dto.UserDTO;
 import tech.eportfolio.server.model.User;
 import tech.eportfolio.server.model.UserPrincipal;
 import tech.eportfolio.server.service.RecoveryService;
+import tech.eportfolio.server.service.UserFollowService;
 import tech.eportfolio.server.service.UserService;
 import tech.eportfolio.server.service.VerificationService;
 
@@ -49,8 +50,15 @@ public class AuthenticationController extends AuthenticationExceptionHandler {
 
     private final RecoveryService recoveryService;
 
+    @Value("$security.jwt.token.sign")
+    private String signKey;
+
+    @Value("$security.jwt.token.refresh")
+    private String refreshKey;
+
+
     @Autowired
-    public AuthenticationController(UserService userService, AuthenticationManager authenticationManager, VerificationService verificationService, JWTTokenProvider jwtTokenProvider, RecoveryService recoveryService) {
+    public AuthenticationController(@Qualifier("UserServiceCacheImpl") UserService userService, AuthenticationManager authenticationManager, VerificationService verificationService, JWTTokenProvider jwtTokenProvider, RecoveryService recoveryService, UserFollowService userFollowService) {
         this.userService = userService;
         this.authenticationManager = authenticationManager;
         this.verificationService = verificationService;
@@ -89,9 +97,9 @@ public class AuthenticationController extends AuthenticationExceptionHandler {
 
     @PostMapping("/renew")
     public ResponseEntity<SuccessResponse<Object>> renewToken(@RequestBody @Valid RenewRequestBody renewRequestBody) {
-        String username = jwtTokenProvider.getSubject(renewRequestBody.getRefreshToken(), SecurityConstant.REFRESH_SECRET);
+        String username = jwtTokenProvider.getSubject(renewRequestBody.getRefreshToken(), refreshKey);
         User refreshUser = userService.findByUsername(username).orElseThrow(() -> new UserNotFoundException(username));
-        if (!jwtTokenProvider.isTokenValid(username, renewRequestBody.getRefreshToken(), SecurityConstant.REFRESH_SECRET)) {
+        if (!jwtTokenProvider.isTokenValid(username, renewRequestBody.getRefreshToken(), refreshKey)) {
             throw new JWTVerificationException("Refresh token has expired");
         }
         UserPrincipal userPrincipal = new UserPrincipal(refreshUser);
@@ -100,8 +108,8 @@ public class AuthenticationController extends AuthenticationExceptionHandler {
     }
 
     @GetMapping("/quick-test")
-    public ResponseEntity<SuccessResponse<EditorState>> quickTest() {
-        throw new AccessDeniedException("23");
+    public ResponseEntity<SuccessResponse<Object>> quickTest() {
+        return new SuccessResponse<>().toOk();
     }
 
     @GetMapping("/loginAsTest")
@@ -131,7 +139,7 @@ public class AuthenticationController extends AuthenticationExceptionHandler {
     @DeleteMapping("/deleteTest")
     public ResponseEntity<SuccessResponse<Object>> deleteTest() {
         String username = "test";
-        User user = userService.findByUsername(username).orElseThrow(() -> new EmailNotFoundException(username));
+        User user = userService.findByUsername(username).orElseThrow(() -> new UserNotFoundException(username));
         userService.delete(user);
         // Generate URI to be embedded into email
         return new SuccessResponse<>().toOk();

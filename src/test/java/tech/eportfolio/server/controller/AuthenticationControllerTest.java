@@ -7,10 +7,12 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.amqp.core.AmqpAdmin;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.mongo.AutoConfigureDataMongo;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.cache.CacheManager;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -27,6 +29,9 @@ import tech.eportfolio.server.model.User;
 import tech.eportfolio.server.model.UserPrincipal;
 import tech.eportfolio.server.service.UserService;
 
+import java.util.Objects;
+
+import static org.junit.Assert.assertNotNull;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -55,6 +60,12 @@ public class AuthenticationControllerTest {
 
     @Autowired
     private JWTTokenProvider jwtTokenProvider;
+
+    @Autowired
+    private CacheManager cacheManager;
+
+    @Autowired
+    AmqpAdmin amqpAdmin;
 
     @Before
     public void init() {
@@ -120,6 +131,8 @@ public class AuthenticationControllerTest {
         ).andDo(print())
                 .andExpect(status().isOk())
                 .andReturn();
+        // should have created a queue for new user
+        assertNotNull(amqpAdmin.getQueueProperties(userDTO.getUsername()));
     }
 
     @Test
@@ -202,6 +215,7 @@ public class AuthenticationControllerTest {
 
     @After
     public void afterClass() {
+        cacheManager.getCacheNames().forEach(cacheName -> Objects.requireNonNull(cacheManager.getCache(cacheName)).clear());
         mongoTemplate.getDb().drop();
     }
 }

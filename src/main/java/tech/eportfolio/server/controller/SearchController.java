@@ -2,6 +2,7 @@ package tech.eportfolio.server.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
@@ -49,7 +50,7 @@ public class SearchController {
 
     private final ObjectMapper objectMapper;
 
-    public SearchController(PortfolioService portfolioService, UserService userService, TagService tagService, UserTagService userTagService, ObjectMapper objectMapper) {
+    public SearchController(PortfolioService portfolioService, @Qualifier("UserServiceCacheImpl") UserService userService, TagService tagService, UserTagService userTagService, ObjectMapper objectMapper) {
         this.portfolioService = portfolioService;
         this.userService = userService;
         this.tagService = tagService;

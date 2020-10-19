@@ -3,6 +3,7 @@ package tech.eportfolio.server.controller;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.Authorization;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -33,7 +34,7 @@ public class UserController {
     private final UserTagService userTagService;
 
     @Autowired
-    public UserController(UserService service, UserTagService userTagService) {
+    public UserController(@Qualifier("UserServiceCacheImpl") UserService service, UserTagService userTagService) {
         this.userService = service;
         this.userTagService = userTagService;
     }

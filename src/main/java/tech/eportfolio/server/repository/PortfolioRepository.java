@@ -5,12 +5,15 @@ import org.springframework.stereotype.Repository;
 import tech.eportfolio.server.model.Portfolio;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface PortfolioRepository extends MongoRepository<Portfolio, String> {
 
     List<Portfolio> findByUserIdInAndDeleted(List<String> userIds, boolean b);
 
-    Portfolio findByUsername(String username);
+    Optional<Portfolio> findByUsername(String username);
+
+    List<Portfolio> findByIdInAndDeleted(List<String> ids, boolean deleted);
 
 }

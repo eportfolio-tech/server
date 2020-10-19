@@ -33,7 +33,6 @@ public class TemplateServiceImpl implements TemplateService {
         Template template = new Template();
         NullAwareBeanUtilsBean.copyProperties(templateDTO, template);
         template.setBoilerplate(JSONUtil.convertJsonNodeToDbObject(templateDTO.getBoilerplate()));
-        template.setUserId(user.getId());
         template.setHidden(false);
         template.setDeleted(false);
         return this.save(template);

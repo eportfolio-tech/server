@@ -1,0 +1,81 @@
+azure:
+    storage:
+        ConnectionString: DefaultEndpointsProtocol=https;AccountName=comp30002;AccountKey=eM0ANNupa26emPvxOyxR0NMo1axgr36Px1oTyY8UgvVVA5s3r3JnNZQVl7dQpKh6ydLExSXNI63AJVVo4cCG4Q==;EndpointSuffix=core.windows.net
+        container:
+            name: eportfolio
+logging:
+    file:
+        name: /var/tmp/eportfolio/server.log
+        path: /var/tmp/eportfolio/
+    level:
+        root: info
+        sql: error
+        tech:
+            eportfolio:
+                server: info
+        web: info
+security:
+    jwt:
+        token:
+            refresh: '"This is a refresh token secret"'
+            sign: '"This is a JWT secret"'
+server:
+    port: 8090
+    servlet:
+        context-path: /api
+spring:
+    cache:
+        type: redis
+    data:
+        mongodb:
+            authentication-database: eportfolio-dev
+            auto-index-creation: true
+            database: eportfolio-prod
+            host: haswf.com
+            password: renlord
+            port: 37017
+            username: comp30022
+    mail:
+        host: smtp.yandex.com
+        password: jxdwlguzlqakqpxx
+        port: 465
+        properties:
+            mail:
+                debug: true
+                mail:
+                    smtp:
+                        auth: true
+                smtp:
+                    auth: true
+                    socketFactory:
+                        class: javax.net.ssl.SSLSocketFactory
+                        port: 465
+                    ssl:
+                        enable: true
+                    starttls:
+                        enable: true
+                transport:
+                    protocol: smtp
+        username: no-reply@eportfolio.tech
+    quartz:
+        job-store-type: memory
+        properties:
+            org:
+                quartz:
+                    scheduler:
+                        instanceId: AUTO
+                    threadPool:
+                        threadCount: 5
+    rabbitmq:
+        host: ${SPRING_RABBITMQ_HOST}
+        password: ${SPRING_RABBITMQ_PASSWORD}
+        port: 5672
+        username: ${SPRING_RABBITMQ_USERNAME}
+    redis:
+        host: ${SPRING_REDIS_HOST}
+        password: ${SPRING_REDIS_PASSWORD}
+        port: 26379
+    servlet:
+        multipart:
+            max-file-size: 10MB
+            max-request-size: 10MB

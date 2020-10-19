@@ -1,6 +1,9 @@
 package tech.eportfolio.server.model;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.mongodb.core.index.Indexed;
@@ -12,7 +15,9 @@ import java.util.Date;
 
 @Data
 @Document
-
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class Tag {
     @Id
     private String id;
@@ -22,7 +27,7 @@ public class Tag {
 
     private String icon;
 
-    private boolean deleted = false;
+    private boolean deleted;
 
     @Column(nullable = false, updatable = false)
     private String createdBy;

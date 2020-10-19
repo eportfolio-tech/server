@@ -15,6 +15,9 @@ import java.util.Date;
 @Data
 @Document
 public class User implements Serializable {
+
+    private static final long serialVersionUID = 12345678L;
+
     @Id
     @Column(nullable = false, updatable = false)
     private String id;
