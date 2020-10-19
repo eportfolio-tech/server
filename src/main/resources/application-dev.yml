@@ -72,12 +72,12 @@ spring:
     rabbitmq:
         host: ${SPRING_RABBITMQ_HOST}
         password: ${SPRING_RABBITMQ_PASSWORD}
-        port: 5672
+        port: ${SPRING_RABBITMQ_PORT}
         username: ${SPRING_RABBITMQ_USERNAME}
     redis:
         host: ${SPRING_REDIS_HOST}
         password: ${SPRING_REDIS_PASSWORD}
-        port: 26379
+        port: ${SPRING_REDIS_PORT}
     servlet:
         multipart:
             max-file-size: 15MB
