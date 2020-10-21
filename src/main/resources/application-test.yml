@@ -5,7 +5,7 @@ azure:
             name: eportfolio
 unsplash:
     access:
-        key: ${SPRING_UNSPLASH_ACCESS_KEY}
+        key:
 logging:
     file:
         name: /var/tmp/eportfolio/server.log
