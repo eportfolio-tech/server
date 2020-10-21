@@ -14,6 +14,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import tech.eportfolio.server.common.constant.Visibility;
 import tech.eportfolio.server.common.mock.EditorState;
+import tech.eportfolio.server.common.unsplash.Client;
 import tech.eportfolio.server.common.utility.JWTTokenProvider;
 import tech.eportfolio.server.common.utility.ParagraphProvider;
 import tech.eportfolio.server.dto.PortfolioDTO;
@@ -56,6 +57,8 @@ public class MockContentJob implements Job {
     private UserTagService userTagService;
     @Autowired
     private JWTTokenProvider jwtTokenProvider;
+    @Autowired
+    private Client unsplashClient;
 
     @Override
     public void execute(JobExecutionContext context) {
@@ -71,7 +74,7 @@ public class MockContentJob implements Job {
             List<Tag> tags = createTag(users, 20);
             assignTag(users, tags);
         } else {
-            logger.info("MockContentJob: Skipped: User count {} > THRESHOLD {}", userCount, THRESHOLD);
+            logger.info("MockContentJob: Skipped: User {} > THRESHOLD {}", userCount, THRESHOLD);
         }
     }
 
@@ -84,7 +87,7 @@ public class MockContentJob implements Job {
         user.setAvatarUrl(Faker.instance().internet().avatar());
         user = userRepository.save(user);
         // Log result
-        logger.debug("MockContentJob: User created {}", user.getUsername());
+        logger.debug("MockContentJob: tech.eportfolio.server.common.unsplash.User created {}", user.getUsername());
         return user;
     }
 
@@ -128,12 +131,19 @@ public class MockContentJob implements Job {
         if (title.length() > 50) {
             title = title.substring(0, 50);
         }
+        String coverImage = null;
+        try {
+            coverImage = unsplashClient.randomImage().getJSONObject("urls").getString("regular");
+        } catch (Exception exception) {
+            logger.info("Failed to fetch image from unsplash {}", exception.getMessage());
+        }
         // Create a portfolio
         Portfolio portfolio = portfolioService.create(user,
                 portfolioService.fromPortfolioDTO(PortfolioDTO.builder().
                         title(title).
                         description(description).
                         visibility(Visibility.PUBLIC).
+                        coverImage(coverImage).
                         build()));
         logger.debug("MockContentJob: portfolio created {}", portfolio.getId());
         // Create content
@@ -145,5 +155,4 @@ public class MockContentJob implements Job {
         logger.debug("MockContentJob: content added {}", portfolio.getContent());
         return portfolio;
     }
-
 }

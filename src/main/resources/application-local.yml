@@ -3,6 +3,9 @@ azure:
         ConnectionString: DefaultEndpointsProtocol=http;AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;BlobEndpoint=http://haswf.com:10000/devstoreaccount1;
         container:
             name: eportfolio
+unsplash:
+    access:
+        key: ${SPRING_UNSPLASH_ACCESS_KEY}
 logging:
     file:
         name: /var/tmp/eportfolio/server.log
@@ -29,7 +32,6 @@ spring:
         type: redis
     data:
         mongodb:
-            authentication-database: admin
             auto-index-creation: true
             database: eportfolio-local
             host: localhost

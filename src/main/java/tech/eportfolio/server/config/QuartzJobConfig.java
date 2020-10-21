@@ -40,7 +40,7 @@ public class QuartzJobConfig {
         return TriggerBuilder.newTrigger().forJob(mockContentJob)
                 .withIdentity("mockContentJob")
 //               Every 30 minutes
-                .withSchedule(CronScheduleBuilder.cronSchedule("0 */30 * ? * *"))
+                .withSchedule(CronScheduleBuilder.cronSchedule("0 0 * ? * *"))
                 .build();
     }
 }
