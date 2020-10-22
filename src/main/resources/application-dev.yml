@@ -23,7 +23,7 @@ security:
             refresh: '"This is a refresh token secret"'
             sign: '"This is a JWT secret"'
 server:
-    port: 8090
+    port: 8080
     servlet:
         context-path: /api
     host: dev.eportfolio.tech

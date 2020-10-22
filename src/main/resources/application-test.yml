@@ -23,13 +23,13 @@ security:
             refresh: '"test_refresh_key"'
             sign: '"test_signing_key"'
 server:
-    port: 8090
+    port: 8080
     servlet:
         context-path: /api
     host: localhost
 spring:
     cache:
-        type: redis
+        type: none
     data:
         mongodb:
             auto-index-creation: true
