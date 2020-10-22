@@ -117,12 +117,6 @@ bootRun {
 build {
 }
 
-test {
-    systemProperty "spring.profiles.active", "test"
-    useJUnitPlatform()
-}
-test.finalizedBy jacocoTestReport
-tasks['sonarqube'].dependsOn test
 
 sonarqube {
     properties {
@@ -137,7 +131,10 @@ jacocoTestReport {
         xml.enabled true
     }
 }
+
 test {
+    useJUnitPlatform()
+    systemProperty "spring.profiles.active", "test"
     systemProperty 'io.springfox.staticdocs.outputDir', swaggerOutputDir
     systemProperty 'io.springfox.staticdocs.snippetsOutputDir', snippetsOutputDir
     testLogging {
@@ -145,6 +142,9 @@ test {
         exceptionFormat "full"
     }
 }
+test.finalizedBy jacocoTestReport
+tasks['sonarqube'].dependsOn test
+
 
 convertSwagger2markup {
     dependsOn test
@@ -173,12 +173,12 @@ asciidoctor {
     ]
 }
 
-jar {
-    dependsOn asciidoctor
-    from ("${asciidoctor.outputDir}/html5") {
-        into 'static/docs'
-    }
-    from ("${asciidoctor.outputDir}/pdf") {
-        into 'static/docs'
-    }
-}
+//jar {
+//    dependsOn asciidoctor
+//    from ("${asciidoctor.outputDir}/html5") {
+//        into 'static/docs'
+//    }
+//    from ("${asciidoctor.outputDir}/pdf") {
+//        into 'static/docs'
+//    }
+//}
