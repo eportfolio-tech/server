@@ -57,35 +57,40 @@ public class FeedController {
     public ResponseEntity<SuccessResponse<List<Map<String, Object>>>> getActives() {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = userService.findByUsername(username).orElseThrow(() -> new UserNotFoundException(username));
-        List<Activity> update = userFollowService.getActivitiesFromQueue(user);
-        List<Activity> recommendation = activityService.pull(user, 3, 10);
 
+        List<Activity> feed = new ArrayList<>();
         List<Map<String, Object>> result = new ArrayList<>();
-        update.addAll(recommendation);
+        feed.addAll(activityService.pull(user, 3, 10));
+        feed.addAll(userFollowService.getActivitiesFromQueue(user));
 
-        List<String> portfolioIds = update.stream().filter(e -> e.getParentType().equals(ParentType.PORTFOLIO)).map(Activity::getParentId).collect(Collectors.toList());
+        List<String> usernames = feed.stream().map(Activity::getUsername).collect(Collectors.toList());
+        Map<String, User> userMap = userService.findByUsernameIn(usernames).stream().collect(Collectors.toMap(User::getUsername, Function.identity()));
+
+        List<String> portfolioIds = feed.stream().filter(e -> e.getParentType().equals(ParentType.PORTFOLIO)).map(Activity::getParentId).collect(Collectors.toList());
         Map<String, Portfolio> portfolioMap = portfolioService.findByIdIn(portfolioIds).stream().collect(Collectors.toMap(Portfolio::getId, Function.identity()));
-        update.stream().filter(e -> e.getParentType().equals(ParentType.PORTFOLIO)).forEach(e -> {
+        feed.stream().filter(e -> e.getParentType().equals(ParentType.PORTFOLIO)).forEach(e -> {
             @SuppressWarnings("unchecked")
             Map<String, Object> map = objectMapper.convertValue(e, Map.class);
             @SuppressWarnings("unchecked")
             Map<String, Object> portFolioMap = objectMapper.convertValue(portfolioMap.get(e.getParentId()), Map.class);
+            // Removes portfolio content to reduce json size
             portFolioMap.remove("content");
+            map.put("avatar", userMap.get(e.getUsername()).getAvatarUrl());
             // Add portfolio detail to the map
             map.put(ParentType.PORTFOLIO.toString().toLowerCase(), portFolioMap);
             result.add(map);
         });
 
-        List<String> tagIds = recommendation.stream().filter(e -> e.getParentType().equals(ParentType.TAG)).map(Activity::getParentId).collect(Collectors.toList());
+        List<String> tagIds = feed.stream().filter(e -> e.getParentType().equals(ParentType.TAG)).map(Activity::getParentId).collect(Collectors.toList());
         Map<String, Tag> tagMap = tagService.findByIdIn(tagIds).stream().collect(Collectors.toMap(Tag::getId, Function.identity()));
-        recommendation.stream().filter(e -> e.getParentType().equals(ParentType.TAG)).forEach(e -> {
+        feed.stream().filter(e -> e.getParentType().equals(ParentType.TAG)).forEach(e -> {
             @SuppressWarnings("unchecked")
             Map<String, Object> map = objectMapper.convertValue(e, Map.class);
+            map.put("avatar", userMap.get(e.getUsername()).getAvatarUrl());
             // Add portfolio detail to the map
             map.put(ParentType.TAG.toString().toLowerCase(), tagMap.get(e.getParentId()));
             result.add(map);
         });
-
 
         // Append activity list to history so the user won't see the same activity again
         return new SuccessResponse<>("activities", result).toOk();
