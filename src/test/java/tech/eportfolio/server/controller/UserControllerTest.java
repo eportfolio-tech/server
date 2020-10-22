@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.mongo.AutoConfigureDataMongo;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.cache.CacheManager;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -24,8 +23,6 @@ import tech.eportfolio.server.dto.PasswordResetRequestBody;
 import tech.eportfolio.server.dto.UserDTO;
 import tech.eportfolio.server.dto.UserPatchRequestBody;
 import tech.eportfolio.server.service.UserService;
-
-import java.util.Objects;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -47,9 +44,6 @@ public class UserControllerTest {
     private UserService userService;
 
     private UserDTO testUserDTO;
-
-    @Autowired
-    private CacheManager cacheManager;
 
     @Autowired
     MongoTemplate mongoTemplate;
@@ -184,7 +178,6 @@ public class UserControllerTest {
 
     @After
     public void afterClass() {
-        cacheManager.getCacheNames().forEach(cacheName -> Objects.requireNonNull(cacheManager.getCache(cacheName)).clear());
         mongoTemplate.getDb().drop();
     }
 }

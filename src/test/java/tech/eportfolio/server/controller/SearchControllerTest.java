@@ -8,7 +8,6 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.cache.CacheManager;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -31,7 +30,6 @@ import tech.eportfolio.server.service.*;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Objects;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -53,8 +51,6 @@ public class SearchControllerTest {
     PortfolioRepository portfolioRepository;
     @Autowired
     MongoTemplate mongoTemplate;
-    @Autowired
-    private CacheManager cacheManager;
     @Autowired
     private MockMvc mockMvc;
     @Autowired
@@ -392,7 +388,6 @@ public class SearchControllerTest {
 
     @After
     public void afterClass() {
-        cacheManager.getCacheNames().forEach(cacheName -> Objects.requireNonNull(cacheManager.getCache(cacheName)).clear());
         mongoTemplate.getDb().drop();
     }
 }
