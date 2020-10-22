@@ -151,7 +151,10 @@ convertSwagger2markup {
     swaggerInput "${swaggerOutputDir}/swagger.json"
     outputDir asciiDocOutputDir
     config = [
+            'swagger2markup.outputLanguage' : "EN",
+            'swagger2markup.generatedExamplesEnabled' : true,
             'swagger2markup.pathsGroupedBy' : 'TAGS',
+            'swagger2markup.flatBodyEnabled' : true,
             'swagger2markup.extensions.springRestDocs.snippetBaseUri': snippetsOutputDir.getAbsolutePath()]
 }
 
