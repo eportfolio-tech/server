@@ -29,7 +29,7 @@ server:
     host: localhost
 spring:
     cache:
-      type: redis
+        type: none
     data:
         mongodb:
             auto-index-creation: true
