@@ -86,10 +86,14 @@ public class UserFollowServiceImpl implements UserFollowService {
 
     @Override
     public List<Activity> getActivitiesFromQueue(User user) {
-        Integer count = (Integer) admin.getQueueProperties(user.getUsername()).get("QUEUE_MESSAGE_COUNT");
         List<Activity> activities = new ArrayList<>();
-        for (int i = 0; i < count; i++) {
-            activities.add((Activity) rabbitTemplate.receiveAndConvert(user.getUsername()));
+        if (admin.getQueueProperties(user.getUsername()) == null) {
+            createQueueAndExchange(user.getUsername());
+        } else {
+            int count = (Integer) admin.getQueueProperties(user.getUsername()).get("QUEUE_MESSAGE_COUNT");
+            for (int i = 0; i < count; i++) {
+                activities.add((Activity) rabbitTemplate.receiveAndConvert(user.getUsername()));
+            }
         }
         return activities;
     }
