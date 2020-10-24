@@ -41,6 +41,8 @@ public class QuartzJobConfig {
                 .withIdentity("mockContentJob")
 //               Every 30 minutes
                 .withSchedule(CronScheduleBuilder.cronSchedule("0 0 * ? * *"))
+                // Every second
+//                .withSchedule(CronScheduleBuilder.cronSchedule("* * * ? * *"))
                 .build();
     }
 }

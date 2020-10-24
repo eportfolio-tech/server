@@ -87,7 +87,7 @@ public class MockContentJob implements Job {
         user.setAvatarUrl(Faker.instance().internet().avatar());
         user = userRepository.save(user);
         // Log result
-        logger.debug("MockContentJob: tech.eportfolio.server.common.unsplash.User created {}", user.getUsername());
+        logger.debug("User created {}", user.getUsername());
         return user;
     }
 
@@ -131,10 +131,12 @@ public class MockContentJob implements Job {
         if (title.length() > 50) {
             title = title.substring(0, 50);
         }
+
         String coverImage = null;
         try {
             coverImage = unsplashClient.randomImage().getJSONObject("urls").getString("regular");
         } catch (Exception exception) {
+            coverImage = "https://images.unsplash.com/photo-1603536764976-e2d8a6d805fc?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=3167&q=80";
             logger.info("Failed to fetch image from unsplash {}", exception.getMessage());
         }
         // Create a portfolio
