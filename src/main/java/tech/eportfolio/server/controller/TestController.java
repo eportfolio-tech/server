@@ -74,7 +74,9 @@ public class TestController {
             user = loginUser.get();
         }
         userService.findAllActive().stream().filter(e -> portfolioService.findByUsername(e.getUsername()).isPresent()).limit(1).forEach(dest -> {
-            userFollowService.follow(user, dest.getUsername());
+            if (userFollowService.findBySourceUsernameAndDestinationNameAndDeleted(user.getUsername(), dest.getUsername(), false).isEmpty()) {
+                userFollowService.follow(user, dest.getUsername());
+            }
             Optional<Portfolio> result = portfolioService.findByUsername(dest.getUsername());
             if (result.isPresent()) {
                 Portfolio portfolio = result.get();
