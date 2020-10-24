@@ -27,4 +27,9 @@ public interface UserFollowService {
 
     List<Activity> getActivitiesFromQueue(User user);
 
+    void bind(String sourceUsername, String destinationUsername);
+
+    void unbind(String sourceUsername, String destinationUsername);
+
+    boolean hasQueue(String username);
 }

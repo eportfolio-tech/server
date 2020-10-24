@@ -36,4 +36,6 @@ public interface UserService {
     List<User> saveAll(List<User> users);
 
     UserDetails loadUserByUsername(String username);
+
+    List<User> findAllActive();
 }

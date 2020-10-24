@@ -119,4 +119,9 @@ public class UserServiceCacheImpl implements UserService, UserDetailsService {
         return userService.loadUserByUsername(username);
     }
 
+    @Override
+    public List<User> findAllActive() {
+        return userService.findAllActive();
+    }
+
 }

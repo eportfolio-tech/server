@@ -18,10 +18,7 @@ import tech.eportfolio.server.repository.UserFollowRepository;
 import tech.eportfolio.server.service.FeedHistoryService;
 import tech.eportfolio.server.service.UserFollowService;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class UserFollowServiceImpl implements UserFollowService {
@@ -71,31 +68,30 @@ public class UserFollowServiceImpl implements UserFollowService {
     @Override
     public void createQueueAndExchange(String username) {
         // if user doesn't have a message queue yet
-        if (admin.getQueueProperties(username) == null) {
-            Queue queue = new Queue(username, true);
-            FanoutExchange exchange = new FanoutExchange(username, true, false);
-            admin.declareQueue(queue);
-            logger.info("Message queue created: {} {}", queue.getName(), queue.getArguments());
-            // declare a fanout exchange using username. Messages sent to this fanout exchange will be routed to
-            // bound queues (i.e. followers' queues)
-            admin.declareExchange(exchange);
-            logger.info("{} exchange created: {}", exchange.getType(), exchange.getName());
-        }
+        Queue queue = new Queue(username, true);
+        FanoutExchange exchange = new FanoutExchange(username, true, false);
+        admin.declareQueue(queue);
+        logger.debug("Message queue created: {} {}", queue.getName(), queue.getArguments());
+        // declare a fanout exchange using username. Messages sent to this fanout exchange will be routed to
+        // bound queues (i.e. followers' queues)
+        admin.declareExchange(exchange);
+        logger.debug("{} exchange created: {}", exchange.getType(), exchange.getName());
     }
 
 
     @Override
     public List<Activity> getActivitiesFromQueue(User user) {
         List<Activity> activities = new ArrayList<>();
-        if (admin.getQueueProperties(user.getUsername()) == null) {
-            createQueueAndExchange(user.getUsername());
-        } else {
-            int count = (Integer) admin.getQueueProperties(user.getUsername()).get("QUEUE_MESSAGE_COUNT");
-            for (int i = 0; i < count; i++) {
-                activities.add((Activity) rabbitTemplate.receiveAndConvert(user.getUsername()));
-            }
+        int count = (Integer) admin.getQueueProperties(user.getUsername()).get("QUEUE_MESSAGE_COUNT");
+        for (int i = 0; i < count; i++) {
+            activities.add((Activity) rabbitTemplate.receiveAndConvert(user.getUsername()));
         }
         return activities;
+    }
+
+    @Override
+    public boolean hasQueue(String username) {
+        return Objects.nonNull(admin.getQueueProperties(username));
     }
 
     @Override
@@ -107,13 +103,15 @@ public class UserFollowServiceImpl implements UserFollowService {
         return new Binding(sourceUsername, Binding.DestinationType.QUEUE, destinationUsername, "", null);
     }
 
-    private void bind(String sourceUsername, String destinationUsername) {
+    @Override
+    public void bind(String sourceUsername, String destinationUsername) {
         Binding binding = createBinding(sourceUsername, destinationUsername);
         admin.declareBinding(binding);
         logger.info("Bound queue '{}' to exchange '{}'", sourceUsername, destinationUsername);
     }
 
-    private void unbind(String sourceUsername, String destinationUsername) {
+    @Override
+    public void unbind(String sourceUsername, String destinationUsername) {
         Binding binding = createBinding(sourceUsername, destinationUsername);
         admin.removeBinding(binding);
         logger.info("Unbound queue '{}' from exchange '{}'", sourceUsername, destinationUsername);
