@@ -1,6 +1,10 @@
 package tech.eportfolio.server.controller;
 
 import com.auth0.jwt.exceptions.JWTVerificationException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +21,7 @@ import tech.eportfolio.server.common.exception.EmailNotFoundException;
 import tech.eportfolio.server.common.exception.UserNotFoundException;
 import tech.eportfolio.server.common.exception.handler.AuthenticationExceptionHandler;
 import tech.eportfolio.server.common.jsend.SuccessResponse;
+import tech.eportfolio.server.common.unsplash.Client;
 import tech.eportfolio.server.common.utility.JWTTokenProvider;
 import tech.eportfolio.server.dto.LoginRequestBody;
 import tech.eportfolio.server.dto.RenewRequestBody;
@@ -29,6 +34,7 @@ import tech.eportfolio.server.service.UserService;
 import tech.eportfolio.server.service.VerificationService;
 
 import javax.validation.Valid;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -50,6 +56,8 @@ public class AuthenticationController extends AuthenticationExceptionHandler {
 
     private final RecoveryService recoveryService;
 
+    private final Client unsplashClient;
+
     @Value("$security.jwt.token.sign")
     private String signKey;
 
@@ -58,12 +66,13 @@ public class AuthenticationController extends AuthenticationExceptionHandler {
 
 
     @Autowired
-    public AuthenticationController(@Qualifier("UserServiceCacheImpl") UserService userService, AuthenticationManager authenticationManager, VerificationService verificationService, JWTTokenProvider jwtTokenProvider, RecoveryService recoveryService, UserFollowService userFollowService) {
+    public AuthenticationController(@Qualifier("UserServiceCacheImpl") UserService userService, AuthenticationManager authenticationManager, VerificationService verificationService, JWTTokenProvider jwtTokenProvider, RecoveryService recoveryService, UserFollowService userFollowService, Client unsplashClient) {
         this.userService = userService;
         this.authenticationManager = authenticationManager;
         this.verificationService = verificationService;
         this.jwtTokenProvider = jwtTokenProvider;
         this.recoveryService = recoveryService;
+        this.unsplashClient = unsplashClient;
     }
 
 
@@ -108,8 +117,11 @@ public class AuthenticationController extends AuthenticationExceptionHandler {
     }
 
     @GetMapping("/quick-test")
-    public ResponseEntity<SuccessResponse<Object>> quickTest() {
-        return new SuccessResponse<>().toOk();
+    public ResponseEntity<SuccessResponse<JsonNode>> quickTest() throws IOException, JSONException {
+        JSONObject jsonObject = unsplashClient.randomImage();
+        ObjectMapper objectMapper = new ObjectMapper();
+//        logger.info(unsplashClient.randomImage().getJSONObject("urls").getString("raw"));
+        return new SuccessResponse<>("image", objectMapper.readTree(jsonObject.toString())).toOk();
     }
 
     @GetMapping("/loginAsTest")

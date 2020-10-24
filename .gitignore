@@ -34,3 +34,4 @@ out/
 .vscode/
 /.idea/
 .env
+/docker-compose/local/.cache/

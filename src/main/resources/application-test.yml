@@ -3,6 +3,9 @@ azure:
         ConnectionString: DefaultEndpointsProtocol=http;AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;BlobEndpoint=http://127.0.0.1:10000/devstoreaccount1;QueueEndpoint=http://127.0.0.1:10001/devstoreaccount1;
         container:
             name: eportfolio
+unsplash:
+    access:
+        key:
 logging:
     file:
         name: /var/tmp/eportfolio/server.log
@@ -23,9 +26,10 @@ server:
     port: 8090
     servlet:
         context-path: /api
+    host: localhost
 spring:
     cache:
-        type: redis
+        type: none
     data:
         mongodb:
             auto-index-creation: true

@@ -186,4 +186,9 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         }
     }
 
+    @Override
+    public List<User> findAllActive() {
+        return userRepository.findAllByDeleted(false);
+    }
+
 }

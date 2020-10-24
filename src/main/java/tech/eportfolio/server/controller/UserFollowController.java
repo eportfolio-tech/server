@@ -116,7 +116,7 @@ public class UserFollowController {
                     HashMap<String, Object> hashmap = new HashMap<>();
 
                     hashmap.put("user_follow", following);
-                    hashmap.put("destination_user", map.get(following.getSourceUsername()));
+                    hashmap.put("destination_user", map.get(following.getDestinationUsername()));
 
                     return hashmap;
 

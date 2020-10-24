@@ -26,8 +26,6 @@ import tech.eportfolio.server.service.UserCommentService;
 import tech.eportfolio.server.service.UserFollowService;
 import tech.eportfolio.server.service.UserService;
 
-import java.util.Objects;
-
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.Assert.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -197,7 +195,6 @@ public class UserFollowControllerTest {
 
     @After
     public void afterClass() {
-        cacheManager.getCacheNames().forEach(cacheName -> Objects.requireNonNull(cacheManager.getCache(cacheName)).clear());
         mongoTemplate.getDb().drop();
     }
 

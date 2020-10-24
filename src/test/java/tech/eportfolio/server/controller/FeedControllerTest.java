@@ -1,5 +1,6 @@
 package tech.eportfolio.server.controller;
 
+import com.github.javafaker.Faker;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -9,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.mongo.AutoConfigureDataMongo;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.cache.CacheManager;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -30,7 +30,6 @@ import tech.eportfolio.server.service.UserFollowService;
 import tech.eportfolio.server.service.UserService;
 
 import java.util.HashMap;
-import java.util.Objects;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -50,8 +49,7 @@ public class FeedControllerTest {
     private AmqpAdmin rabbitAdmin;
     @Autowired
     private MongoTemplate mongoTemplate;
-    @Autowired
-    private CacheManager cacheManager;
+
     @Autowired
     private MockMvc mockMvc;
     @Autowired
@@ -75,11 +73,15 @@ public class FeedControllerTest {
         testUserDTO = UserDTO.mock();
         testUserDTO.setUsername("test");
         testUser = userService.register(userService.fromUserDTO(testUserDTO), false);
+        testUser.setAvatarUrl(Faker.instance().internet().avatar());
+        userService.save(testUser);
         // Purge the remaining messages in the queue
         rabbitAdmin.purgeQueue("test");
 
         followingUserDTO = UserDTO.mock();
         followingUser = userService.register(userService.fromUserDTO(followingUserDTO), false);
+        followingUser.setAvatarUrl(Faker.instance().internet().avatar());
+        userService.save(followingUser);
 
         portfolioDTO = PortfolioDTO.mock();
         followingPortfolio = portfolioService.create(followingUser, portfolioService.fromPortfolioDTO(portfolioDTO));
@@ -101,7 +103,8 @@ public class FeedControllerTest {
                 .andExpect(jsonPath("$.status").value("success"))
                 .andExpect(jsonPath("$.data.activities", hasSize(1)))
                 .andExpect(jsonPath("$.data.activities[0].activityType").value(ActivityType.UPDATE.toString()))
-                .andExpect(jsonPath("$.data.activities[0].portfolio").exists());
+                .andExpect(jsonPath("$.data.activities[0].portfolio").exists())
+                .andExpect(jsonPath("$.data.activities[0].avatar").value(followingUser.getAvatarUrl()));
     }
 
     @Test
@@ -115,7 +118,8 @@ public class FeedControllerTest {
                 .andExpect(jsonPath("$.status").value("success"))
                 .andExpect(jsonPath("$.data.activities", hasSize(1)))
                 .andExpect(jsonPath("$.data.activities[0].activityType").value(ActivityType.TAG.toString()))
-                .andExpect(jsonPath("$.data.activities[0].tag").exists());
+                .andExpect(jsonPath("$.data.activities[0].tag").exists())
+                .andExpect(jsonPath("$.data.activities[0].avatar").value(testUser.getAvatarUrl()));
     }
 
     @Test
@@ -130,13 +134,14 @@ public class FeedControllerTest {
                 .andExpect(jsonPath("$.status").value("success"))
                 .andExpect(jsonPath("$.data.activities", hasSize(1)))
                 .andExpect(jsonPath("$.data.activities[0].activityType").value(ActivityType.PORTFOLIO.toString()))
-                .andExpect(jsonPath("$.data.activities[0].portfolio").exists());
+                .andExpect(jsonPath("$.data.activities[0].portfolio").exists())
+                .andExpect(jsonPath("$.data.activities[0].avatar").value(testUser.getAvatarUrl()));
+
     }
 
 
     @After
     public void afterClass() {
-        cacheManager.getCacheNames().forEach(cacheName -> Objects.requireNonNull(cacheManager.getCache(cacheName)).clear());
         mongoTemplate.getDb().drop();
     }
 

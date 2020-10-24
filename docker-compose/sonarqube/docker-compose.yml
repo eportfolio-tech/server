@@ -1,0 +1,45 @@
+version: "3"
+
+services:
+  sonarqube:
+    image: sonarqube:8.2-community
+    container_name: sonarqube
+    hostname: sonarqube
+    expose:
+      - 9000
+    ports:
+      - ${SONARQUBE_PORT}:9000
+    networks:
+      - sonarnet
+    environment:
+      - sonar.jdbc.username=sonar
+      - sonar.jdbc.password=${SONARQUBE_DB_PASSWORD}
+      - sonar.jdbc.url=jdbc:postgresql://db/sonar
+      - sonar.search.javaAdditionalOpts=-Dbootstrap.system_call_filter=false
+    volumes:
+      - sonarcube_log:/opt/sonarqube/logs
+      - sonarcube_data:/opt/sonarqube/data
+      - sonarcube_extension:/opt/sonarqube/extensions
+
+  db:
+    image: postgres:12.0
+    container_name: sonarqube-pg
+    hostname: sonarqube-pg
+    networks:
+      - sonarnet
+    environment:
+      - POSTGRES_USER=sonar
+      - POSTGRES_PASSWORD=${SONARQUBE_DB_PASSWORD}
+    volumes:
+      - postgresql:/var/lib/postgresql
+      - postgresql_data:/var/lib/postgresql/data
+
+networks:
+  sonarnet:
+
+volumes:
+  postgresql:
+  postgresql_data:
+  sonarcube_log:
+  sonarcube_data:
+  sonarcube_extension:
