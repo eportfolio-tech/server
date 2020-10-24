@@ -136,7 +136,29 @@ public class FeedControllerTest {
                 .andExpect(jsonPath("$.data.activities[0].activityType").value(ActivityType.PORTFOLIO.toString()))
                 .andExpect(jsonPath("$.data.activities[0].portfolio").exists())
                 .andExpect(jsonPath("$.data.activities[0].avatar").value(testUser.getAvatarUrl()));
+    }
 
+    @Test
+    @WithMockUser(username = "test")
+    public void UpdateShouldAppearFirstInFeed() throws Exception {
+        Portfolio portfolio = portfolioService.create(testUser, portfolioService.fromPortfolioDTO(portfolioDTO));
+        // Let test follows another user
+        userFollowService.follow(testUser, followingUser.getUsername());
+        // Update portfolio of the following user, this should send a message to test user
+        portfolioService.updateContent(followingPortfolio, new HashMap<>());
+
+        this.mockMvc.perform(get("/feed/")
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
+        ).andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value("success"))
+                .andExpect(jsonPath("$.data.activities", hasSize(2)))
+                .andExpect(jsonPath("$.data.activities[0].activityType").value(ActivityType.UPDATE.toString()))
+                .andExpect(jsonPath("$.data.activities[0].portfolio").exists())
+                .andExpect(jsonPath("$.data.activities[0].avatar").value(followingUser.getAvatarUrl()))
+                .andExpect(jsonPath("$.data.activities[1].activityType").value(ActivityType.PORTFOLIO.toString()))
+                .andExpect(jsonPath("$.data.activities[1].portfolio").exists())
+                .andExpect(jsonPath("$.data.activities[1].avatar").value(testUser.getAvatarUrl()));
     }
 
 

@@ -11,10 +11,7 @@ import tech.eportfolio.server.repository.ActivityRepository;
 import tech.eportfolio.server.service.ActivityService;
 import tech.eportfolio.server.service.FeedHistoryService;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class ActivityServiceImpl implements ActivityService {
@@ -37,6 +34,8 @@ public class ActivityServiceImpl implements ActivityService {
         List<Activity> feed = new LinkedList<>();
         feed.addAll(activityRepository.findByIdNotInAndActivityTypeAndDeleted(historyFeedItemIds, ActivityType.PORTFOLIO, false, PageRequest.of(0, portfolioCount)));
         feed.addAll(activityRepository.findByIdNotInAndActivityTypeAndDeleted(historyFeedItemIds, ActivityType.TAG, false, PageRequest.of(0, tagCount)));
+        // Shuffle activities in feed
+        Collections.shuffle(feed);
         updateHistory(user.getId(), feed);
         return feed;
     }
