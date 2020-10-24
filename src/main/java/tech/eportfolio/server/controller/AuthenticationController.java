@@ -1,10 +1,6 @@
 package tech.eportfolio.server.controller;
 
 import com.auth0.jwt.exceptions.JWTVerificationException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,10 +30,8 @@ import tech.eportfolio.server.service.UserService;
 import tech.eportfolio.server.service.VerificationService;
 
 import javax.validation.Valid;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
 @Validated
 @RestController
@@ -114,47 +108,6 @@ public class AuthenticationController extends AuthenticationExceptionHandler {
         UserPrincipal userPrincipal = new UserPrincipal(refreshUser);
         logger.info("Access token renewed for user: {}", username);
         return new SuccessResponse<>(generateTokens(userPrincipal)).toCreated();
-    }
-
-    @GetMapping("/quick-test")
-    public ResponseEntity<SuccessResponse<JsonNode>> quickTest() throws IOException, JSONException {
-        JSONObject jsonObject = unsplashClient.randomImage();
-        ObjectMapper objectMapper = new ObjectMapper();
-//        logger.info(unsplashClient.randomImage().getJSONObject("urls").getString("raw"));
-        return new SuccessResponse<>("image", objectMapper.readTree(jsonObject.toString())).toOk();
-    }
-
-    @GetMapping("/loginAsTest")
-    public ResponseEntity<SuccessResponse<Object>> letMeLogIn() {
-        Optional<User> loginUser = userService.findByUsername("test");
-        User user;
-        if (loginUser.isEmpty()) {
-            User test = new User();
-            test.setPassword("WhatSoEverWhoCare123");
-            test.setUsername("test");
-            test.setEmail("test@eportfolio.tech");
-            test.setFirstName("test");
-            test.setLastName("man");
-            test.setPhone("(03)90355511");
-            test.setTitle("Mr.");
-            user = userService.register(test, false);
-        } else {
-            user = loginUser.get();
-        }
-        UserPrincipal userPrincipal = new UserPrincipal(user);
-        Map<String, Object> response = new HashMap<>();
-        response.put("access-token", jwtTokenProvider.generateAccessToken(userPrincipal));
-        response.put("refresh-token", jwtTokenProvider.generateRefreshToken(userPrincipal));
-        return new SuccessResponse<>(response).toOk();
-    }
-
-    @DeleteMapping("/deleteTest")
-    public ResponseEntity<SuccessResponse<Object>> deleteTest() {
-        String username = "test";
-        User user = userService.findByUsername(username).orElseThrow(() -> new UserNotFoundException(username));
-        userService.delete(user);
-        // Generate URI to be embedded into email
-        return new SuccessResponse<>().toOk();
     }
 
 

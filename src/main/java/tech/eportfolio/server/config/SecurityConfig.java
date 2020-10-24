@@ -53,6 +53,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 // permit access to API doc
                 .and().authorizeRequests().antMatchers(SecurityConstant.API_DOC).permitAll()
+                // permit access to test endpoints
+                .and().authorizeRequests().antMatchers(SecurityConstant.TEST).permitAll()
                 // permit access to authentication endpoints
                 .and().authorizeRequests().antMatchers(SecurityConstant.AUTHENTICATION).permitAll()
                 // permit access to endpoint like GET /tags/

@@ -60,8 +60,8 @@ public class FeedController {
 
         List<Activity> feed = new ArrayList<>();
         List<Map<String, Object>> result = new ArrayList<>();
-        feed.addAll(userFollowService.getActivitiesFromQueue(user));
         feed.addAll(activityService.pull(user, 3, 10));
+        feed.addAll(userFollowService.getActivitiesFromQueue(user));
 
         List<String> usernames = feed.stream().map(Activity::getUsername).collect(Collectors.toList());
         Map<String, User> userMap = userService.findByUsernameIn(usernames).stream().collect(Collectors.toMap(User::getUsername, Function.identity()));
