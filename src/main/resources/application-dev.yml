@@ -86,5 +86,5 @@ spring:
         port: ${SPRING_REDIS_PORT}
     servlet:
         multipart:
-            max-file-size: -1
-            max-request-size: -1
+            max-file-size: 20MB
+            max-request-size: 20MB
