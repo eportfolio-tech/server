@@ -85,8 +85,9 @@ public class PortfolioServiceImpl implements PortfolioService {
     @Override
     public Portfolio create(User user, Portfolio portfolio) {
         Portfolio toCreate = new Portfolio();
-        NullAwareBeanUtilsBean.copyProperties(toCreate, portfolio);
+        NullAwareBeanUtilsBean.copyProperties(portfolio, toCreate);
         toCreate.setUsername(user.getUsername());
+        toCreate.setUserId(user.getId());
         Portfolio created = portfolioRepository.save(toCreate);
         pushPortfolioToActivity(created);
         return created;
