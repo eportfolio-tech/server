@@ -24,9 +24,12 @@ security:
             sign: '"local_signing_key"'
 server:
     port: 8090
+    tomcat:
+        max-swallow-size: -1
     servlet:
         context-path: /api
     host: localhost
+
 spring:
     cache:
         type: redis
@@ -78,5 +81,5 @@ spring:
         port: 26379
     servlet:
         multipart:
-            max-file-size: 15MB
-            max-request-size: 15MB
+            max-file-size: -1
+            max-request-size: -1
