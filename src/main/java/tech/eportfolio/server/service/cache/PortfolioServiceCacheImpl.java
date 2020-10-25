@@ -3,6 +3,7 @@ package tech.eportfolio.server.service.cache;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.annotation.Primary;
@@ -117,6 +118,7 @@ public class PortfolioServiceCacheImpl implements PortfolioService {
     }
 
     @Override
+    @CacheEvict(allEntries = true)
     public List<Portfolio> saveAll(List<Portfolio> portfolios) {
         return portfolioService.saveAll(portfolios);
     }

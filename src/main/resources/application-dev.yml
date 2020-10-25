@@ -24,6 +24,8 @@ security:
             sign: '"This is a JWT secret"'
 server:
     port: 8090
+    tomcat:
+        max-swallow-size: -1
     servlet:
         context-path: /api
     host: dev.eportfolio.tech
@@ -84,5 +86,5 @@ spring:
         port: ${SPRING_REDIS_PORT}
     servlet:
         multipart:
-            max-file-size: 15MB
-            max-request-size: 15MB
+            max-file-size: 20MB
+            max-request-size: 20MB

@@ -1,5 +1,6 @@
 package tech.eportfolio.server.controller;
 
+import com.microsoft.azure.storage.StorageException;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.Authorization;
 import org.slf4j.Logger;
@@ -17,7 +18,10 @@ import tech.eportfolio.server.service.AzureStorageService;
 import tech.eportfolio.server.service.UserService;
 
 import javax.validation.constraints.NotEmpty;
+import java.io.IOException;
 import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.LinkedList;
 import java.util.List;
 
 @RestController
@@ -44,7 +48,7 @@ public class BlobController extends AuthenticationExceptionHandler {
      * @return URI pointing to the created resource
      */
     @PostMapping("/image")
-    public ResponseEntity<SuccessResponse<String>> uploadImage(@RequestParam MultipartFile multipartFile) {
+    public ResponseEntity<SuccessResponse<String>> uploadImage(@RequestParam MultipartFile multipartFile) throws StorageException, IOException, URISyntaxException {
         return new SuccessResponse<>("URI", azureStorageService.uploadPicture(multipartFile).toString()).toOk();
     }
 
@@ -57,7 +61,7 @@ public class BlobController extends AuthenticationExceptionHandler {
      */
     @PostMapping("/{username}")
     @ApiOperation(value = "", authorizations = {@Authorization(value = "JWT")})
-    public ResponseEntity<SuccessResponse<String>> uploadBlob(@PathVariable @NotEmpty String username, @RequestParam MultipartFile multipartFile) {
+    public ResponseEntity<SuccessResponse<String>> uploadBlob(@PathVariable @NotEmpty String username, @RequestParam MultipartFile multipartFile) throws StorageException, IOException, URISyntaxException {
         User user = userService.findByUsername(username).orElseThrow(() -> new UserNotFoundException(username));
         URI url = azureStorageService.uploadBlob(user.getBlobUUID(), multipartFile);
         logger.debug("File {} uploaded to {}", multipartFile.getOriginalFilename(), url);
@@ -74,8 +78,13 @@ public class BlobController extends AuthenticationExceptionHandler {
     @ApiOperation(value = "", authorizations = {@Authorization(value = "JWT")})
     public ResponseEntity<SuccessResponse<List<URI>>> getBlobs(@PathVariable @NotEmpty String username) {
         User user = userService.findByUsername(username).orElseThrow(() -> new UserNotFoundException(username));
+        List<URI> uris = new LinkedList<>();
+        try {
+            uris.addAll(azureStorageService.listBlob(user.getBlobUUID()));
+        } catch (URISyntaxException | StorageException exception) {
+            logger.error("Failed to list blob {}", exception.getMessage());
+        }
         // Returns a list of urls
-        List<URI> uris = azureStorageService.listBlob(user.getBlobUUID());
         return new SuccessResponse<>("URI", uris).toOk();
     }
 
@@ -91,7 +100,11 @@ public class BlobController extends AuthenticationExceptionHandler {
     public ResponseEntity<SuccessResponse<Object>> deleteBlob(@PathVariable @NotEmpty String username, @RequestParam String blobName) {
         User user = userService.findByUsername(username).orElseThrow(() -> new UserNotFoundException(username));
         // Delete blob
-        azureStorageService.deleteBlob(user.getBlobUUID(), blobName);
+        try {
+            azureStorageService.deleteBlob(user.getBlobUUID(), blobName);
+        } catch (URISyntaxException | StorageException exception) {
+            logger.info("Failed to delete blob {} from container {}", blobName, username);
+        }
         return new SuccessResponse<>().toAccepted();
     }
 }
