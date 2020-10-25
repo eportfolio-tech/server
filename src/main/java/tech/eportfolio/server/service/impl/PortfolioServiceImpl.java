@@ -191,7 +191,7 @@ public class PortfolioServiceImpl implements PortfolioService {
 
     @Override
     public Portfolio updatePortfolio(Portfolio portfolio, PortfolioDTO portfolioDTO) {
-        if (!StringUtils.equals(portfolio.getMusic(), AddDefaultMusicListener.defaultMusicURL) && StringUtils.isNotBlank(portfolio.getMusic())) {
+        if (!StringUtils.equals(portfolio.getMusic(), AddDefaultMusicListener.defaultMusicURL) && !StringUtils.equals(portfolio.getMusic(), portfolioDTO.getMusic())) {
             removeMusicFromBlob(portfolio);
         }
         NullAwareBeanUtilsBean.copyProperties(portfolioDTO, portfolio);
