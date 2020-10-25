@@ -1,5 +1,6 @@
 package tech.eportfolio.server.service.impl;
 
+import com.microsoft.azure.storage.StorageException;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,7 +24,9 @@ import tech.eportfolio.server.service.AzureStorageService;
 import tech.eportfolio.server.service.UserFollowService;
 import tech.eportfolio.server.service.UserService;
 
+import java.io.IOException;
 import java.io.InputStream;
+import java.net.URISyntaxException;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -105,7 +108,13 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     public String createGithubAvatar(User user) {
         String containerName = user.getBlobUUID();
         InputStream avatar = avatarGenerator.generateGithubAvatar();
-        return azureStorageService.uploadBlobFromInputStream(containerName, avatar, "avatar.png").toString();
+        String uri = "";
+        try {
+            uri = azureStorageService.uploadBlobFromInputStream(containerName, avatar, "avatar.png").toString();
+        } catch (StorageException | IOException | URISyntaxException e) {
+            logger.error("Failed to create GithubAvatar {}", e.getMessage());
+        }
+        return uri;
     }
 
     private String encodePassword(String raw) {

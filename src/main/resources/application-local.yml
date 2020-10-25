@@ -15,7 +15,7 @@ logging:
         sql: info
         tech:
             eportfolio:
-                server: info
+                server: debug
         web: debug
 security:
     jwt:
