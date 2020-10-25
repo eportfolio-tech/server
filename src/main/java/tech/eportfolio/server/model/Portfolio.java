@@ -27,6 +27,8 @@ public class Portfolio implements Serializable {
 
     private String coverImage;
 
+    private String music;
+
     @Indexed(unique = true)
     @TextIndexed
     private String username;

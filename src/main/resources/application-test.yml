@@ -24,6 +24,8 @@ security:
             sign: '"test_signing_key"'
 server:
     port: 8090
+    tomcat:
+        max-swallow-size: -1
     servlet:
         context-path: /api
     host: localhost
@@ -78,5 +80,5 @@ spring:
         port: 6379
     servlet:
         multipart:
-            max-file-size: 5MB
-            max-request-size: 5MB
+            max-file-size: -1
+            max-request-size: -1

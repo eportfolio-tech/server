@@ -114,6 +114,8 @@ public class PortfolioControllerTest {
     public void IfPatchPortfolioThenUpdateMetaInfo() throws Exception {
         String updatedDescription = MockNeat.threadLocal().celebrities().actors().val();
         String imageUrl = "https://images.unsplash.com/photo-1511496920016-89698ccce955?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1650&q=80";
+        String musicUrl = "MUSIC";
+        portfolioDTO.setMusic(musicUrl);
         portfolioDTO.setCoverImage(imageUrl);
         portfolioDTO.setDescription(updatedDescription);
         String body = (new ObjectMapper()).valueToTree(portfolioDTO).toString();
@@ -124,7 +126,8 @@ public class PortfolioControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.status").value("success"))
                 .andExpect(jsonPath("$.data.portfolio.description").value(updatedDescription))
-                .andExpect(jsonPath("$.data.portfolio.coverImage").value(imageUrl));
+                .andExpect(jsonPath("$.data.portfolio.coverImage").value(imageUrl))
+                .andExpect(jsonPath("$.data.portfolio.music").value(musicUrl));
     }
 
     @Test

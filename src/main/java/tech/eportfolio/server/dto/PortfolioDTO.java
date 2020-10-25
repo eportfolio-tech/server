@@ -27,10 +27,18 @@ public class PortfolioDTO {
     @NotBlank
     private Visibility visibility;
 
+    @NotBlank
+    private String music;
+
     public static PortfolioDTO mock() {
         String title = RandomStringUtils.randomAlphabetic(8);
         String description = RandomStringUtils.randomAlphabetic(32);
-        return PortfolioDTO.builder().title(title).description(description).visibility(Visibility.PUBLIC).build();
+        return PortfolioDTO.builder()
+                .title(title)
+                .description(description)
+                .visibility(Visibility.PUBLIC)
+                .music("https://comp30002.blob.core.windows.net/image/cocabona,Glimlip-Drops.mp3")
+                .build();
     }
 
 }
