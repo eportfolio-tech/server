@@ -21,14 +21,14 @@ services:
       RABBITMQ_DEFAULT_USER: ${RABBITMQ_DEFAULT_USER}
       RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_PASS}
     ports:
-      - "5672:5672"
-      - "15672:15672"
+      - "127.0.0.1:5672:5672"
+      - "127.0.0.1:15672:15672"
     restart: always
 
   redis:
     image: redis:alpine
     ports:
-      - "26379:26379"
+      - "127.0.0.1:26379:26379"
     volumes:
       - ../redis.conf:/usr/local/etc/redis/redis.conf
       - redis_data:/data
@@ -38,7 +38,7 @@ services:
   mongodb:
     image: mongo:latest
     ports:
-      - 27017:27017
+      - "127.0.0.1:27017:27017"
     volumes:
       - mongodb_data:/data/db
     restart: unless-stopped
