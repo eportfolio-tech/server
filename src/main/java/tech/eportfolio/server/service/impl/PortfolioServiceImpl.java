@@ -17,7 +17,6 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.TextCriteria;
 import org.springframework.data.mongodb.core.query.TextQuery;
 import org.springframework.data.repository.support.PageableExecutionUtils;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import tech.eportfolio.server.common.constant.ActivityType;
 import tech.eportfolio.server.common.constant.ParentType;
@@ -87,7 +86,7 @@ public class PortfolioServiceImpl implements PortfolioService {
     public Portfolio create(User user, Portfolio portfolio) {
         Portfolio toCreate = new Portfolio();
         NullAwareBeanUtilsBean.copyProperties(toCreate, portfolio);
-        toCreate.setUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+        toCreate.setUsername(user.getUsername());
         Portfolio created = portfolioRepository.save(toCreate);
         pushPortfolioToActivity(created);
         return created;
