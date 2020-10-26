@@ -66,32 +66,31 @@ public class FeedController {
         List<String> usernames = feed.stream().map(Activity::getUsername).collect(Collectors.toList());
         Map<String, User> userMap = userService.findByUsernameIn(usernames).stream().collect(Collectors.toMap(User::getUsername, Function.identity()));
 
-        List<String> portfolioIds = feed.stream().filter(e -> e.getParentType().equals(ParentType.PORTFOLIO)).map(Activity::getParentId).collect(Collectors.toList());
-        Map<String, Portfolio> portfolioMap = portfolioService.findByIdIn(portfolioIds).stream().collect(Collectors.toMap(Portfolio::getId, Function.identity()));
-        feed.stream().filter(e -> e.getParentType().equals(ParentType.PORTFOLIO)).forEach(e -> {
-            @SuppressWarnings("unchecked")
-            Map<String, Object> map = objectMapper.convertValue(e, Map.class);
-            @SuppressWarnings("unchecked")
-            Map<String, Object> portFolioMap = objectMapper.convertValue(portfolioMap.get(e.getParentId()), Map.class);
-            // Removes portfolio content to reduce json size
-            portFolioMap.remove("content");
-            map.put("avatar", userMap.get(e.getUsername()).getAvatarUrl());
-            // Add portfolio detail to the map
-            map.put(ParentType.PORTFOLIO.toString().toLowerCase(), portFolioMap);
-            result.add(map);
-        });
-
         List<String> tagIds = feed.stream().filter(e -> e.getParentType().equals(ParentType.TAG)).map(Activity::getParentId).collect(Collectors.toList());
         Map<String, Tag> tagMap = tagService.findByIdIn(tagIds).stream().collect(Collectors.toMap(Tag::getId, Function.identity()));
-        feed.stream().filter(e -> e.getParentType().equals(ParentType.TAG)).forEach(e -> {
+
+        List<String> portfolioIds = feed.stream().filter(e -> e.getParentType().equals(ParentType.PORTFOLIO)).map(Activity::getParentId).collect(Collectors.toList());
+        Map<String, Portfolio> portfolioMap = portfolioService.findByIdIn(portfolioIds).stream().collect(Collectors.toMap(Portfolio::getId, Function.identity()));
+
+        feed.forEach(e -> {
             @SuppressWarnings("unchecked")
             Map<String, Object> map = objectMapper.convertValue(e, Map.class);
             map.put("avatar", userMap.get(e.getUsername()).getAvatarUrl());
-            // Add portfolio detail to the map
-            map.put(ParentType.TAG.toString().toLowerCase(), tagMap.get(e.getParentId()));
-            result.add(map);
-        });
+            if (e.getParentType().equals(ParentType.PORTFOLIO)) {
+                @SuppressWarnings("unchecked")
+                Map<String, Object> portFolioMap = objectMapper.convertValue(portfolioMap.get(e.getParentId()), Map.class);
+                // Removes portfolio content to reduce json size
+                portFolioMap.remove("content");
+                // Add portfolio detail to the map
+                map.put(ParentType.PORTFOLIO.toString().toLowerCase(), portFolioMap);
+                result.add(map);
+            } else if (e.getParentType().equals(ParentType.TAG)) {
+                // Add portfolio detail to the map
+                map.put(ParentType.TAG.toString().toLowerCase(), tagMap.get(e.getParentId()));
+                result.add(map);
+            }
 
+        });
         // Append activity list to history so the user won't see the same activity again
         return new SuccessResponse<>("activities", result).toOk();
     }

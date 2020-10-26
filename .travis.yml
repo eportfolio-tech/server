@@ -13,14 +13,8 @@ before_install:
   - chmod +x gradlew
 
 before_script:
-  # Set up azure storage emulator for testing
-  - docker run -d -p 10000:10000 mcr.microsoft.com/azure-storage/azurite azurite-blob --blobHost 0.0.0.0 --blobPort 10000
-  # Set up a MongoDB instance for testing
-  - docker run -d -p 27017:27017 mongo
-  # Spin up a RabbitMQ instance for testing
-  - docker run -d -p 5672:5672 -p 15672:15672 rabbitmq:management
-  # Set up a Redis instance for testing
-  - docker run -d -p 6379:6379 redis:alpine
+  - docker-compose -f ./docker-compose/test/docker-compose.yml down -v
+  - docker-compose -f ./docker-compose/test/docker-compose.yml up -d
 script:
   - ./gradlew build
   # Execute SonarQube scan after test

@@ -79,14 +79,12 @@ public class PortfolioController {
         return new SuccessResponse<>(PORTFOLIO, result).toOk();
     }
 
-
     @GetMapping("/{username}/content")
     @ApiOperation(value = "", authorizations = {@Authorization(value = "JWT")})
     public ResponseEntity<SuccessResponse<DBObject>> findContentByUsername(@PathVariable String username) {
         Portfolio result = portfolioService.findByUsername(username).orElseThrow(() -> new PortfolioNotFoundException(username));
         return new SuccessResponse<>(CONTENT, result.getContent()).toOk();
     }
-
 
     @PutMapping("/{username}/content")
     @ApiOperation(value = "", authorizations = {@Authorization(value = "JWT")})

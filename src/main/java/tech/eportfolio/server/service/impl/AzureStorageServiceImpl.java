@@ -50,7 +50,7 @@ public class AzureStorageServiceImpl implements AzureStorageService {
      * @return uri pointing to the created resource
      */
     @Override
-    public URI uploadPicture(MultipartFile multipartFile) {
+    public URI uploadPicture(MultipartFile multipartFile) throws StorageException, IOException, URISyntaxException {
         // Site content will be placed in the image container
         URI uri = uploadBlob("image", multipartFile);
         return Optional.ofNullable(uri).orElseThrow(UploadBlobFailedException::new);
@@ -89,32 +89,23 @@ public class AzureStorageServiceImpl implements AzureStorageService {
      * @return uri points to created resource
      */
     @Override
-    public URI uploadBlob(String containerName, MultipartFile multipartFile) {
-        URI uri = null;
-        try {
-            uri = uploadBlobFromInputStream(containerName, multipartFile.getInputStream(), multipartFile.getOriginalFilename());
-        } catch (IOException e) {
-            logger.error("Failed to upload blob: {}", e.getMessage());
-        }
-        return uri;
+    public URI uploadBlob(String containerName, MultipartFile multipartFile) throws IOException, URISyntaxException, StorageException {
+        return uploadBlobFromInputStream(containerName, multipartFile.getInputStream(), multipartFile.getOriginalFilename());
     }
 
     @Override
-    public URI uploadBlobFromInputStream(String containerName, InputStream inputStream, String filename) {
+    public URI uploadBlobFromInputStream(String containerName, InputStream inputStream, String filename)
+            throws URISyntaxException, StorageException, IOException {
         URI uri = null;
-        try {
-            createContainer(containerName);
-            // Replace new line character, tab and whitespace with underscore
-            filename = filename.replaceAll("[\\n\\r\\t\\s]", "_");
-            CloudBlobContainer container = cloudBlobClient.getContainerReference(containerName);
-            CloudBlockBlob blob = container.getBlockBlobReference(filename);
-            blob.upload(inputStream, -1);
-            // Remove space in filename
-            uri = blob.getUri();
-            logger.info("blob {} uploaded, url {}", filename, uri);
-        } catch (URISyntaxException | StorageException | IOException e) {
-            logger.error("Failed to upload blob: {}", e.getMessage());
-        }
+        createContainer(containerName);
+        // Replace new line character, tab and whitespace with underscore
+        filename = filename.replaceAll("[\\n\\r\\t\\s]", "_");
+        CloudBlobContainer container = cloudBlobClient.getContainerReference(containerName);
+        CloudBlockBlob blob = container.getBlockBlobReference(filename);
+        blob.upload(inputStream, -1);
+        // Remove space in filename
+        uri = blob.getUri();
+        logger.info("blob {} uploaded, url {}", filename, uri);
         return uri;
     }
 
@@ -126,15 +117,11 @@ public class AzureStorageServiceImpl implements AzureStorageService {
      * @return uri points to created resource
      */
     @Override
-    public void deleteBlob(String containerName, String blobName) {
-        try {
-            createContainer(containerName);
-            CloudBlobContainer container = cloudBlobClient.getContainerReference(containerName);
-            CloudBlockBlob blobToBeDeleted = container.getBlockBlobReference(blobName);
-            blobToBeDeleted.deleteIfExists();
-        } catch (URISyntaxException | StorageException e) {
-            logger.error("Failed to delete blob {}", e.getMessage());
-        }
+    public void deleteBlob(String containerName, String blobName) throws URISyntaxException, StorageException {
+        createContainer(containerName);
+        CloudBlobContainer container = cloudBlobClient.getContainerReference(containerName);
+        CloudBlockBlob blobToBeDeleted = container.getBlockBlobReference(blobName);
+        blobToBeDeleted.delete();
     }
 
     /**
@@ -144,16 +131,12 @@ public class AzureStorageServiceImpl implements AzureStorageService {
      * @return List<URI> resources
      */
     @Override
-    public List<URI> listBlob(String containerName) {
+    public List<URI> listBlob(String containerName) throws URISyntaxException, StorageException {
         List<URI> uris = new ArrayList<>();
-        try {
-            createContainer(containerName);
-            CloudBlobContainer container = cloudBlobClient.getContainerReference(containerName);
-            for (ListBlobItem blobItem : container.listBlobs()) {
-                uris.add(blobItem.getUri());
-            }
-        } catch (URISyntaxException | StorageException e) {
-            logger.error("Failed to list blob {}", e.getMessage());
+        createContainer(containerName);
+        CloudBlobContainer container = cloudBlobClient.getContainerReference(containerName);
+        for (ListBlobItem blobItem : container.listBlobs()) {
+            uris.add(blobItem.getUri());
         }
         return uris;
     }

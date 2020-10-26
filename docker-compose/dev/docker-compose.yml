@@ -38,14 +38,14 @@ services:
       RABBITMQ_DEFAULT_USER: ${SPRING_RABBITMQ_USERNAME}
       RABBITMQ_DEFAULT_PASS: ${SPRING_RABBITMQ_PASSWORD}
     ports:
-      - ${SPRING_RABBITMQ_PORT}:5672
-      - ${RABBITMQ_WEB_PORT}:15672
+      - "127.0.0.1:${SPRING_RABBITMQ_PORT}:5672"
+      - "127.0.0.1:${RABBITMQ_WEB_PORT}:15672"
     restart: always
 
   redis:
     image: redis:alpine
     ports:
-      - ${SPRING_REDIS_PORT}:26379
+      - "127.0.0.1:${SPRING_REDIS_PORT}:26379"
     volumes:
       - ../redis.conf:/usr/local/etc/redis/redis.conf
       - redis_data:/data
