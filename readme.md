@@ -8,11 +8,11 @@ to simplify this process. Currently, there are 5 configurations available.
 - `dev`: 
     + connect to an external MongoDB instance 
     + set up Redis, and RabbitMQ on customised port
-    + Redis, RabbitMQ will be bind to localhost, you wil need ssh tunnel to access it.
+    + Redis, RabbitMQ will be bind to localhost, you will need ssh tunnel to access it.
 - `prod`: 
     + connect to an external MongoDB instance
     + set up Redis, and RabbitMQ on customised port
-    + Redis, RabbitMQ will be bind to localhost, you wil need ssh tunnel to access it.
+    + Redis, RabbitMQ will be bind to localhost, you will need ssh tunnel to access it.
 - `local`: 
     + connect to a local MongoDB instance
     + set up Redis, MongoDB and RabbitMQ on default port
