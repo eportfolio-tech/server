@@ -1,5 +1,99 @@
+## Dependencies
+- `Spring Boot` v2.3.4
+
+## Quick Start
+### Using Docker
+This project requires Redis, MongoDB and RabbitMQ. We've created `docker-compose` file
+to simplify this process. Currently, there are 5 configurations available.
+- `dev`: 
+    + connect to an external MongoDB instance 
+    + set up Redis, and RabbitMQ on customised port
+    + Redis, RabbitMQ will be bind to localhost, you wil need ssh tunnel to access it.
+- `prod`: 
+    + connect to an external MongoDB instance
+    + set up Redis, and RabbitMQ on customised port
+    + Redis, RabbitMQ will be bind to localhost, you wil need ssh tunnel to access it.
+- `local`: 
+    + connect to a local MongoDB instance
+    + set up Redis, MongoDB and RabbitMQ on default port
+    + All services all exposed. You can access it from everywhere.
+- `test`: 
+    + connect to a local MongoDB instance
+    + set up Redis, MongoDB and RabbitMQ on default port
+    + All services all exposed. You can access it from everywhere.
+- `sonarqube`: host a sonarqube instance for static code scan.
+
+Once you've decided which environment you want to use, `cd` into that directory.
+The following guide uses `dev` as an example. i.e. at `./docker-compose/dev/`
+
+1. Fill variables in `example.env`
+2. Rename `example.env` to `.env`
+3. Execute `docker-compose up` to run the application in the foreground
+3. Execute `docker-compose up -d` to start application in the background
+
+
+The server will be listening to the port assigned if you see the following output.
+```
+server_1      | 2020-10-27 14:06:30.843  INFO 1 --- [           main] t.eportfolio.server.ServerApplication    : Started ServerApplication in 122.533 seconds (JVM running for 131.832)
+```
+You can use `http://localhost:PORT/api/swagger-ui.html` to access API documentation.
+
+## Environment Variables
+
+When deployed using `docker-compose`, the application read configuration from environment variables. 
+- By default, running `docker-compose up` command in any subfolder(i.e. dev/local/prod/test) of the`docker-compose` directory
+will use the `.env` file inside the subfolder.
+- Use `--env-file` flag to specify a `.env` file if you don't want to use `.env`
+
+The following snippet lists all environment variables used in this project with description.
+You can also find this example in each subfolder with name `example.env`.
+```
+# ------- Slack -------
+# Set slack hook url if you want watchtower to notice image update
+SLACK_HOOK_URL=
+
+# ------- Watchtower -------
+# Path of docker configuration json. Set this to pull image from private docker registery.
+DOCKER_CONFIG_PATH=
+
+# ------- Server -------
+# Port number the application will be listening
+SERVER_PORT=8090
+
+# ------- Redis -------
+# Redis Configuration
+# Redis host 
+SPRING_REDIS_HOST=redis
+# Redis port number
+SPRING_REDIS_PORT=26379
+# Redis password
+SPRING_REDIS_PASSWORD=
+
+# ------- Rabbit MQ -------
+# Port number of rabbitmq management port
+# Access the website using http://localhost:${RABBITMQ_WEB_PORT}/
+RABBITMQ_WEB_PORT=15672
+# RabbitMQ host 
+SPRING_RABBITMQ_HOST=rabbitmq
+# RabbitMQ port number
+SPRING_RABBITMQ_PORT=5672
+# RabbitMQ username
+SPRING_RABBITMQ_USERNAME=
+# RabbitMQ password
+SPRING_RABBITMQ_PASSWORD=
+
+# ------- 3rd Party API -------
+# We use free images from unsplash.com to create exmaple portfoios
+# Unsplash access API key
+SPRING_UNSPLASH_ACCESS_KEY=
+```
+
+
+
+
 
 ## Repository Structure
+The following outlines structure of the repository with description.
 
 ```
 .
@@ -17,7 +111,7 @@
 │       └── docker-compose.yml
 ├── readme.md
 ├── server.plantuml 
-├── sonarqube: SonarQue configurations
+├── sonarqube: SonarQube configurations
 │   └── sonar.properties
 ├── sonarqube.yml: docker-file to set up SonarQube instance
 ├── build.gradle
@@ -32,6 +126,10 @@
 
 ## Spring Boot Project Structure
 
+The following outlines the Spring Boot Application structure.
+We structured the project based on layered architecture model. 
+
+
 ```
 .
 ├── main
@@ -40,7 +138,7 @@
 │   │       └── eportfolio
 │   │           └── server
 │   │               ├── ServerApplication.java: Entrypoint of the application
-│   │               ├── common                              
+│   │               ├── common: contains code shared within the application like utility classes                       
 │   │               ├── config: Spring Boot Configuration Classes 
 │   │               ├── controller: controllers
 │   │               ├── dto: POJOs that carries data between the client and the server
