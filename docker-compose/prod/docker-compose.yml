@@ -54,7 +54,7 @@ services:
     restart: always
 
   server:
-    image: docker.pkg.github.com/eportfolio-tech/server/eportfolio-tech-server:latest
+    image: haswf/tech-eportfolio-server:latest
     ports:
       - "${SERVER_PORT}:8090"
     volumes:

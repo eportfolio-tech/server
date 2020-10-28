@@ -23,7 +23,6 @@ script:
 after_success:
   - docker login -u haswf -p $DOCKER_TOKEN
   - docker build --build-arg JAR_FILE=build/libs/*.jar --build-arg PROFILE=$PROFILE -t $IMAGE_NAME:$TAG .
-  - docker tag $IMAGE_NAME:$TAG
   - docker push $IMAGE_NAME
 before_cache:
   - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
