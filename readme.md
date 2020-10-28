@@ -43,7 +43,7 @@ You can use `http://localhost:PORT/api/swagger-ui.html` to access API documentat
 When deployed using `docker-compose`, the application read configuration from environment variables. 
 - By default, running `docker-compose up` command in any subfolder(i.e. dev/local/prod/test) of the`docker-compose` directory
 will use the `.env` file inside the subfolder.
-- Use `--env-file` flag to specify a `.env` file if you don't want to use `.env`
+- Use `--env-file` flag to specify a environment file if you don't want to use `.env`
 
 The following snippet lists all environment variables used in this project with description.
 You can also find this example in each subfolder with name `example.env`.
