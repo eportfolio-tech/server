@@ -21,14 +21,8 @@ script:
 #  - ./gradlew sonarqube -Dsonar.projectKey=$SONARCUBE_PROJECT_KEY -Dsonar.host.url=https://sonarqube.eportfolio.tech -Dsonar.login=$SONARCUBE_LOGIN_TOKEN
 
 after_success:
-  - docker login https://docker.pkg.github.com -u haswf -p $DOCKER_TOKEN
-  - export TAG=`if [ "$TRAVIS_BRANCH" == "master" ]; then echo "latest"; else echo $TRAVIS_BRANCH; fi`
-  - export IMAGE_NAME=docker.pkg.github.com/haswf/comp30022backenddev/eportfolio-server-docker
-  - export PROFILE=`if [ "$TRAVIS_BRANCH" == "master" ]; then echo "prod"; else echo "dev"; fi`
-  - echo $COMMIT
-  - echo $PROFILE
+  - docker login -u haswf -p $DOCKER_TOKEN
   - docker build --build-arg JAR_FILE=build/libs/*.jar --build-arg PROFILE=$PROFILE -t $IMAGE_NAME:$TAG .
-  - docker tag $IMAGE_NAME:$TAG
   - docker push $IMAGE_NAME
 before_cache:
   - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
