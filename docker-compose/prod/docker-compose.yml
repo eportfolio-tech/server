@@ -54,7 +54,7 @@ services:
     restart: always
 
   server:
-    image: haswf/tech-eportfolio-server:latest
+    image: haswf/eportfolio-tech-server:latest
     ports:
       - "${SERVER_PORT}:8090"
     volumes:
