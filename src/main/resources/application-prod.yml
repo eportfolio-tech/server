@@ -1,8 +1,8 @@
 azure:
     storage:
-        ConnectionString: DefaultEndpointsProtocol=https;AccountName=comp30002;AccountKey=eM0ANNupa26emPvxOyxR0NMo1axgr36Px1oTyY8UgvVVA5s3r3JnNZQVl7dQpKh6ydLExSXNI63AJVVo4cCG4Q==;EndpointSuffix=core.windows.net
+        connection-string: ${SPRING_AZURE_STORAGE_CONNECTION_STRING}
         container:
-            name: eportfolio
+            name: ${SPRING_AZURE_STORAGE_CONTAINER_NAME}
 unsplash:
     access:
         key: ${SPRING_UNSPLASH_ACCESS_KEY}
