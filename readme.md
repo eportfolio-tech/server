@@ -1,7 +1,9 @@
 
 
-[Live Demo](https://eportfolio.tech/)
+![build status](https://travis-ci.com/eportfolio-tech/server.svg?branch=dev)
 
+
+[Live Demo](https://dev.eportfolio.tech/)
 
 ## Dependencies
 - `Spring Boot` v2.3.4
