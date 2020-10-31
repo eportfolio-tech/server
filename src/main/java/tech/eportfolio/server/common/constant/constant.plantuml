@@ -3,110 +3,117 @@
 title __CONSTANT's Class Diagram__\n
 
   namespace tech.eportfolio.server {
-    namespace common {
-      namespace constant {
-        class tech.eportfolio.server.common.constant.Authority {
-            {static} + MODERATOR_AUTHORITIES : String[]
-            {static} + UNVERIFIED_USER_AUTHORITIES : String[]
-            {static} + VERIFIED_USER_AUTHORITIES : String[]
-            - Authority()
-        }
+    namespace common.constant {
+      enum ActivityType {
+        PORTFOLIO
+        TAG
+        UPDATE
       }
     }
   }
   
 
   namespace tech.eportfolio.server {
-    namespace common {
-      namespace constant {
-        class tech.eportfolio.server.common.constant.RecoveryConstant {
-            {static} + EMAIL_CONTENT : String
-            {static} + EMAIL_TITLE : String
-            {static} + HOST : String
-            {static} + PATH : String
-            {static} + SCHEME_HTTPS : String
-            {static} + TOKEN : String
-            {static} + USERNAME : String
-            - RecoveryConstant()
-        }
+    namespace common.constant {
+      class tech.eportfolio.server.common.constant.Authority {
+          {static} + MODERATOR_AUTHORITIES : String[]
+          {static} + UNVERIFIED_USER_AUTHORITIES : String[]
+          {static} + VERIFIED_USER_AUTHORITIES : String[]
+          - Authority()
       }
     }
   }
   
 
   namespace tech.eportfolio.server {
-    namespace common {
-      namespace constant {
-        enum Role {
-          ROLE_MODERATOR
-          ROLE_UNVERIFIED_USER
-          ROLE_VERIFIED_USER
-          authorities
-        }
+    namespace common.constant {
+      enum ParentType {
+        PORTFOLIO
+        TAG
       }
     }
   }
   
 
   namespace tech.eportfolio.server {
-    namespace common {
-      namespace constant {
-        class tech.eportfolio.server.common.constant.SecurityConstant {
-            {static} + ACCESS_TOKEN : String
-            {static} + ACCESS_TOKEN_VALIDITY : Period
-            {static} + API_DOC : String[]
-            {static} + AUDIENCE : String
-            {static} + AUTHENTICATION : String
-            {static} + AUTHENTICATION_SECRET : String
-            {static} + AUTHORITIES : String
-            {static} + EMAIL_VERIFICATION_TOKEN_VALIDITY : Period
-            {static} + EXPIRATION_TIME : long
-            {static} + FORBIDDEN_MESSAGE : String
-            {static} + GET_ONLY : String[]
-            {static} + ISSUER : String
-            {static} + JWT_TOKEN_HEADER : String
-            {static} + PASSWORD_RECOVERY_TOKEN_VALIDITY : Period
-            {static} + POST_ONLY : String[]
-            {static} + REFRESH_SECRET : String
-            {static} + REFRESH_TOKEN : String
-            {static} + REFRESH_TOKEN_VALIDITY : Period
-            {static} + TOKEN_CANNOT_BE_VERIFIED : String
-            {static} + TOKEN_HEADER : String
-            {static} + UNAUTHORISED_MESSAGE : String
-            - SecurityConstant()
-        }
+    namespace common.constant {
+      class tech.eportfolio.server.common.constant.RecoveryConstant {
+          {static} + EMAIL_CONTENT : String
+          {static} + EMAIL_TITLE : String
+          {static} + HOST : String
+          {static} + PATH : String
+          {static} + SCHEME_HTTPS : String
+          {static} + TOKEN : String
+          {static} + USERNAME : String
+          - RecoveryConstant()
       }
     }
   }
   
 
   namespace tech.eportfolio.server {
-    namespace common {
-      namespace constant {
-        class tech.eportfolio.server.common.constant.VerificationConstant {
-            {static} + EMAIL_CONTENT : String
-            {static} + EMAIL_TITLE : String
-            {static} + HOST : String
-            {static} + PATH : String
-            {static} + SCHEME_HTTPS : String
-            {static} + TOKEN : String
-            {static} + USERNAME : String
-            - VerificationConstant()
-        }
+    namespace common.constant {
+      enum Role {
+        ROLE_MODERATOR
+        ROLE_UNVERIFIED_USER
+        ROLE_VERIFIED_USER
+        authorities
       }
     }
   }
   
 
   namespace tech.eportfolio.server {
-    namespace common {
-      namespace constant {
-        enum Visibility {
-          PRIVATE
-          PUBLIC
-          UNVERIFIED_USER
-          VERIFIED_USER
-        }
+    namespace common.constant {
+      class tech.eportfolio.server.common.constant.SecurityConstant {
+          {static} + ACCESS_TOKEN : String
+          {static} + ACCESS_TOKEN_VALIDITY : Period
+          {static} + API_DOC : String[]
+          {static} + AUDIENCE : String
+          {static} + AUTHENTICATION : String
+          {static} + AUTHORITIES : String
+          {static} + EMAIL_VERIFICATION_TOKEN_VALIDITY : Period
+          {static} + EXPIRATION_TIME : long
+          {static} + FORBIDDEN_MESSAGE : String
+          {static} + GET_ONLY : String[]
+          {static} + ISSUER : String
+          {static} + JWT_TOKEN_HEADER : String
+          {static} + PASSWORD_RECOVERY_TOKEN_VALIDITY : Period
+          {static} + POST_ONLY : String[]
+          {static} + REFRESH_TOKEN : String
+          {static} + REFRESH_TOKEN_VALIDITY : Period
+          {static} + TEST : String
+          {static} + TOKEN_CANNOT_BE_VERIFIED : String
+          {static} + TOKEN_HEADER : String
+          {static} + UNAUTHORISED_MESSAGE : String
+          - SecurityConstant()
+      }
+    }
+  }
+  
+
+  namespace tech.eportfolio.server {
+    namespace common.constant {
+      class tech.eportfolio.server.common.constant.VerificationConstant {
+          {static} + EMAIL_CONTENT : String
+          {static} + EMAIL_TITLE : String
+          {static} + PATH : String
+          {static} + SCHEME_HTTPS : String
+          {static} + TOKEN : String
+          {static} + USERNAME : String
+          - VerificationConstant()
+      }
+    }
+  }
+  
+
+  namespace tech.eportfolio.server {
+    namespace common.constant {
+      enum Visibility {
+        PRIVATE
+        PUBLIC
+        UNVERIFIED_USER
+        VERIFIED_USER
       }
     }
   }

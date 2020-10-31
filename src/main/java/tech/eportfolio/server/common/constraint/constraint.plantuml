@@ -3,26 +3,22 @@
 title __CONSTRAINT's Class Diagram__\n
 
   namespace tech.eportfolio.server {
-    namespace common {
-      namespace constraint {
-        interface tech.eportfolio.server.common.constraint.ValidEmail {
-            {abstract} + groups()
-            {abstract} + message()
-            {abstract} + payload()
-        }
+    namespace common.constraint {
+      interface tech.eportfolio.server.common.constraint.ValidEmail {
+          {abstract} + groups()
+          {abstract} + message()
+          {abstract} + payload()
       }
     }
   }
   
 
   namespace tech.eportfolio.server {
-    namespace common {
-      namespace constraint {
-        interface tech.eportfolio.server.common.constraint.ValidPassword {
-            {abstract} + groups()
-            {abstract} + message()
-            {abstract} + payload()
-        }
+    namespace common.constraint {
+      interface tech.eportfolio.server.common.constraint.ValidPassword {
+          {abstract} + groups()
+          {abstract} + message()
+          {abstract} + payload()
       }
     }
   }

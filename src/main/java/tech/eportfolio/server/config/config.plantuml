@@ -15,11 +15,45 @@ title __CONFIG's Class Diagram__\n
 
   namespace tech.eportfolio.server {
     namespace config {
-      class tech.eportfolio.server.config.ConfigureQuartzJob {
+      class tech.eportfolio.server.config.MailConfig {
+          + getJavaMailSender()
+      }
+    }
+  }
+  
+
+  namespace tech.eportfolio.server {
+    namespace config {
+      class tech.eportfolio.server.config.QuartzJobConfig {
           + deleteUserContainerJobDetails()
           + jobATrigger()
           + mockContentJob()
           + mockContentJobTrigger()
+      }
+    }
+  }
+  
+
+  namespace tech.eportfolio.server {
+    namespace config {
+      class tech.eportfolio.server.config.RabbitMQConfig {
+          + amqpAdmin()
+          + converter()
+          + rabbitTemplate()
+      }
+    }
+  }
+  
+
+  namespace tech.eportfolio.server {
+    namespace config {
+      class tech.eportfolio.server.config.RedisConfig {
+          - logger : Logger
+          - password : String
+          - redisHostName : String
+          - redisPort : int
+          ~ jedisConnectionFactory()
+          ~ redisCacheManagerBuilderCustomizer()
       }
     }
   }

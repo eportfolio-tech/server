@@ -3,81 +3,74 @@
 title __JSEND's Class Diagram__\n
 
   namespace tech.eportfolio.server {
-    namespace common {
-      namespace jsend {
-        class tech.eportfolio.server.common.jsend.ErrorResponse {
-            - message : String
-            - status : String
-            + ErrorResponse()
-            + ErrorResponse()
-            + equals()
-            + getMessage()
-            + getStatus()
-            + hashCode()
-            + setMessage()
-            + setStatus()
-            + toInternalError()
-            + toNotFound()
-            + toString()
-            # canEqual()
-        }
+    namespace common.jsend {
+      class tech.eportfolio.server.common.jsend.ErrorResponse {
+          - message : String
+          - status : String
+          + ErrorResponse()
+          + equals()
+          + getMessage()
+          + getStatus()
+          + hashCode()
+          + setMessage()
+          + setStatus()
+          + toInternalError()
+          + toNotFound()
+          + toString()
+          # canEqual()
       }
     }
   }
   
 
   namespace tech.eportfolio.server {
-    namespace common {
-      namespace jsend {
-        class tech.eportfolio.server.common.jsend.FailResponse {
-            - data : Map<String, String>
-            - status : String
-            + FailResponse()
-            + FailResponse()
-            + equals()
-            + getData()
-            + getStatus()
-            + hashCode()
-            + setData()
-            + setStatus()
-            + toBadRequest()
-            + toConflict()
-            + toForbidden()
-            + toNotFound()
-            + toString()
-            + toUnauthorised()
-            # canEqual()
-        }
+    namespace common.jsend {
+      class tech.eportfolio.server.common.jsend.FailResponse {
+          - data : Map<String, String>
+          - status : String
+          + FailResponse()
+          + FailResponse()
+          + equals()
+          + getData()
+          + getStatus()
+          + hashCode()
+          + setData()
+          + setStatus()
+          + toBadRequest()
+          + toConflict()
+          + toForbidden()
+          + toNotFound()
+          + toString()
+          + toUnauthorised()
+          # canEqual()
       }
     }
   }
   
 
   namespace tech.eportfolio.server {
-    namespace common {
-      namespace jsend {
-        class tech.eportfolio.server.common.jsend.SuccessResponse {
-            - data : Map<String, T>
-            - status : String
-            + SuccessResponse()
-            + SuccessResponse()
-            + SuccessResponse()
-            + equals()
-            + getData()
-            + getStatus()
-            + hashCode()
-            + setData()
-            + setStatus()
-            + toAccepted()
-            + toAccepted()
-            + toCreated()
-            + toCreated()
-            + toNoContent()
-            + toOk()
-            + toOk()
-            + toString()
-            # canEqual()
-        }
+    namespace common.jsend {
+      class tech.eportfolio.server.common.jsend.SuccessResponse {
+          - data : Map<String, T>
+          - status : String
+          + SuccessResponse()
+          + SuccessResponse()
+          + SuccessResponse()
+          + equals()
+          + getData()
+          + getStatus()
+          + hashCode()
+          + setData()
+          + setStatus()
+          + toAccepted()
+          + toAccepted()
+          + toCreated()
+          + toCreated()
+          + toNoContent()
+          + toOk()
+          + toOk()
+          + toString()
+          # canEqual()
       }
     }
   }

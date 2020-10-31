@@ -11,6 +11,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import javax.persistence.Column;
 import javax.persistence.Id;
+import java.io.Serializable;
 import java.util.Date;
 
 @Data
@@ -18,7 +19,7 @@ import java.util.Date;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class Tag {
+public class Tag implements Serializable {
     @Id
     private String id;
 

@@ -3,14 +3,12 @@
 title __HANDLER's Class Diagram__\n
 
   namespace tech.eportfolio.server {
-    namespace common {
-      namespace exception {
-        namespace handler {
-          class tech.eportfolio.server.common.exception.handler.AuthenticationExceptionHandler {
-              {static} + AUTHENTICATION : String
-              + handleException()
-              + handleException()
-          }
+    namespace common.exception {
+      namespace handler {
+        class tech.eportfolio.server.common.exception.handler.AuthenticationExceptionHandler {
+            {static} + AUTHENTICATION : String
+            + handleException()
+            + handleException()
         }
       }
     }
@@ -18,18 +16,16 @@ title __HANDLER's Class Diagram__\n
   
 
   namespace tech.eportfolio.server {
-    namespace common {
-      namespace exception {
-        namespace handler {
-          class tech.eportfolio.server.common.exception.handler.GlobalExceptionHandler {
-              + exception()
-              + exception()
-              + handleAccessDeniedException()
-              + handleHttpMessageNotReadable()
-              # handleHttpRequestMethodNotSupported()
-              # handleMethodArgumentNotValid()
-              # handleMissingServletRequestParameter()
-          }
+    namespace common.exception {
+      namespace handler {
+        class tech.eportfolio.server.common.exception.handler.GlobalExceptionHandler {
+            + exception()
+            + exception()
+            + handleAccessDeniedException()
+            + handleHttpMessageNotReadable()
+            # handleHttpRequestMethodNotSupported()
+            # handleMethodArgumentNotValid()
+            # handleMissingServletRequestParameter()
         }
       }
     }
@@ -37,18 +33,16 @@ title __HANDLER's Class Diagram__\n
   
 
   namespace tech.eportfolio.server {
-    namespace common {
-      namespace exception {
-        namespace handler {
-          class tech.eportfolio.server.common.exception.handler.PortfolioExceptionHandler {
-              {static} - COMMENT : String
-              {static} - LIKE : String
-              {static} - PORTFOLIO : String
-              + handleException()
-              + handleException()
-              + handleException()
-              + handleException()
-          }
+    namespace common.exception {
+      namespace handler {
+        class tech.eportfolio.server.common.exception.handler.PortfolioExceptionHandler {
+            {static} - COMMENT : String
+            {static} - LIKE : String
+            {static} - PORTFOLIO : String
+            + handleException()
+            + handleException()
+            + handleException()
+            + handleException()
         }
       }
     }
@@ -56,13 +50,11 @@ title __HANDLER's Class Diagram__\n
   
 
   namespace tech.eportfolio.server {
-    namespace common {
-      namespace exception {
-        namespace handler {
-          class tech.eportfolio.server.common.exception.handler.TemplateExceptionHandler {
-              + handleException()
-              + handleException()
-          }
+    namespace common.exception {
+      namespace handler {
+        class tech.eportfolio.server.common.exception.handler.TemplateExceptionHandler {
+            + handleException()
+            + handleException()
         }
       }
     }
@@ -70,15 +62,26 @@ title __HANDLER's Class Diagram__\n
   
 
   namespace tech.eportfolio.server {
-    namespace common {
-      namespace exception {
-        namespace handler {
-          class tech.eportfolio.server.common.exception.handler.UserExceptionHandler {
-              {static} + USER : String
-              + handleException()
-              + handleException()
-              + handleException()
-          }
+    namespace common.exception {
+      namespace handler {
+        class tech.eportfolio.server.common.exception.handler.UserExceptionHandler {
+            {static} + USER : String
+            + handleException()
+            + handleException()
+            + handleException()
+        }
+      }
+    }
+  }
+  
+
+  namespace tech.eportfolio.server {
+    namespace common.exception {
+      namespace handler {
+        class tech.eportfolio.server.common.exception.handler.UserFollowExceptionHandler {
+            {static} + FOLLOW : String
+            + handleException()
+            + handleException()
         }
       }
     }

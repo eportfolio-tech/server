@@ -3,71 +3,63 @@
 title __UTILITY's Class Diagram__\n
 
   namespace tech.eportfolio.server {
-    namespace common {
-      namespace utility {
-        class tech.eportfolio.server.common.utility.AvatarGenerator {
-            + generateGithubAvatar()
-        }
+    namespace common.utility {
+      class tech.eportfolio.server.common.utility.AvatarGenerator {
+          + generateGithubAvatar()
       }
     }
   }
   
 
   namespace tech.eportfolio.server {
-    namespace common {
-      namespace utility {
-        class tech.eportfolio.server.common.utility.JSONUtil {
-            {static} + convertJsonNodeToDbObject()
-            - JSONUtil()
-        }
+    namespace common.utility {
+      class tech.eportfolio.server.common.utility.JSONUtil {
+          {static} + convertJsonNodeToDbObject()
+          - JSONUtil()
       }
     }
   }
   
 
   namespace tech.eportfolio.server {
-    namespace common {
-      namespace utility {
-        class tech.eportfolio.server.common.utility.JWTTokenProvider {
-            + generateAccessToken()
-            + generateJWTToken()
-            + generateRefreshToken()
-            + getAuthentication()
-            + getAuthorities()
-            + getClaimsFromUser()
-            + getJWTVerifier()
-            + getSubject()
-            + isTokenExpired()
-            + isTokenValid()
-            - getClaimsFromToken()
-        }
+    namespace common.utility {
+      class tech.eportfolio.server.common.utility.JWTTokenProvider {
+          + refreshKey : String
+          + signKey : String
+          + generateAccessToken()
+          + generateJWTToken()
+          + generateRefreshToken()
+          + getAuthentication()
+          + getAuthorities()
+          + getClaimsFromUser()
+          + getJWTVerifier()
+          + getSubject()
+          + isTokenExpired()
+          + isTokenValid()
+          - getClaimsFromToken()
       }
     }
   }
   
 
   namespace tech.eportfolio.server {
-    namespace common {
-      namespace utility {
-        class tech.eportfolio.server.common.utility.NullAwareBeanUtilsBean {
-            {static} + copyProperties()
-            {static} + getNullPropertyNames()
-            - NullAwareBeanUtilsBean()
-        }
+    namespace common.utility {
+      class tech.eportfolio.server.common.utility.NullAwareBeanUtilsBean {
+          {static} + copyProperties()
+          {static} + getNullPropertyNames()
+          - NullAwareBeanUtilsBean()
       }
     }
   }
   
 
   namespace tech.eportfolio.server {
-    namespace common {
-      namespace utility {
-        class tech.eportfolio.server.common.utility.ParagraphProvider {
-            {static} + paragraph()
-            {static} + sentence()
-            - ParagraphProvider()
-            {static} - paragraphs()
-        }
+    namespace common.utility {
+      class tech.eportfolio.server.common.utility.ParagraphProvider {
+          {static} + paragraph()
+          {static} + sentence()
+          - ParagraphProvider()
+          {static} - paragraphs()
       }
     }
   }

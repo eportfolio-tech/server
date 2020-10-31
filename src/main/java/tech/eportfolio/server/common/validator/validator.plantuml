@@ -3,22 +3,18 @@
 title __VALIDATOR's Class Diagram__\n
 
   namespace tech.eportfolio.server {
-    namespace common {
-      namespace validator {
-        class tech.eportfolio.server.common.validator.EmailConstraintValidator {
-            + isValid()
-        }
+    namespace common.validator {
+      class tech.eportfolio.server.common.validator.EmailConstraintValidator {
+          + isValid()
       }
     }
   }
   
 
   namespace tech.eportfolio.server {
-    namespace common {
-      namespace validator {
-        class tech.eportfolio.server.common.validator.PasswordConstraintValidator {
-            + isValid()
-        }
+    namespace common.validator {
+      class tech.eportfolio.server.common.validator.PasswordConstraintValidator {
+          + isValid()
       }
     }
   }

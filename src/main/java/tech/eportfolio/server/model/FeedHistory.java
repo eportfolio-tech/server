@@ -1,20 +1,25 @@
 package tech.eportfolio.server.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.redis.core.index.Indexed;
 
 import javax.persistence.Id;
+import java.io.Serializable;
 import java.util.Date;
 import java.util.Set;
 
 @Data
 @Document
 @Builder
-public class FeedHistory {
+@AllArgsConstructor
+@NoArgsConstructor
+public class FeedHistory implements Serializable {
     @Id
     private String id;
 

@@ -4,7 +4,26 @@ title __REPOSITORY's Class Diagram__\n
 
   namespace tech.eportfolio.server {
     namespace repository {
+      interface tech.eportfolio.server.repository.ActivityRepository {
+          {abstract} + findByIdNotInAndActivityTypeAndDeleted()
+      }
+    }
+  }
+  
+
+  namespace tech.eportfolio.server {
+    namespace repository {
+      interface tech.eportfolio.server.repository.FeedHistoryRepository {
+          {abstract} + findFeedHistoryByUserId()
+      }
+    }
+  }
+  
+
+  namespace tech.eportfolio.server {
+    namespace repository {
       interface tech.eportfolio.server.repository.PortfolioRepository {
+          {abstract} + findByIdInAndDeleted()
           {abstract} + findByUserIdInAndDeleted()
           {abstract} + findByUsername()
       }
@@ -51,6 +70,7 @@ title __REPOSITORY's Class Diagram__\n
     namespace repository {
       interface tech.eportfolio.server.repository.UserFollowRepository {
           {abstract} + findByDestinationUsernameAndDeleted()
+          {abstract} + findBySourceUsernameAndDeleted()
           {abstract} + findBySourceUsernameAndDestinationUsername()
           {abstract} + findBySourceUsernameAndDestinationUsernameAndDeleted()
           {abstract} + findBySourceUsernameAndIdAndDeleted()
@@ -75,6 +95,7 @@ title __REPOSITORY's Class Diagram__\n
     namespace repository {
       interface tech.eportfolio.server.repository.UserRepository {
           {abstract} + countAllByDeleted()
+          {abstract} + findAllByDeleted()
           {abstract} + findByDeletedAndUpdatedDateBeforeAndBlobUUIDIsNotNull()
           {abstract} + findByEmailAndDeleted()
           {abstract} + findByIdInAndDeleted()

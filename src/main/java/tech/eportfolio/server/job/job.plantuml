@@ -16,9 +16,13 @@ title __JOB's Class Diagram__\n
   namespace tech.eportfolio.server {
     namespace job {
       class tech.eportfolio.server.job.MockContentJob {
+          {static} - THRESHOLD : int
           - logger : Logger
           + execute()
-          - createUserAndPortfolio()
+          - assignTag()
+          - createPortfolio()
+          - createTag()
+          - createUser()
       }
     }
   }
@@ -29,9 +33,13 @@ title __JOB's Class Diagram__\n
   tech.eportfolio.server.job.DeleteUserContainerJob o-- tech.eportfolio.server.service.UserService : userService
   tech.eportfolio.server.job.MockContentJob .up.|> org.quartz.Job
   tech.eportfolio.server.job.MockContentJob o-- tech.eportfolio.server.service.AzureStorageService : azureStorageService
+  tech.eportfolio.server.job.MockContentJob o-- tech.eportfolio.server.common.utility.JWTTokenProvider : jwtTokenProvider
   tech.eportfolio.server.job.MockContentJob o-- tech.eportfolio.server.service.PortfolioService : portfolioService
+  tech.eportfolio.server.job.MockContentJob o-- tech.eportfolio.server.service.TagService : tagService
+  tech.eportfolio.server.job.MockContentJob o-- tech.eportfolio.server.common.unsplash.Client : unsplashClient
   tech.eportfolio.server.job.MockContentJob o-- tech.eportfolio.server.repository.UserRepository : userRepository
   tech.eportfolio.server.job.MockContentJob o-- tech.eportfolio.server.service.UserService : userService
+  tech.eportfolio.server.job.MockContentJob o-- tech.eportfolio.server.service.UserTagService : userTagService
   tech.eportfolio.server.job.MockContentJob o-- tech.eportfolio.server.service.VerificationService : verificationService
 
 

@@ -4,6 +4,17 @@ title __SERVICE's Class Diagram__\n
 
   namespace tech.eportfolio.server {
     namespace service {
+      interface tech.eportfolio.server.service.ActivityService {
+          {abstract} + pull()
+          {abstract} + save()
+          {abstract} + saveAll()
+      }
+    }
+  }
+  
+
+  namespace tech.eportfolio.server {
+    namespace service {
       interface tech.eportfolio.server.service.AzureStorageService {
           {abstract} + createContainer()
           {abstract} + deleteBlob()
@@ -28,19 +39,39 @@ title __SERVICE's Class Diagram__\n
 
   namespace tech.eportfolio.server {
     namespace service {
+      interface tech.eportfolio.server.service.FeedHistoryService {
+          {abstract} + appendToHistory()
+          {abstract} + findByUserId()
+          {abstract} + save()
+      }
+    }
+  }
+  
+
+  namespace tech.eportfolio.server {
+    namespace service {
       interface tech.eportfolio.server.service.PortfolioService {
           {abstract} + create()
           {abstract} + deleteContent()
+          {abstract} + findByIdIn()
           {abstract} + findByUserIdIn()
           {abstract} + findByUsername()
           {abstract} + fromPortfolioDTO()
+          {abstract} + pushPortfolioToActivity()
+          {abstract} + pushPortfolioToActivity()
+          {abstract} + pushUpdateToActivity()
+          {abstract} + pushUpdateToActivity()
           {abstract} + save()
+          {abstract} + saveAll()
           {abstract} + searchByKeywordWithPaginationAndVisibilities()
           {abstract} + searchByTagWithPaginationAndVisibilities()
           {abstract} + searchWithPagination()
           {abstract} + searchWithVisibilities()
           {abstract} + searchWithVisibilities()
+          {abstract} + toPortfolioActivity()
+          {abstract} + toUpdateActivity()
           {abstract} + updateContent()
+          {abstract} + updatePortfolio()
       }
     }
   }
@@ -63,14 +94,18 @@ title __SERVICE's Class Diagram__\n
     namespace service {
       interface tech.eportfolio.server.service.TagService {
           {abstract} + create()
+          {abstract} + create()
           {abstract} + findAll()
           {abstract} + findById()
           {abstract} + findByIdIn()
           {abstract} + findByName()
           {abstract} + findByNameIn()
+          {abstract} + pushToActivity()
+          {abstract} + pushToActivity()
           {abstract} + save()
           {abstract} + saveAll()
           {abstract} + saveAllIfNotExist()
+          {abstract} + toTagActivity()
       }
     }
   }
@@ -108,11 +143,17 @@ title __SERVICE's Class Diagram__\n
   namespace tech.eportfolio.server {
     namespace service {
       interface tech.eportfolio.server.service.UserFollowService {
+          {abstract} + bind()
+          {abstract} + createQueueAndExchange()
           {abstract} + delete()
           {abstract} + findByDestinationUser()
-          {abstract} + findBySourceUsernameAndDestinationName()
+          {abstract} + findBySourceUser()
           {abstract} + findBySourceUsernameAndDestinationNameAndDeleted()
           {abstract} + follow()
+          {abstract} + getActivitiesFromQueue()
+          {abstract} + hasQueue()
+          {abstract} + sendActivityToFollowers()
+          {abstract} + unbind()
           {abstract} + unfollow()
       }
     }
@@ -141,13 +182,14 @@ title __SERVICE's Class Diagram__\n
           {abstract} + changePassword()
           {abstract} + createGithubAvatar()
           {abstract} + delete()
-          {abstract} + encodePassword()
+          {abstract} + findAllActive()
           {abstract} + findByEmail()
           {abstract} + findByIdIn()
           {abstract} + findByUsername()
           {abstract} + findByUsernameIn()
           {abstract} + findDeletedUserWithContainer()
           {abstract} + fromUserDTO()
+          {abstract} + loadUserByUsername()
           {abstract} + register()
           {abstract} + save()
           {abstract} + saveAll()

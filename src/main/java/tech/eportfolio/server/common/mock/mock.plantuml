@@ -3,107 +3,95 @@
 title __MOCK's Class Diagram__\n
 
   namespace tech.eportfolio.server {
-    namespace common {
-      namespace mock {
-        class tech.eportfolio.server.common.mock.Block {
-            + data : Object
-            + depth : int
-            + entityRanges : List<Object>
-            + inlineStyleRanges : List<InlineStyleRange>
-            + key : String
-            + text : String
-            + type : String
-            {static} + builder()
-            ~ Block()
-        }
+    namespace common.mock {
+      class tech.eportfolio.server.common.mock.Block {
+          + data : Object
+          + depth : int
+          + entityRanges : List<Object>
+          + inlineStyleRanges : List<InlineStyleRange>
+          + key : String
+          + text : String
+          + type : String
+          {static} + builder()
+          ~ Block()
       }
     }
   }
   
 
   namespace tech.eportfolio.server {
-    namespace common {
-      namespace mock {
-        class tech.eportfolio.server.common.mock.Block.BlockBuilder {
-            - data : Object
-            - depth : int
-            - entityRanges : List<Object>
-            - inlineStyleRanges : List<InlineStyleRange>
-            - key : String
-            - text : String
-            - type : String
-            + build()
-            + data()
-            + depth()
-            + entityRanges()
-            + inlineStyleRanges()
-            + key()
-            + text()
-            + toString()
-            + type()
-            ~ BlockBuilder()
-        }
+    namespace common.mock {
+      class tech.eportfolio.server.common.mock.Block.BlockBuilder {
+          - data : Object
+          - depth : int
+          - entityRanges : List<Object>
+          - inlineStyleRanges : List<InlineStyleRange>
+          - key : String
+          - text : String
+          - type : String
+          + build()
+          + data()
+          + depth()
+          + entityRanges()
+          + inlineStyleRanges()
+          + key()
+          + text()
+          + toString()
+          + type()
+          ~ BlockBuilder()
       }
     }
   }
   
 
   namespace tech.eportfolio.server {
-    namespace common {
-      namespace mock {
-        class tech.eportfolio.server.common.mock.EditorState {
-            + blocks : List<Block>
-            {static} + builder()
-            + equals()
-            {static} + generateState()
-            + getBlocks()
-            + getEntityMap()
-            + hashCode()
-            + setBlocks()
-            + setEntityMap()
-            + toString()
-            # canEqual()
-            ~ EditorState()
-        }
+    namespace common.mock {
+      class tech.eportfolio.server.common.mock.EditorState {
+          + blocks : List<Block>
+          {static} + builder()
+          + equals()
+          {static} + generateState()
+          + getBlocks()
+          + getEntityMap()
+          + hashCode()
+          + setBlocks()
+          + setEntityMap()
+          + toString()
+          # canEqual()
+          ~ EditorState()
       }
     }
   }
   
 
   namespace tech.eportfolio.server {
-    namespace common {
-      namespace mock {
-        class tech.eportfolio.server.common.mock.EditorState.EditorStateBuilder {
-            - blocks : List<Block>
-            + blocks()
-            + build()
-            + entityMap()
-            + toString()
-            ~ EditorStateBuilder()
-        }
+    namespace common.mock {
+      class tech.eportfolio.server.common.mock.EditorState.EditorStateBuilder {
+          - blocks : List<Block>
+          + blocks()
+          + build()
+          + entityMap()
+          + toString()
+          ~ EditorStateBuilder()
       }
     }
   }
   
 
   namespace tech.eportfolio.server {
-    namespace common {
-      namespace mock {
-        class tech.eportfolio.server.common.mock.EntityMap {
-        }
+    namespace common.mock {
+      class tech.eportfolio.server.common.mock.EntityMap {
       }
     }
   }
   
 
   namespace tech.eportfolio.server {
-    namespace common {
-      namespace mock {
-        class tech.eportfolio.server.common.mock.InlineStyleRange {
-            + length : int
-            + offset : int
-            + style : String
-        }
+    namespace common.mock {
+      class tech.eportfolio.server.common.mock.InlineStyleRange {
+          + length : int
+          + offset : int
+          + style : String
       }
     }
   }

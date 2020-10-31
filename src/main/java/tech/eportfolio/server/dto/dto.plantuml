@@ -75,18 +75,24 @@ title __DTO's Class Diagram__\n
   namespace tech.eportfolio.server {
     namespace dto {
       class tech.eportfolio.server.dto.PortfolioDTO {
+          - coverImage : String
           - description : String
+          - music : String
           - title : String
           + PortfolioDTO()
           + PortfolioDTO()
           {static} + builder()
           + equals()
+          + getCoverImage()
           + getDescription()
+          + getMusic()
           + getTitle()
           + getVisibility()
           + hashCode()
           {static} + mock()
+          + setCoverImage()
           + setDescription()
+          + setMusic()
           + setTitle()
           + setVisibility()
           + toString()
@@ -99,10 +105,14 @@ title __DTO's Class Diagram__\n
   namespace tech.eportfolio.server {
     namespace dto {
       class tech.eportfolio.server.dto.PortfolioDTO.PortfolioDTOBuilder {
+          - coverImage : String
           - description : String
+          - music : String
           - title : String
           + build()
+          + coverImage()
           + description()
+          + music()
           + title()
           + toString()
           + visibility()
@@ -177,18 +187,19 @@ title __DTO's Class Diagram__\n
           - createdDate : Date
           - deleted : boolean
           - id : String
-          - inReplyTo : String
+          - parentId : String
           - portfolioId : String
+          - updatedDate : Date
           - username : String
-          + UserCommentOutputBody()
-          + UserCommentOutputBody()
+          + UserCommentResponseBody()
           + equals()
           + getAvatarUrl()
           + getContent()
           + getCreatedDate()
           + getId()
-          + getInReplyTo()
+          + getParentId()
           + getPortfolioId()
+          + getUpdatedDate()
           + getUsername()
           + hashCode()
           + isDeleted()
@@ -197,8 +208,9 @@ title __DTO's Class Diagram__\n
           + setCreatedDate()
           + setDeleted()
           + setId()
-          + setInReplyTo()
+          + setParentId()
           + setPortfolioId()
+          + setUpdatedDate()
           + setUsername()
           + toString()
           # canEqual()

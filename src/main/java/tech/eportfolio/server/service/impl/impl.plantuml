@@ -1,184 +1,343 @@
 @startuml
-skinparam linetype polyline
-skinparam linetype ortho
-
 
 title __IMPL's Class Diagram__\n
 
-class tech.eportfolio.server.service.impl.AzureStorageServiceImpl {
-  - cloudBlobClient
-  - logger
-  + AzureStorageServiceImpl()
-  + createContainer()
-  + deleteBlob()
-  + deleteContainer()
-  + listBlob()
-  + uploadBlob()
-  + uploadBlobFromInputStream()
-  + uploadPicture()
-}
-class tech.eportfolio.server.service.impl.EmailServiceImpl {
-  - emailSender
-  - logger
-  + sendSimpleMessage()
-}
-class tech.eportfolio.server.service.impl.PortfolioServiceImpl {
-  - mongoTemplate
-  + PortfolioServiceImpl()
-  + create()
-  + deleteContent()
-  + findByUserIdIn()
-  + findByUsername()
-  + fromPortfolioDTO()
-  + save()
-  + searchByKeywordWithPaginationAndVisibilities()
-  + searchByTagWithPaginationAndVisibilities()
-  + searchWithPagination()
-  + searchWithVisibilities()
-  + searchWithVisibilities()
-  + updateContent()
-}
-class tech.eportfolio.server.service.impl.RecoveryServiceImpl {
-+ buildRecoveryEmailContent()
-+ buildRecoveryLink()
-+ generatePasswordRecoveryToken()
-+ getPasswordRecoverySecret()
-+ passwordRecovery()
-+ sendRecoveryEmail()
-+ setEmailService()
-+ setRecoveryTokenProvider()
-+ setUserService()
-}
-class tech.eportfolio.server.service.impl.TagServiceImpl {
-  + create()
-  + findAll()
-  + findById()
-  + findByIdIn()
-  + findByName()
-  + findByNameIn()
-  + save()
-  + saveAll()
-  + saveAllIfNotExist()
-}
-class tech.eportfolio.server.service.impl.TemplateServiceImpl {
-  + create()
-  + delete()
-  + findAvailableTemplates()
-  + findTemplateById()
-  + findTemplateByTitle()
-  + save()
-}
-class tech.eportfolio.server.service.impl.UserCommentServiceImpl {
-  + UserCommentServiceImpl()
-  + create()
-  + delete()
-  + findById()
-  + findByPortfolio()
-  + findByUsernameAndIdAndDeleted()
-  + findUsersByUserComments()
-  + reply()
-}
-class tech.eportfolio.server.service.impl.UserFollowServiceImpl {
-  + UserFollowServiceImpl()
-  + delete()
-  + findByDestinationUser()
-  + findBySourceUsernameAndDestinationName()
-  + findBySourceUsernameAndDestinationNameAndDeleted()
-  + follow()
-  + unfollow()
-}
-class tech.eportfolio.server.service.impl.UserLikeServiceImpl {
-  + UserLikeServiceImpl()
-  + delete()
-  + findByPortfolio()
-  + findByPortfolioAndUsername()
-  + findByUser()
-  + findByUsernameAndPortfolioId()
-  + findByUsernameAndPortfolioIdAndDeleted()
-  + like()
-  + unlike()
-}
-class tech.eportfolio.server.service.impl.UserServiceImpl {
-  - bCryptPasswordEncoder
-  - logger
-  + changePassword()
-  + createGithubAvatar()
-  + delete()
-  + encodePassword()
-  + findByEmail()
-  + findByIdIn()
-  + findByUsername()
-  + findByUsernameIn()
-  + findDeletedUserWithContainer()
-  + fromUserDTO()
-  + loadUserByUsername()
-  + register()
-  + save()
-  + saveAll()
-  + setAvatarGenerator()
-  + setAzureStorageService()
-  + setBcryptPasswordEncoder()
-  + setUserRepository()
-  + verifyPassword()
-}
-class tech.eportfolio.server.service.impl.UserTagServiceImpl {
-  + UserTagServiceImpl()
-  + batchAssign()
-  + create()
-  + delete()
-  + findByTagId()
-  + findByUsername()
-  + findTagsByUser()
-  + findUsersByTag()
-  + saveAll()
-}
-class tech.eportfolio.server.service.impl.VerificationServiceImpl {
-  + buildEmailContent()
-  + buildLink()
-  + generateVerificationToken()
-  + getVerificationSecret()
-  + sendVerificationEmail()
-  + setEmailService()
-  + setUserService()
-  + setVerificationTokenProvider()
-  + verify()
-  + verify()
-}
+  namespace tech.eportfolio.server {
+    namespace service {
+      namespace impl {
+        class tech.eportfolio.server.service.impl.ActivityServiceImpl {
+            + ActivityServiceImpl()
+            + pull()
+            + save()
+            + saveAll()
+            - updateHistory()
+        }
+      }
+    }
+  }
+  
 
-tech.eportfolio.server.service.impl -[hidden]- tech.eportfolio.server.repository
+  namespace tech.eportfolio.server {
+    namespace service {
+      namespace impl {
+        class tech.eportfolio.server.service.impl.AzureStorageServiceImpl {
+            - cloudBlobClient : CloudBlobClient
+            - logger : Logger
+            + AzureStorageServiceImpl()
+            + createContainer()
+            + deleteBlob()
+            + deleteContainer()
+            + listBlob()
+            + uploadBlob()
+            + uploadBlobFromInputStream()
+            + uploadPicture()
+        }
+      }
+    }
+  }
+  
 
-tech.eportfolio.server.service.impl.AzureStorageServiceImpl .up.|> tech.eportfolio.server.service.AzureStorageService
-tech.eportfolio.server.service.impl.EmailServiceImpl .up.|> tech.eportfolio.server.service.EmailService
-tech.eportfolio.server.service.impl.PortfolioServiceImpl .up.|> tech.eportfolio.server.service.PortfolioService
-tech.eportfolio.server.service.impl.PortfolioServiceImpl o-- tech.eportfolio.server.repository.PortfolioRepository
-tech.eportfolio.server.service.impl.RecoveryServiceImpl .up.|> tech.eportfolio.server.service.RecoveryService
-tech.eportfolio.server.service.impl.RecoveryServiceImpl o-- tech.eportfolio.server.service.EmailService
-tech.eportfolio.server.service.impl.RecoveryServiceImpl o-- tech.eportfolio.server.common.utility.JWTTokenProvider
-tech.eportfolio.server.service.impl.RecoveryServiceImpl o-- tech.eportfolio.server.service.UserService
-tech.eportfolio.server.service.impl.TagServiceImpl .up.|> tech.eportfolio.server.service.TagService
-tech.eportfolio.server.service.impl.TagServiceImpl o-- tech.eportfolio.server.repository.TagRepository
-tech.eportfolio.server.service.impl.TemplateServiceImpl .up.|> tech.eportfolio.server.service.TemplateService
-tech.eportfolio.server.service.impl.TemplateServiceImpl o-- tech.eportfolio.server.repository.TemplateRepository
-tech.eportfolio.server.service.impl.UserCommentServiceImpl .up.|> tech.eportfolio.server.service.UserCommentService
-tech.eportfolio.server.service.impl.UserCommentServiceImpl o-- tech.eportfolio.server.repository.UserCommentRepository
-tech.eportfolio.server.service.impl.UserCommentServiceImpl o-- tech.eportfolio.server.service.UserService
-tech.eportfolio.server.service.impl.UserFollowServiceImpl .up.|> tech.eportfolio.server.service.UserFollowService
-tech.eportfolio.server.service.impl.UserFollowServiceImpl o-- tech.eportfolio.server.repository.UserFollowRepository
-tech.eportfolio.server.service.impl.UserLikeServiceImpl .up.|> tech.eportfolio.server.service.UserLikeService
-tech.eportfolio.server.service.impl.UserLikeServiceImpl o-- tech.eportfolio.server.repository.UserLikeRepository
-tech.eportfolio.server.service.impl.UserServiceImpl .up.|> org.springframework.security.core.userdetails.UserDetailsService
-tech.eportfolio.server.service.impl.UserServiceImpl .up.|> tech.eportfolio.server.service.UserService
-tech.eportfolio.server.service.impl.UserServiceImpl o-- tech.eportfolio.server.common.utility.AvatarGenerator
-tech.eportfolio.server.service.impl.UserServiceImpl o-- tech.eportfolio.server.service.AzureStorageService
-tech.eportfolio.server.service.impl.UserServiceImpl o-- tech.eportfolio.server.repository.UserRepository
-tech.eportfolio.server.service.impl.UserTagServiceImpl .up.|> tech.eportfolio.server.service.UserTagService
-tech.eportfolio.server.service.impl.UserTagServiceImpl o-- tech.eportfolio.server.service.TagService
-tech.eportfolio.server.service.impl.UserTagServiceImpl o-- tech.eportfolio.server.service.UserService
-tech.eportfolio.server.service.impl.UserTagServiceImpl o-- tech.eportfolio.server.repository.UserTagRepository
-tech.eportfolio.server.service.impl.VerificationServiceImpl .up.|> tech.eportfolio.server.service.VerificationService
-tech.eportfolio.server.service.impl.VerificationServiceImpl o-- tech.eportfolio.server.service.EmailService
-tech.eportfolio.server.service.impl.VerificationServiceImpl o-- tech.eportfolio.server.service.UserService
-tech.eportfolio.server.service.impl.VerificationServiceImpl o-- tech.eportfolio.server.common.utility.JWTTokenProvider
+  namespace tech.eportfolio.server {
+    namespace service {
+      namespace impl {
+        class tech.eportfolio.server.service.impl.EmailServiceImpl {
+            - emailSender : JavaMailSender
+            - logger : Logger
+            + sendSimpleMessage()
+        }
+      }
+    }
+  }
+  
+
+  namespace tech.eportfolio.server {
+    namespace service {
+      namespace impl {
+        class tech.eportfolio.server.service.impl.FeedHistoryServiceImpl {
+            + FeedHistoryServiceImpl()
+            + appendToHistory()
+            + findByUserId()
+            + save()
+        }
+      }
+    }
+  }
+  
+
+  namespace tech.eportfolio.server {
+    namespace service {
+      namespace impl {
+        class tech.eportfolio.server.service.impl.PortfolioServiceImpl {
+            {static} - VISIBILITY : String
+            - logger : Logger
+            - mongoTemplate : MongoTemplate
+            + create()
+            + deleteContent()
+            + findByIdIn()
+            + findByUserIdIn()
+            + findByUsername()
+            + fromPortfolioDTO()
+            + pushPortfolioToActivity()
+            + pushPortfolioToActivity()
+            + pushUpdateToActivity()
+            + pushUpdateToActivity()
+            + save()
+            + saveAll()
+            + searchByKeywordWithPaginationAndVisibilities()
+            + searchByTagWithPaginationAndVisibilities()
+            + searchWithPagination()
+            + searchWithVisibilities()
+            + searchWithVisibilities()
+            + toPortfolioActivity()
+            + toUpdateActivity()
+            + updateContent()
+            + updatePortfolio()
+            - removeMusicFromBlob()
+        }
+      }
+    }
+  }
+  
+
+  namespace tech.eportfolio.server {
+    namespace service {
+      namespace impl {
+        class tech.eportfolio.server.service.impl.RecoveryServiceImpl {
+            + buildRecoveryEmailContent()
+            + buildRecoveryLink()
+            + generatePasswordRecoveryToken()
+            + getPasswordRecoverySecret()
+            + passwordRecovery()
+            + sendRecoveryEmail()
+            + setEmailService()
+            + setRecoveryTokenProvider()
+            + setUserService()
+        }
+      }
+    }
+  }
+  
+
+  namespace tech.eportfolio.server {
+    namespace service {
+      namespace impl {
+        class tech.eportfolio.server.service.impl.TagServiceImpl {
+            + create()
+            + create()
+            + findAll()
+            + findById()
+            + findByIdIn()
+            + findByName()
+            + findByNameIn()
+            + pushToActivity()
+            + pushToActivity()
+            + save()
+            + saveAll()
+            + saveAllIfNotExist()
+            + toTagActivity()
+        }
+      }
+    }
+  }
+  
+
+  namespace tech.eportfolio.server {
+    namespace service {
+      namespace impl {
+        class tech.eportfolio.server.service.impl.TemplateServiceImpl {
+            + create()
+            + delete()
+            + findAvailableTemplates()
+            + findTemplateById()
+            + findTemplateByTitle()
+            + save()
+        }
+      }
+    }
+  }
+  
+
+  namespace tech.eportfolio.server {
+    namespace service {
+      namespace impl {
+        class tech.eportfolio.server.service.impl.UserCommentServiceImpl {
+            + UserCommentServiceImpl()
+            + create()
+            + delete()
+            + findById()
+            + findByPortfolio()
+            + findByUsernameAndIdAndDeleted()
+            + findUsersByUserComments()
+            + reply()
+        }
+      }
+    }
+  }
+  
+
+  namespace tech.eportfolio.server {
+    namespace service {
+      namespace impl {
+        class tech.eportfolio.server.service.impl.UserFollowServiceImpl {
+            - admin : AmqpAdmin
+            - logger : Logger
+            - rabbitTemplate : RabbitTemplate
+            + UserFollowServiceImpl()
+            + bind()
+            + createQueueAndExchange()
+            + delete()
+            + findByDestinationUser()
+            + findBySourceUser()
+            + findBySourceUsernameAndDestinationNameAndDeleted()
+            + follow()
+            + getActivitiesFromQueue()
+            + hasQueue()
+            + sendActivityToFollowers()
+            + unbind()
+            + unfollow()
+            - createBinding()
+        }
+      }
+    }
+  }
+  
+
+  namespace tech.eportfolio.server {
+    namespace service {
+      namespace impl {
+        class tech.eportfolio.server.service.impl.UserLikeServiceImpl {
+            + UserLikeServiceImpl()
+            + delete()
+            + findByPortfolio()
+            + findByPortfolioAndUsername()
+            + findByUser()
+            + findByUsernameAndPortfolioId()
+            + findByUsernameAndPortfolioIdAndDeleted()
+            + like()
+            + unlike()
+        }
+      }
+    }
+  }
+  
+
+  namespace tech.eportfolio.server {
+    namespace service {
+      namespace impl {
+        class tech.eportfolio.server.service.impl.UserServiceImpl {
+            - bCryptPasswordEncoder : BCryptPasswordEncoder
+            - logger : Logger
+            + changePassword()
+            + createGithubAvatar()
+            + delete()
+            + findAllActive()
+            + findByEmail()
+            + findByIdIn()
+            + findByUsername()
+            + findByUsernameIn()
+            + findDeletedUserWithContainer()
+            + fromUserDTO()
+            + loadUserByUsername()
+            + register()
+            + save()
+            + saveAll()
+            + setAvatarGenerator()
+            + setAzureStorageService()
+            + setBcryptPasswordEncoder()
+            + setUserFollowService()
+            + setUserRepository()
+            + verifyPassword()
+            - encodePassword()
+        }
+      }
+    }
+  }
+  
+
+  namespace tech.eportfolio.server {
+    namespace service {
+      namespace impl {
+        class tech.eportfolio.server.service.impl.UserTagServiceImpl {
+            + UserTagServiceImpl()
+            + batchAssign()
+            + create()
+            + delete()
+            + findByTagId()
+            + findByUsername()
+            + findTagsByUser()
+            + findUsersByTag()
+            + saveAll()
+        }
+      }
+    }
+  }
+  
+
+  namespace tech.eportfolio.server {
+    namespace service {
+      namespace impl {
+        class tech.eportfolio.server.service.impl.VerificationServiceImpl {
+            - host : String
+            + buildEmailContent()
+            + buildLink()
+            + generateVerificationToken()
+            + getVerificationSecret()
+            + sendVerificationEmail()
+            + setEmailService()
+            + setUserService()
+            + setVerificationTokenProvider()
+            + verify()
+            + verify()
+        }
+      }
+    }
+  }
+  
+
+  tech.eportfolio.server.service.impl.ActivityServiceImpl .up.|> tech.eportfolio.server.service.ActivityService
+  tech.eportfolio.server.service.impl.ActivityServiceImpl o-- tech.eportfolio.server.repository.ActivityRepository : activityRepository
+  tech.eportfolio.server.service.impl.ActivityServiceImpl o-- tech.eportfolio.server.service.FeedHistoryService : feedHistoryService
+  tech.eportfolio.server.service.impl.AzureStorageServiceImpl .up.|> tech.eportfolio.server.service.AzureStorageService
+  tech.eportfolio.server.service.impl.EmailServiceImpl .up.|> tech.eportfolio.server.service.EmailService
+  tech.eportfolio.server.service.impl.FeedHistoryServiceImpl .up.|> tech.eportfolio.server.service.FeedHistoryService
+  tech.eportfolio.server.service.impl.FeedHistoryServiceImpl o-- tech.eportfolio.server.repository.FeedHistoryRepository : feedHistoryRepository
+  tech.eportfolio.server.service.impl.PortfolioServiceImpl .up.|> tech.eportfolio.server.service.PortfolioService
+  tech.eportfolio.server.service.impl.PortfolioServiceImpl o-- tech.eportfolio.server.service.ActivityService : activityService
+  tech.eportfolio.server.service.impl.PortfolioServiceImpl o-- tech.eportfolio.server.service.AzureStorageService : azureStorageService
+  tech.eportfolio.server.service.impl.PortfolioServiceImpl o-- tech.eportfolio.server.repository.PortfolioRepository : portfolioRepository
+  tech.eportfolio.server.service.impl.PortfolioServiceImpl o-- tech.eportfolio.server.service.UserFollowService : userFollowService
+  tech.eportfolio.server.service.impl.PortfolioServiceImpl o-- tech.eportfolio.server.service.UserService : userService
+  tech.eportfolio.server.service.impl.RecoveryServiceImpl .up.|> tech.eportfolio.server.service.RecoveryService
+  tech.eportfolio.server.service.impl.RecoveryServiceImpl o-- tech.eportfolio.server.service.EmailService : emailService
+  tech.eportfolio.server.service.impl.RecoveryServiceImpl o-- tech.eportfolio.server.common.utility.JWTTokenProvider : recoveryTokenProvider
+  tech.eportfolio.server.service.impl.RecoveryServiceImpl o-- tech.eportfolio.server.service.UserService : userService
+  tech.eportfolio.server.service.impl.TagServiceImpl .up.|> tech.eportfolio.server.service.TagService
+  tech.eportfolio.server.service.impl.TagServiceImpl o-- tech.eportfolio.server.service.ActivityService : activityService
+  tech.eportfolio.server.service.impl.TagServiceImpl o-- tech.eportfolio.server.repository.TagRepository : tagRepository
+  tech.eportfolio.server.service.impl.TemplateServiceImpl .up.|> tech.eportfolio.server.service.TemplateService
+  tech.eportfolio.server.service.impl.TemplateServiceImpl o-- tech.eportfolio.server.repository.TemplateRepository : templateRepository
+  tech.eportfolio.server.service.impl.UserCommentServiceImpl .up.|> tech.eportfolio.server.service.UserCommentService
+  tech.eportfolio.server.service.impl.UserCommentServiceImpl o-- tech.eportfolio.server.repository.UserCommentRepository : userCommentRepository
+  tech.eportfolio.server.service.impl.UserCommentServiceImpl o-- tech.eportfolio.server.service.UserService : userService
+  tech.eportfolio.server.service.impl.UserFollowServiceImpl .up.|> tech.eportfolio.server.service.UserFollowService
+  tech.eportfolio.server.service.impl.UserFollowServiceImpl o-- tech.eportfolio.server.service.FeedHistoryService : feedHistoryService
+  tech.eportfolio.server.service.impl.UserFollowServiceImpl o-- tech.eportfolio.server.repository.UserFollowRepository : userFollowerRepository
+  tech.eportfolio.server.service.impl.UserLikeServiceImpl .up.|> tech.eportfolio.server.service.UserLikeService
+  tech.eportfolio.server.service.impl.UserLikeServiceImpl o-- tech.eportfolio.server.repository.UserLikeRepository : userLikeRepository
+  tech.eportfolio.server.service.impl.UserServiceImpl .up.|> org.springframework.security.core.userdetails.UserDetailsService
+  tech.eportfolio.server.service.impl.UserServiceImpl .up.|> tech.eportfolio.server.service.UserService
+  tech.eportfolio.server.service.impl.UserServiceImpl o-- tech.eportfolio.server.common.utility.AvatarGenerator : avatarGenerator
+  tech.eportfolio.server.service.impl.UserServiceImpl o-- tech.eportfolio.server.service.AzureStorageService : azureStorageService
+  tech.eportfolio.server.service.impl.UserServiceImpl o-- tech.eportfolio.server.service.UserFollowService : userFollowService
+  tech.eportfolio.server.service.impl.UserServiceImpl o-- tech.eportfolio.server.repository.UserRepository : userRepository
+  tech.eportfolio.server.service.impl.UserTagServiceImpl .up.|> tech.eportfolio.server.service.UserTagService
+  tech.eportfolio.server.service.impl.UserTagServiceImpl o-- tech.eportfolio.server.service.TagService : tagService
+  tech.eportfolio.server.service.impl.UserTagServiceImpl o-- tech.eportfolio.server.service.UserService : userService
+  tech.eportfolio.server.service.impl.UserTagServiceImpl o-- tech.eportfolio.server.repository.UserTagRepository : userTagRepository
+  tech.eportfolio.server.service.impl.VerificationServiceImpl .up.|> tech.eportfolio.server.service.VerificationService
+  tech.eportfolio.server.service.impl.VerificationServiceImpl o-- tech.eportfolio.server.service.EmailService : emailService
+  tech.eportfolio.server.service.impl.VerificationServiceImpl o-- tech.eportfolio.server.service.UserService : userService
+  tech.eportfolio.server.service.impl.VerificationServiceImpl o-- tech.eportfolio.server.common.utility.JWTTokenProvider : verificationTokenProvider
 
 
 right footer

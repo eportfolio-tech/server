@@ -5,7 +5,6 @@ title __SERVER's Class Diagram__\n
   namespace tech.eportfolio.server {
     class tech.eportfolio.server.ServerApplication {
         + bCryptPasswordEncoder()
-        + getJavaMailSender()
         {static} + main()
     }
   }

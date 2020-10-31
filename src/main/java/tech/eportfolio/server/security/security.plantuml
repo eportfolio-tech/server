@@ -14,6 +14,8 @@ title __SECURITY's Class Diagram__\n
   namespace tech.eportfolio.server {
     namespace security {
       class tech.eportfolio.server.security.JWTAuthorizationFilter {
+          - refreshKey : String
+          - signKey : String
           + JWTAuthorizationFilter()
           # doFilterInternal()
       }
