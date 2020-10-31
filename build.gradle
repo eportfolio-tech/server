@@ -134,6 +134,8 @@ jacocoTestReport {
 
 test {
     useJUnitPlatform()
+    systemProperty 'SPRING_MONGO_DB_NAME',  System.getenv('SPRING_MONGO_DB_NAME')
+    systemProperty 'SPRING_MONGO_CONNECTION_STRING',  System.getenv('SPRING_MONGO_CONNECTION_STRING')
     systemProperty "spring.profiles.active", "test"
     systemProperty 'io.springfox.staticdocs.outputDir', swaggerOutputDir
     systemProperty 'io.springfox.staticdocs.snippetsOutputDir', snippetsOutputDir
