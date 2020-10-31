@@ -54,7 +54,7 @@ public class FeedController {
 
     @GetMapping("/")
     @ApiOperation(value = "", authorizations = {@Authorization(value = "JWT")})
-    public ResponseEntity<SuccessResponse<List<Map<String, Object>>>> getActives() {
+    public ResponseEntity<SuccessResponse<List<Map<String, Object>>>> getActivities() {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = userService.findByUsername(username).orElseThrow(() -> new UserNotFoundException(username));
 

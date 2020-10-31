@@ -2,7 +2,7 @@
 skinparam linetype polyline
 skinparam linetype ortho
 
-title __Cache Service Diagram__\n
+title __Cache Service Class Diagram__\n
 
   class tech.eportfolio.server.service.cache.PortfolioServiceCacheImpl {
       + PortfolioServiceCacheImpl()

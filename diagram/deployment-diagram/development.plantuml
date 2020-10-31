@@ -1,0 +1,92 @@
+@startuml
+left to right direction
+
+node "Development Server <<Device>>" as development {
+  node "Docker Compose" {
+     node "Docker Container" <<ExecutionEnvironment>> {
+        node JVM <<ExecutionEnvironment>> {
+          component "Spring Boot" as spring
+        }
+      }
+
+      node "Docker Container" <<ExecutionEnvironment>> as dp0 {
+        node Watchtower <<Image>> {
+          component "Watchtower" as watchtower
+        }
+      }
+
+        node "Docker Container" <<ExecutionEnvironment>> as dp1 {
+           node redis <<Image>> {
+                database "Redis" as rds
+              }
+        }
+
+        node "Docker Container" <<ExecutionEnvironment>> as dp2 {
+          node MongoDB <<Image>> {
+              database "MongoDB" as mongo
+            }
+        }
+
+      node "Docker Container" <<ExecutionEnvironment>> as dp3 {
+       node RabbitMQ <<Image>> {
+            component "RabbitMQ" as rabbit {
+              queue "notification queue"
+            }
+          }
+        }
+
+    node "Docker Container" <<ExecutionEnvironment>> as dp3 {
+     node Azurite <<Image>> {
+          component "Azure Storage Emulator" as emulator
+        }
+      }
+
+
+  }
+
+    rds -- spring : <<Protocol>> RESP
+
+    rabbit -- spring : <<Protocol>> AMQP
+
+    mongo -- spring : <<Protocol>> TCP/IP
+
+    emulator -- spring : <<Protocol>> SMB
+
+
+    node "Reverse Proxy" as rp {
+      component NGINX
+    }
+
+    NGINX -- Build : <<Protocol>> file
+
+    node "React" as react {
+      folder Build {
+        file index.html
+        folder js
+        folder css
+        folder html
+      }
+    }
+}
+
+
+
+rectangle "Client applications" as client {
+  component "web browser"
+}
+
+DockerHub -- watchtower : HTTPS
+
+
+client -- NGINX: <<Protocol>> HTTPS
+
+NGINX -- spring: <<Protocol>> HTTP
+
+cloud DockerHub {
+  artifact "Docker Registry" {
+    label "dev"
+  }
+}
+
+
+@enduml

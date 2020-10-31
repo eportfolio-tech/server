@@ -1,0 +1,248 @@
+@startuml
+left to right direction
+skinparam dpi 300
+'skinparam linetype polyline
+'skinparam linetype ortho
+
+component "Eportfolio System" <<UI>> as es
+component server <<Application>>
+
+component UserLikeRepository <<Repository>>
+component UserRepository <<Repository>>
+UserLikeRepository -[hidden]-> UserRepository
+component UserTagRepository <<Repository>>
+UserRepository -[hidden]> UserTagRepository
+
+component TagRepository <<Repository>>
+UserTagRepository -[hidden]> TagRepository
+
+component PortfolioRepository <<Repository>>
+TagRepository -[hidden]> PortfolioRepository
+
+component UserFollowRepository <<Repository>>
+PortfolioRepository -[hidden]> UserFollowRepository
+
+component UserCommentRepository <<Repository>>
+UserFollowRepository -[hidden]> UserCommentRepository
+
+component TemplateRepository <<Repository>>
+UserCommentRepository -[hidden]> TemplateRepository
+
+component VerificationRepository <<Repository>>
+TemplateRepository -[hidden]> VerificationRepository
+
+component ActivityRepository <<Repository>>
+VerificationRepository -[hidden]> ActivityRepository
+
+component FeedHistoryRepository <<Repository>>
+ActivityRepository -[hidden]> FeedHistoryRepository
+
+
+() HTTP
+es ..> HTTP: use
+HTTP - server
+HTTP -[hidden]-> server
+
+component User <<Component>>
+() UserService
+UserService - User
+UserService -[hidden]-> User
+server ..> UserService: use
+
+() IUserRepository
+IUserRepository - UserRepository
+IUserRepository -[hidden]-> UserRepository
+User ..> IUserRepository: use
+
+
+component UserLike <<Component>>
+() LikeService
+LikeService - UserLike
+LikeService -[hidden]-> UserLike
+server ..> LikeService: use
+
+() IUserLikeRepository
+IUserLikeRepository - UserLikeRepository
+IUserLikeRepository -[hidden]-> UserLikeRepository
+UserLike ..> IUserLikeRepository: use
+
+
+component Tag <<Component>>
+() TagService
+TagService - Tag
+TagService -[hidden]-> Tag
+server ..> TagService: use
+
+() ITagRepository
+ITagRepository - TagRepository
+ITagRepository -[hidden]-> TagRepository
+Tag ..> ITagRepository: use
+
+
+component UserTag <<Component>>
+() UserTagService
+UserTagService - UserTag
+UserTagService -[hidden]-> UserTag
+server ..> UserTagService: use
+
+() IUserTagRepository
+IUserTagRepository - UserTagRepository
+IUserTagRepository -[hidden]-> UserTagRepository
+UserTag ..> IUserTagRepository: use
+
+component Portfolio <<Component>>
+() PortfolioService
+PortfolioService - Portfolio
+PortfolioService -[hidden]-> Portfolio
+server ..> PortfolioService: use
+
+() IPortfolioRepository
+IPortfolioRepository - PortfolioRepository
+IPortfolioRepository -[hidden]-> PortfolioRepository
+Portfolio ..> IPortfolioRepository: use
+
+component UserFollow <<Component>>
+() UserFollowService
+UserFollowService - UserFollow
+UserFollowService -[hidden]-> UserFollow
+server ..> UserFollowService: use
+
+() IUserFollowRepository
+IUserFollowRepository - UserFollowRepository
+IUserFollowRepository -[hidden]-> UserFollowRepository
+UserFollow ..> IUserFollowRepository: use
+
+component UserComment <<Component>>
+() UserCommentService
+UserCommentService - UserComment
+UserCommentService -[hidden]-> UserComment
+server ..> UserCommentService: use
+
+() IUserCommentRepository
+IUserCommentRepository - UserCommentRepository
+IUserCommentRepository -[hidden]-> UserCommentRepository
+UserComment ..> IUserCommentRepository: use
+
+component Template <<Component>>
+() TemplateService
+TemplateService - Template
+TemplateService -[hidden]-> Template
+server ..> TemplateService: use
+
+() ITemplateRepository
+ITemplateRepository - TemplateRepository
+ITemplateRepository -[hidden]-> TemplateRepository
+Template ..> ITemplateRepository: use
+
+component Verification <<Component>>
+() VerificationService
+VerificationService - Verification
+VerificationService -[hidden]-> Verification
+server ..> VerificationService: use
+
+() IVerificationRepository
+IVerificationRepository - VerificationRepository
+IVerificationRepository -[hidden]-> VerificationRepository
+Verification ..> IVerificationRepository: use
+
+component Storage <<Component>>
+() AzureStorageService
+AzureStorageService - Storage
+AzureStorageService -[hidden]-> Storage
+server ..> AzureStorageService: use
+
+component Activity <<Component>>
+() ActivityService
+ActivityService - Activity
+ActivityService -[hidden]-> Activity
+server ..> ActivityService: use
+
+() IActivityRepository
+IActivityRepository - ActivityRepository
+IActivityRepository -[hidden]-> ActivityRepository
+Activity ..> IActivityRepository: use
+
+component FeedHistory <<Component>>
+() FeedHistoryService
+FeedHistoryService - FeedHistory
+FeedHistoryService -[hidden]-> FeedHistory
+server ..> FeedHistoryService: use
+
+component Recovery <<Component>>
+() RecoveryService
+RecoveryService - Recovery
+RecoveryService -[hidden]-> Recovery
+server ..> RecoveryService: use
+
+() IFeedHistoryRepository
+FeedHistory - IFeedHistoryRepository
+FeedHistory -[hidden]-> IFeedHistoryRepository
+IFeedHistoryRepository ..> FeedHistoryRepository: use
+
+component Persistence <<Infrastructure>>
+() MongoRepository
+ActivityRepository -[hidden]---> Persistence
+MongoRepository - Persistence
+
+component Cache <<Infrastructure>>
+Cache -[hidden]-> Persistence
+Persistence -[hidden]-> MongoRepository
+User - Cache: "requires"
+Portfolio - Cache: "requires"
+
+
+
+FeedHistoryRepository ..> MongoRepository: use
+ActivityRepository ..> MongoRepository: use
+VerificationRepository ..> MongoRepository: use
+UserCommentRepository ..> MongoRepository: use
+UserFollowRepository ..> MongoRepository: use
+PortfolioRepository ..> MongoRepository: use
+TagRepository ..> MongoRepository: use
+UserLikeRepository ..> MongoRepository: use
+UserRepository ..> MongoRepository: use
+TemplateRepository ..> MongoRepository: use
+
+Template -[hidden]> TemplateRepository
+Activity -[hidden]> ActivityRepository
+UserFollow -[hidden]> UserFollowRepository
+UserLike -[hidden]> UserLikeRepository
+User -[hidden]> UserRepository
+UserComment -[hidden]> UserCommentRepository
+Tag -[hidden]> TagRepository
+UserTag -[hidden]> UserTagRepository
+Portfolio -[hidden]> PortfolioRepository
+
+
+
+component Email <<Component>>
+() EmailService
+EmailService - Email
+EmailService -[hidden]-> Email
+server ..> EmailService: use
+
+UserFollow ..> User : "requires"
+UserLike ..> User : "requires"
+UserComment ..> User : "requires"
+Activity ..> User : "requires"
+Activity ..> FeedHistory : "requires"
+Portfolio ..> User: "requires"
+Portfolio ..> UserFollow: "requires"
+Portfolio ..> Activity: "requires"
+Portfolio ..> Storage: "requires"
+Recovery ..> User: "requires"
+Recovery ..> Email: "requires"
+Tag ..> Activity: "requires"
+UserComment ..> User: "requires"
+User ..> Storage: "requires"
+User ..> UserFollow: "requires"
+UserTag ..> Tag: "requires"
+UserTag ..> User: "requires"
+Verification ..> User: "requires"
+Verification ..> Email: "requires"
+
+component BlobClient <<Infrastructure>>
+BlobClient -[hidden]-> MongoRepository
+Storage ..> BlobClient: use
+
+@enduml

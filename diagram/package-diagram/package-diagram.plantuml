@@ -1,0 +1,104 @@
+@startuml
+
+skinparam dpi 300
+'skinparam linetype polyline
+skinparam linetype ortho
+
+title __Package Diagram__\n
+
+
+package tech.eportfolio.server <<Folder>> {
+
+ package Users <<Folder>> {
+
+  }
+
+  package "Web Layer" <<Folder>> {
+    package Controller <<Folder>> {
+
+    }
+
+    package "Interceptor" <<Folder>> {
+
+    }
+
+    package "Exception Handler" <<Folder>> {
+
+    }
+    package "Security" <<Folder>> {
+
+    }
+    package "Data Access Object" <<Folder>> {
+
+    }
+    package "Jsend" <<Folder>> {
+    }
+  }
+  package "Service Layer" <<Folder>> {
+    package "Service Interface" <<Folder>> {
+
+    }
+
+    package "Service Implementation" <<Folder>> {
+
+    }
+
+    package "Cached Service Implementation" <<Folder>> {
+
+    }
+  }
+  package "Persistence Layer" <<Folder>> {
+    package "Model" <<Folder>> {
+
+    }
+    package "Repository" <<Folder>> {
+
+    }
+  }
+  package "Common" <<Folder>> {
+    package "Constant" <<Folder>> {
+
+    }
+    package "Exception" <<Folder>> {
+
+    }
+    package "Constraint" <<Folder>> {
+
+    }
+    package "Validator" <<Folder>> {
+
+    }
+    package "Utility" <<Folder>> {
+
+    }
+    "Constant" -[hidden]-> "Exception"
+    "Exception" -[hidden]-> "Constraint"
+    "Constraint" -[hidden]-> "Validator"
+    "Validator" -[hidden]-> "Utility"
+  }
+  package "External Service" <<Folder>> {
+
+  }
+
+  package "Data Source" <<Folder>> {
+
+  }
+}
+
+"Web Layer" -[hidden]> "Common"
+"Users" -[hidden]> "Web Layer"
+"Users" ..> "Web Layer"
+"Cached Service Implementation" ..> "Service Interface"
+"Service Implementation" ..> "Service Interface"
+"Service Layer" ..> "Common"
+"Web Layer" ..> "Service Layer"
+"Web Layer" ..> "Common"
+"Service Layer" ..> "Persistence Layer"
+"Web Layer" -[hidden]--> "Service Layer"
+"Service Layer" -[hidden]--> "Persistence Layer"
+"Service Layer" ..> "Common"
+"Persistence Layer" ..> "Data Source"
+"Persistence Layer" ..> "Common"
+"Service Layer" ..> "External Service"
+
+@enduml

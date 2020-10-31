@@ -1,0 +1,166 @@
+@startuml
+skinparam dpi 300
+
+title Model Class Diagram__\n
+
+      class tech.eportfolio.server.model.Activity {
+          - createdDate : Date
+          - deleted : boolean
+          - id : String
+          - parentId : String
+          - username : String
+          {static} - serialVersionUID : long
+      }
+
+      class tech.eportfolio.server.model.FeedHistory {
+          - createdDate : Date
+          - deleted : boolean
+          - feedItems : Set<String>
+          - id : String
+          - updatedDate : Date
+          - userId : String
+      }
+
+      class tech.eportfolio.server.model.Portfolio {
+          - content : DBObject
+          - coverImage : String
+          - createdDate : Date
+          - deleted : boolean
+          - description : String
+          - id : String
+          - music : String
+          {static} - serialVersionUID : long
+          - title : String
+          - updatedDate : Date
+          - userId : String
+          - username : String
+      }
+      class tech.eportfolio.server.model.Tag {
+          - createdBy : String
+          - createdDate : Date
+          - deleted : boolean
+          - icon : String
+          - id : String
+          - name : String
+          - updatedDate : Date
+          {static} - serialVersionUID : long
+
+      }
+      class tech.eportfolio.server.model.Template {
+          - boilerplate : DBObject
+          - createdDate : Date
+          - deleted : boolean
+          - description : String
+          - hidden : boolean
+          - id : String
+          - title : String
+          - updatedDate : Date
+          {static} - serialVersionUID : long
+      }
+
+      class tech.eportfolio.server.model.User {
+          - authorities : String[]
+          - avatarUrl : String
+          - blobUUID : String
+          - createdDate : Date
+          - deleted : boolean
+          - email : String
+          - enabled : boolean
+          - firstName : String
+          - id : String
+          - lastName : String
+          - locked : boolean
+          - organisation : String
+          - password : String
+          - phone : String
+          - roles : String
+          {static} - serialVersionUID : long
+          - title : String
+          - updatedDate : Date
+          - username : String
+      }
+
+      class tech.eportfolio.server.model.UserComment {
+          - content : String
+          - createdDate : Date
+          - deleted : boolean
+          - id : String
+          - parentId : String
+          - portfolioId : String
+          - updatedDate : Date
+          - userId : String
+          - username : String
+          {static} - serialVersionUID : long
+
+      }
+
+      class tech.eportfolio.server.model.UserFollow {
+          - createdDate : Date
+          - deleted : boolean
+          - destinationUsername : String
+          - id : String
+          - sourceUserId : String
+          - sourceUsername : String
+          {static} - serialVersionUID : long
+
+      }
+
+      class tech.eportfolio.server.model.UserLike {
+          - createdDate : Date
+          - deleted : boolean
+          - id : String
+          - portfolioId : String
+          - userId : String
+          - username : String
+          {static} - serialVersionUID : long
+
+      }
+
+      class tech.eportfolio.server.model.UserPrincipal {
+          + UserPrincipal()
+          + isAccountNonExpired()
+          + isAccountNonLocked()
+          + isCredentialsNonExpired()
+          + isEnabled()
+          {static} - serialVersionUID : long
+
+      }
+
+      class tech.eportfolio.server.model.UserTag {
+          - deleted : boolean
+          - id : String
+          - tagId : String
+          - userId : String
+          - username : String
+          {static} - serialVersionUID : long
+
+      }
+
+  
+
+  tech.eportfolio.server.model.Activity .up.|> java.io.Serializable
+  tech.eportfolio.server.model.Activity o-- tech.eportfolio.server.common.constant.ActivityType : activityType
+  tech.eportfolio.server.model.Activity o-- tech.eportfolio.server.common.constant.ParentType : parentType
+  tech.eportfolio.server.model.FeedHistory .up.|> java.io.Serializable
+  tech.eportfolio.server.model.Portfolio .up.|> java.io.Serializable
+  tech.eportfolio.server.model.Portfolio o-- tech.eportfolio.server.common.constant.Visibility : visibility
+  tech.eportfolio.server.model.Tag .up.|> java.io.Serializable
+  tech.eportfolio.server.model.Template .up.|> java.io.Serializable
+  tech.eportfolio.server.model.User .up.|> java.io.Serializable
+  tech.eportfolio.server.model.UserComment .up.|> java.io.Serializable
+  tech.eportfolio.server.model.UserFollow .up.|> java.io.Serializable
+  tech.eportfolio.server.model.UserLike .up.|> java.io.Serializable
+  tech.eportfolio.server.model.UserPrincipal .up.|> java.io.Serializable
+  tech.eportfolio.server.model.UserPrincipal .up.|> org.springframework.security.core.userdetails.UserDetails
+  tech.eportfolio.server.model.UserPrincipal o-- tech.eportfolio.server.model.User : user
+  tech.eportfolio.server.model.UserTag .up.|> java.io.Serializable
+
+
+right footer
+
+
+PlantUML diagram generated by SketchIt! (https://bitbucket.org/pmesmeur/sketch.it)
+For more information about this tool, please contact philippe.mesmeur@gmail.com
+endfooter
+
+@enduml

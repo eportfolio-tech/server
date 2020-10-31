@@ -1,7 +1,7 @@
 @startuml
 skinparam linetype polyline
 skinparam linetype ortho
-
+skinparam dpi 300
 
 title __Service Class Diagram__\n
 

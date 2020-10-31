@@ -1,7 +1,9 @@
 @startuml
 skinparam linetype polyline
+skinparam dpi 300
 
 title __CONTROLLER's Class Diagram__\n
+
 skinparam linetype ortho
 
       class tech.eportfolio.server.controller.AuthenticationController {
@@ -129,43 +131,71 @@ skinparam linetype ortho
 
 
   tech.eportfolio.server.controller.AuthenticationController -up-|> tech.eportfolio.server.common.exception.handler.AuthenticationExceptionHandler
+  tech.eportfolio.server.controller.AuthenticationController -[hidden]> tech.eportfolio.server.common.exception.handler.AuthenticationExceptionHandler
   tech.eportfolio.server.controller.AuthenticationController o-- tech.eportfolio.server.common.utility.JWTTokenProvider
   tech.eportfolio.server.controller.AuthenticationController o-- tech.eportfolio.server.service.RecoveryService
   tech.eportfolio.server.controller.AuthenticationController o-- tech.eportfolio.server.common.unsplash.Client
   tech.eportfolio.server.controller.AuthenticationController o-- tech.eportfolio.server.service.UserService
   tech.eportfolio.server.controller.AuthenticationController o-- tech.eportfolio.server.service.VerificationService
+
   tech.eportfolio.server.controller.BlobController -up-|> tech.eportfolio.server.common.exception.handler.AuthenticationExceptionHandler
+  tech.eportfolio.server.controller.BlobController -[hidden]> tech.eportfolio.server.common.exception.handler.AuthenticationExceptionHandler
   tech.eportfolio.server.controller.BlobController o-- tech.eportfolio.server.service.AzureStorageService
+  tech.eportfolio.server.controller.BlobController -[hidden]-> tech.eportfolio.server.service.AzureStorageService
   tech.eportfolio.server.controller.BlobController o-- tech.eportfolio.server.service.UserService
-  tech.eportfolio.server.controller.FeedController o-- tech.eportfolio.server.service.ActivityService
-  tech.eportfolio.server.controller.FeedController o-- tech.eportfolio.server.service.PortfolioService
-  tech.eportfolio.server.controller.FeedController o-- tech.eportfolio.server.service.TagService
-  tech.eportfolio.server.controller.FeedController o-- tech.eportfolio.server.service.UserFollowService
-  tech.eportfolio.server.controller.FeedController o-- tech.eportfolio.server.service.UserService
+
+  tech.eportfolio.server.controller.FeedController -[hidden]-> tech.eportfolio.server.service.ActivityService
+  tech.eportfolio.server.controller.FeedController o--- tech.eportfolio.server.service.ActivityService
+  tech.eportfolio.server.controller.FeedController o--- tech.eportfolio.server.service.PortfolioService
+  tech.eportfolio.server.controller.FeedController o--- tech.eportfolio.server.service.TagService
+  tech.eportfolio.server.controller.FeedController o--- tech.eportfolio.server.service.UserFollowService
+  tech.eportfolio.server.controller.FeedController o--- tech.eportfolio.server.service.UserService
+
+  tech.eportfolio.server.controller.PortfolioController -[hidden]-> tech.eportfolio.server.service.PortfolioService
   tech.eportfolio.server.controller.PortfolioController o-- tech.eportfolio.server.service.PortfolioService
   tech.eportfolio.server.controller.PortfolioController o-- tech.eportfolio.server.service.UserService
+
   tech.eportfolio.server.controller.SearchController o-- tech.eportfolio.server.service.PortfolioService
   tech.eportfolio.server.controller.SearchController o-- tech.eportfolio.server.service.TagService
   tech.eportfolio.server.controller.SearchController o-- tech.eportfolio.server.service.UserService
   tech.eportfolio.server.controller.SearchController o-- tech.eportfolio.server.service.UserTagService
+
+  tech.eportfolio.server.controller.TagController -[hidden]-> tech.eportfolio.server.service.TagService
   tech.eportfolio.server.controller.TagController o-- tech.eportfolio.server.service.TagService
+
+  tech.eportfolio.server.controller.TemplateController -[hidden]-> tech.eportfolio.server.service.TemplateService
   tech.eportfolio.server.controller.TemplateController o-- tech.eportfolio.server.service.TemplateService
   tech.eportfolio.server.controller.TemplateController o-- tech.eportfolio.server.service.UserService
+
+
   tech.eportfolio.server.controller.TestController o-- tech.eportfolio.server.common.utility.JWTTokenProvider
   tech.eportfolio.server.controller.TestController o-- tech.eportfolio.server.service.PortfolioService
   tech.eportfolio.server.controller.TestController o-- tech.eportfolio.server.service.UserFollowService
   tech.eportfolio.server.controller.TestController o-- tech.eportfolio.server.repository.UserRepository
   tech.eportfolio.server.controller.TestController o-- tech.eportfolio.server.service.UserService
-  tech.eportfolio.server.controller.UserCommentController o-- tech.eportfolio.server.service.PortfolioService
+
+  tech.eportfolio.server.controller.UserCommentController -[hidden]-> tech.eportfolio.server.service.UserCommentService
   tech.eportfolio.server.controller.UserCommentController o-- tech.eportfolio.server.service.UserCommentService
+  tech.eportfolio.server.controller.UserCommentController o-- tech.eportfolio.server.service.PortfolioService
+  tech.eportfolio.server.controller.UserCommentController -[hidden]-> tech.eportfolio.server.service.UserCommentService
   tech.eportfolio.server.controller.UserCommentController o-- tech.eportfolio.server.service.UserService
+
+  tech.eportfolio.server.controller.UserController -[hidden]-> tech.eportfolio.server.service.UserService
   tech.eportfolio.server.controller.UserController o-- tech.eportfolio.server.service.UserService
   tech.eportfolio.server.controller.UserController o-- tech.eportfolio.server.service.UserTagService
+
+  tech.eportfolio.server.controller.UserFollowController -[hidden]-> tech.eportfolio.server.service.UserFollowService
   tech.eportfolio.server.controller.UserFollowController o-- tech.eportfolio.server.service.UserFollowService
+  tech.eportfolio.server.controller.UserFollowController -[hidden]-> tech.eportfolio.server.service.UserFollowService
   tech.eportfolio.server.controller.UserFollowController o-- tech.eportfolio.server.service.UserService
+
+  tech.eportfolio.server.controller.UserLikeController -[hidden]-> tech.eportfolio.server.service.UserLikeService
   tech.eportfolio.server.controller.UserLikeController o-- tech.eportfolio.server.service.PortfolioService
   tech.eportfolio.server.controller.UserLikeController o-- tech.eportfolio.server.service.UserLikeService
+  tech.eportfolio.server.controller.UserLikeController -[hidden]-> tech.eportfolio.server.service.UserLikeService
   tech.eportfolio.server.controller.UserLikeController o-- tech.eportfolio.server.service.UserService
+
+  tech.eportfolio.server.controller.VerificationController -[hidden]-> tech.eportfolio.server.service.VerificationService
   tech.eportfolio.server.controller.VerificationController o-- tech.eportfolio.server.service.UserService
   tech.eportfolio.server.controller.VerificationController o-- tech.eportfolio.server.service.VerificationService
 

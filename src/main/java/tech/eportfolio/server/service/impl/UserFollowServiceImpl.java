@@ -31,14 +31,11 @@ public class UserFollowServiceImpl implements UserFollowService {
 
     private final UserFollowRepository userFollowerRepository;
 
-    private final FeedHistoryService feedHistoryService;
-
     @Autowired
-    public UserFollowServiceImpl(AmqpAdmin admin, RabbitTemplate rabbitTemplate, UserFollowRepository userFollowerRepository, FeedHistoryService feedHistoryService) {
+    public UserFollowServiceImpl(AmqpAdmin admin, RabbitTemplate rabbitTemplate, UserFollowRepository userFollowerRepository) {
         this.admin = admin;
         this.rabbitTemplate = rabbitTemplate;
         this.userFollowerRepository = userFollowerRepository;
-        this.feedHistoryService = feedHistoryService;
     }
 
     @Override
