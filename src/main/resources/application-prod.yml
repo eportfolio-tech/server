@@ -1,6 +1,6 @@
 azure:
     storage:
-        connection-string: ${SPRING_AZURE_STORAGE_CONNECTION_STRING}
+        connectionString: ${SPRING_AZURE_STORAGE_CONNECTION_STRING}
         container:
             name: ${SPRING_AZURE_STORAGE_CONTAINER_NAME}
 unsplash:
@@ -34,13 +34,9 @@ spring:
         type: redis
     data:
         mongodb:
-            authentication-database: eportfolio-dev
             auto-index-creation: true
-            database: eportfolio-prod
-            host: haswf.com
-            password: renlord
-            port: 37017
-            username: comp30022
+            database: ${SPRING_MONGO_DB_NAME}
+            uri: ${SPRING_MONGO_CONNECTION_STRING}
     mail:
         host: smtp.yandex.com
         password: jxdwlguzlqakqpxx

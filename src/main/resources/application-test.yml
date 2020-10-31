@@ -36,9 +36,8 @@ spring:
     data:
         mongodb:
             auto-index-creation: true
-            database: eportfolio-test
-            host: localhost
-            port: 27017
+            database: ${SPRING_MONGO_DB_NAME}
+            uri: ${SPRING_MONGO_CONNECTION_STRING}
     mail:
         host: smtp.yandex.com
         password: jxdwlguzlqakqpxx
