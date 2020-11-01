@@ -46,9 +46,9 @@ public class User implements Serializable {
     private String username;
 
     private String avatarUrl;
-    private boolean deleted = false;
-    private boolean locked = false;
-    private boolean enabled = true;
+    private boolean deleted;
+    private boolean locked;
+    private boolean enabled;
 
     @CreatedDate
     private Date createdDate;

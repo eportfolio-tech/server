@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.security.core.userdetails.User.UserBuilder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -97,6 +98,9 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         user.setRoles(Role.ROLE_UNVERIFIED_USER.name());
         user.setAuthorities(Role.ROLE_UNVERIFIED_USER.getAuthorities());
         user.setBlobUUID(UUID.randomUUID().toString());
+        user.setEnabled(true);
+        user.setLocked(false);
+        user.setDeleted(false);
         if (createAvatar) {
             user.setAvatarUrl(createGithubAvatar(user));
         }
