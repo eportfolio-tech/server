@@ -1,7 +1,7 @@
 
 
 ![build status](https://travis-ci.com/eportfolio-tech/server.svg?branch=dev)
-[![Known Vulnerabilities](https://snyk.io/test/github/eportfolio-tech/server/badge.svg?targetFile=build.gradle)](https://snyk.io/test/github/dwyl/hapi-auth-jwt2?targetFile=package.json)
+[![Known Vulnerabilities](https://snyk.io/test/github/eportfolio-tech/server/badge.svg?targetFile=build.gradle)](https://snyk.io/test/github/eportfolio-tech/server/badge.svg?targetFile=build.gradle)
 
 
 [Live Demo](https://dev.eportfolio.tech/)
