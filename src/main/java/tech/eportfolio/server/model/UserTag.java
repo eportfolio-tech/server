@@ -4,10 +4,10 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import javax.persistence.Id;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
@@ -28,5 +28,5 @@ public class UserTag implements Serializable {
     @NotNull
     private String tagId;
 
-    private boolean deleted = false;
+    private boolean deleted;
 }

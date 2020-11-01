@@ -5,10 +5,10 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import javax.persistence.Id;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -32,6 +32,6 @@ public class UserLike implements Serializable {
     @CreatedDate
     private Date createdDate;
 
-    private boolean deleted = false;
+    private boolean deleted;
 
 }

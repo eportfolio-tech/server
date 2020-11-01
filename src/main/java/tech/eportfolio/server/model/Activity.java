@@ -5,11 +5,11 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import tech.eportfolio.server.common.constant.ActivityType;
 import tech.eportfolio.server.common.constant.ParentType;
 
-import javax.persistence.Id;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -19,7 +19,6 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Activity implements Serializable {
-
     @Id
     private String id;
 
