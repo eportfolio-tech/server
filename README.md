@@ -5,16 +5,25 @@
 [![All Contributors](https://img.shields.io/badge/all_contributors-5-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
+## Forty-Two e-portfolio
+This repository contains source code for backend server of Forty-Two e-portfolio platform.
+This project is built for IT Project at The University of Melbourne. 
+Todo: WEBSITE DESCRIPTION TO BE COMPLETED
 
 [Live Demo](https://dev.eportfolio.tech/)
 
+
 ## Dependencies
 - `Spring Boot` v2.3.4
+- `Gradle` 6.4.1
+- `Redis` 6.0.9
+- `MongoDB` 4.4.1
+- `RabbitMQ` 3.8.9
 
 ## Quick Start
 ### Using Docker
 
-This project requires Redis, MongoDB and RabbitMQ. We've created 4 `docker-compose` configurations to simplify this process. 
+This project requires Redis, MongoDB and RabbitMQ. We've created `docker-compose` configurations to simplify this process. 
 - `dev`: 
     + connect to an external MongoDB instance 
     + run Redis, and RabbitMQ on customised port
@@ -45,39 +54,26 @@ server_1      | 2020-10-27 14:06:30.843  INFO 1 --- [           main] t.eportfol
 ```
 You can use `http://localhost:PORT/api/swagger-ui.html` to access API documentation.
 
-## Local Development
-1. run `docker-compose -f ./docker-compose/local/docker-compose.yml up -d` 
-2. run `cp ./docker-compose/local/example.env ./docker-compose/local/.env`
-3. fill the `.env` file at `./docker-compose/local/.env`
-3. run `export $(cat ./docker-compose/local/.env | xargs)` to export environment variables to active shell. Alternatively, you can use [`EnvFile`](https://plugins.jetbrains.com/plugin/index?xmlId=net.ashald.envfile) for IntelliJ IDEA to mange environment variables.
-4. run `./gradlew bootRun` on *unix or `.\gradlew.bat bootRun` on Windows. Note that it might take a while to download dependencies.
-The server will be listening on port 8090 by default. 
-You can use `http://localhost:PORT/api/swagger-ui.html` to access API documentation.
+## Configuration
 
-## Testing
-This project has implemented unit testing for API endpoints.
-1. run `docker-compose -f ./docker-compose/test/docker-compose.yml up -d` 
-2. run `cp ./docker-compose/test/example.env ./docker-compose/test/.env `
-3. run `export $(cat ./docker-compose/test/.env | xargs)` to export environment variables to active shell
-4. run `./gradlew test` on *unix or `.\gradlew.bat test` on Windows. Note that it might take a while to download dependencies.
+The server read configuration such as database connection from environment variables.
 
-
-## Environment Variables
-
-When deployed using `docker-compose`, the application read configuration from environment variables. 
 - By default, running `docker-compose up` command in any subfolder(i.e. dev/local/prod/test) of the`docker-compose` directory
 will use the `.env` file inside the subfolder.
-- Use `--env-file` flag to specify a environment file if you don't want to use `.env`
+- Use `--env-file` flag to specify an environment file if you don't want to use `.env`
 
 The following snippet lists all environment variables used in this project with description.
 You can also find this example in each subfolder with name `example.env`.
 ```
 # ------- Slack -------
+# Spring profile
+PROFILE=local
+
 # Set slack hook url if you want watchtower to notice image update
 SLACK_HOOK_URL=
 
 # ------- Watchtower -------
-# Path of docker configuration json. Set this to pull image from private docker registery.
+# Path of docker configuration json. Set this to pull image from private docker registry.
 DOCKER_CONFIG_PATH=
 
 # ------- Server -------
@@ -106,11 +102,40 @@ SPRING_RABBITMQ_USERNAME=
 # RabbitMQ password
 SPRING_RABBITMQ_PASSWORD=
 
+# ------- Mongo DB -------
+# specify database to use
+SPRING_MONGO_DB_NAME=
+# MongoDB connection string. It should start with mongodb+srv:// or mongodb://
+SPRING_MONGO_CONNECTION_STRING=
+
+# ------- Azure -------
+# Azure storage account connection string
+SPRING_AZURE_STORAGE_CONNECTION_STRING=
+# default container name
+SPRING_AZURE_STORAGE_CONTAINER_NAME=
+
 # ------- 3rd Party API -------
-# We use free images from unsplash.com to create exmaple portfoios
+# We use free images from unsplash.com to create example portfolio
 # Unsplash access API key
 SPRING_UNSPLASH_ACCESS_KEY=
 ```
+
+## Local Development
+1. run `docker-compose -f ./docker-compose/local/docker-compose.yml up -d` 
+2. run `cp ./docker-compose/local/example.env ./docker-compose/local/.env`
+3. fill the `.env` file at `./docker-compose/local/.env`
+3. run `export $(cat ./docker-compose/local/.env | xargs)` to export environment variables to active shell. Alternatively, you can use [`EnvFile`](https://plugins.jetbrains.com/plugin/index?xmlId=net.ashald.envfile) for IntelliJ IDEA to mange environment variables.
+4. run `./gradlew bootRun` on *unix or `.\gradlew.bat bootRun` on Windows. Note that it might take a while to download dependencies.
+The server will be listening on port 8090 by default. 
+You can use `http://localhost:PORT/api/swagger-ui.html` to access API documentation.
+
+## Testing
+This project has implemented unit testing for API endpoints.
+1. run `docker-compose -f ./docker-compose/test/docker-compose.yml up -d` 
+2. run `cp ./docker-compose/test/example.env ./docker-compose/test/.env `
+3. run `export $(cat ./docker-compose/test/.env | xargs)` to export environment variables to active shell
+4. run `./gradlew test` on *unix or `.\gradlew.bat test` on Windows. Note that it might take a while to download dependencies.
+
 
 ## Repository Structure
 The following outlines structure of the repository with description.
@@ -146,8 +171,7 @@ The following outlines structure of the repository with description.
 
 ## Spring Boot Project Structure
 
-The following outlines the Spring Boot Application structure.
-We structured the project based on layered architecture model. 
+The following outlines the Spring Boot Application structure. We structured the project based on a layered architecture model.
 
 
 ```
