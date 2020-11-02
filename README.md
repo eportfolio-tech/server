@@ -45,6 +45,23 @@ server_1      | 2020-10-27 14:06:30.843  INFO 1 --- [           main] t.eportfol
 ```
 You can use `http://localhost:PORT/api/swagger-ui.html` to access API documentation.
 
+## Local Development
+1. run `docker-compose -f ./docker-compose/local/docker-compose.yml up -d` 
+2. run `cp ./docker-compose/local/example.env ./docker-compose/local/.env`
+3. fill the `.env` file at `./docker-compose/local/.env`
+3. run `export $(cat ./docker-compose/local/.env | xargs)` to export environment variables to active shell. Alternatively, you can use [`EnvFile`](https://plugins.jetbrains.com/plugin/index?xmlId=net.ashald.envfile) for IntelliJ IDEA to mange environment variables.
+4. run `./gradlew bootRun` on *unix or `.\gradlew.bat bootRun` on Windows. Note that it might take a while to download dependencies.
+The server will be listening on port 8090 by default. 
+You can use `http://localhost:PORT/api/swagger-ui.html` to access API documentation.
+
+## Testing
+This project has implemented unit testing for API endpoints.
+1. run `docker-compose -f ./docker-compose/test/docker-compose.yml up -d` 
+2. run `cp ./docker-compose/test/example.env ./docker-compose/test/.env `
+3. run `export $(cat ./docker-compose/test/.env | xargs)` to export environment variables to active shell
+4. run `./gradlew test` on *unix or `.\gradlew.bat test` on Windows. Note that it might take a while to download dependencies.
+
+
 ## Environment Variables
 
 When deployed using `docker-compose`, the application read configuration from environment variables. 
@@ -168,19 +185,6 @@ We structured the project based on layered architecture model.
                     ├── listener: listener tests
                     └── service: service tests
 ```
-## Local Development
-1. `cd` into `./docker-compose/test` 
-2. run `docker-compose up -d` 
-3. rename `example.env` to `.env`
-4. run `export $(cat .env | xargs)` to export environment variables to active shell. Alternatively, you can use [`EnvFile`](https://plugins.jetbrains.com/plugin/index?xmlId=net.ashald.envfile) for IntelliJ IDEA to mange environment variables.
-5. run `gradlew bootRun`. Note that it might take a while to download gradle dependencies.
-## Testing
-This project has implemented unit testing for API endpoints.
-1. `cd` into `./docker-compose/test` 
-2. run `docker-compose up -d` 
-3. rename `example.env` to `.env`
-4. run `export $(cat .env | xargs)` to export environment variables to active shell
-5. run `gradlew test` 
 
 ## Contributors ✨
 
