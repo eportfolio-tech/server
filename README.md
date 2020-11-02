@@ -1,6 +1,6 @@
 
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-4-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-5-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 ![build status](https://travis-ci.com/eportfolio-tech/server.svg?branch=dev)
@@ -189,6 +189,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="https://github.com/Skylar-Yang"><img src="https://avatars1.githubusercontent.com/u/61859437?v=4" width="100px;" alt=""/><br /><sub><b>Skylar-Yang</b></sub></a><br /><a href="https://github.com/eportfolio-tech/server/commits?author=Skylar-Yang" title="Code">💻</a></td>
     <td align="center"><a href="https://github.com/Zijian-Zeng"><img src="https://avatars3.githubusercontent.com/u/53477823?v=4" width="100px;" alt=""/><br /><sub><b>Zijian-Zeng</b></sub></a><br /><a href="https://github.com/eportfolio-tech/server/commits?author=Zijian-Zeng" title="Code">💻</a></td>
     <td align="center"><a href="https://www.linkedin.com/in/shuyang-fan-33231a17b/"><img src="https://avatars3.githubusercontent.com/u/34025121?v=4" width="100px;" alt=""/><br /><sub><b>Haswell Fan</b></sub></a><br /><a href="https://github.com/eportfolio-tech/server/commits?author=Haswf" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/FishWith7sMemory"><img src="https://avatars0.githubusercontent.com/u/63847386?v=4" width="100px;" alt=""/><br /><sub><b>FishWith7sMemory</b></sub></a><br /><a href="https://github.com/eportfolio-tech/server/commits?author=FishWith7sMemory" title="Code">💻</a></td>
   </tr>
 </table>
 
