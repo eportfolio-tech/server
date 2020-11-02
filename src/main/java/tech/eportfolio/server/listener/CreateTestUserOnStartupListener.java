@@ -9,13 +9,8 @@ import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 import tech.eportfolio.server.model.User;
-import tech.eportfolio.server.repository.UserFollowRepository;
-import tech.eportfolio.server.service.UserFollowService;
-import tech.eportfolio.server.service.UserService;
 
-import java.util.List;
-import java.util.Objects;
-import java.util.concurrent.atomic.AtomicInteger;
+import tech.eportfolio.server.service.UserService;
 
 /**
  * Create test account on start up
@@ -32,8 +27,6 @@ public class CreateTestUserOnStartupListener {
     private String password;
 
     private UserService userService;
-
-
 
     @Autowired
     public void setUserService(UserService userService) {
