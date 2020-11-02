@@ -1,10 +1,9 @@
-
+![build status](https://travis-ci.com/eportfolio-tech/server.svg?branch=dev)
+![Known Vulnerabilities](https://snyk.io/test/github/eportfolio-tech/server/badge.svg?targetFile=build.gradle)
+[![Coverage Status](https://coveralls.io/repos/github/eportfolio-tech/server/badge.svg?branch=dev)](https://coveralls.io/github/eportfolio-tech/server?branch=dev)
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
 [![All Contributors](https://img.shields.io/badge/all_contributors-5-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
-
-![build status](https://travis-ci.com/eportfolio-tech/server.svg?branch=dev)
-[![Known Vulnerabilities](https://snyk.io/test/github/eportfolio-tech/server/badge.svg?targetFile=build.gradle)](https://snyk.io/test/github/eportfolio-tech/server/badge.svg?targetFile=build.gradle)
 
 
 [Live Demo](https://dev.eportfolio.tech/)
@@ -14,25 +13,22 @@
 
 ## Quick Start
 ### Using Docker
-This project requires Redis, MongoDB and RabbitMQ. We've created `docker-compose` file
-to simplify this process. Currently, there are 5 configurations available.
+
+This project requires Redis, MongoDB and RabbitMQ. We've created 4 `docker-compose` configurations to simplify this process. 
 - `dev`: 
     + connect to an external MongoDB instance 
-    + set up Redis, and RabbitMQ on customised port
+    + run Redis, and RabbitMQ on customised port
     + Redis, RabbitMQ will be bind to localhost, you will need ssh tunnel to access it.
 - `prod`: 
     + connect to an external MongoDB instance
-    + set up Redis, and RabbitMQ on customised port
+    + run Redis, and RabbitMQ on customised port
     + Redis, RabbitMQ will be bind to localhost, you will need ssh tunnel to access it.
 - `local`: 
     + connect to a local MongoDB instance
-    + set up Redis, MongoDB and RabbitMQ on default port
-    + All services all exposed. You can access it from everywhere.
+    + run Redis, MongoDB and RabbitMQ on default port
 - `test`: 
     + connect to a local MongoDB instance
-    + set up Redis, MongoDB and RabbitMQ on default port
-    + All services all exposed. You can access it from everywhere.
-- `sonarqube`: host a sonarqube instance for static code scan.
+    + run Redis, MongoDB and RabbitMQ on default port
 
 Once you've decided which environment you want to use, `cd` into that directory.
 The following guide uses `dev` as an example. i.e. at `./docker-compose/dev/`
@@ -98,10 +94,6 @@ SPRING_RABBITMQ_PASSWORD=
 # Unsplash access API key
 SPRING_UNSPLASH_ACCESS_KEY=
 ```
-
-
-
-
 
 ## Repository Structure
 The following outlines structure of the repository with description.
@@ -176,6 +168,20 @@ We structured the project based on layered architecture model.
                     ├── listener: listener tests
                     └── service: service tests
 ```
+## Local Development
+1. `cd` into `./docker-compose/test` 
+2. run `docker-compose up -d` 
+3. rename `example.env` to `.env`
+4. run `export $(cat .env | xargs)` to export environment variables to active shell. Alternatively, you can use [`EnvFile`](https://plugins.jetbrains.com/plugin/index?xmlId=net.ashald.envfile) for IntelliJ IDEA to mange environment variables.
+5. run `gradlew bootRun`. Note that it might take a while to download gradle dependencies.
+## Testing
+This project has implemented unit testing for API endpoints.
+1. `cd` into `./docker-compose/test` 
+2. run `docker-compose up -d` 
+3. rename `example.env` to `.env`
+4. run `export $(cat .env | xargs)` to export environment variables to active shell
+5. run `gradlew test` 
+
 ## Contributors ✨
 
 Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
