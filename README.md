@@ -1,6 +1,6 @@
 
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-2-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-3-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 ![build status](https://travis-ci.com/eportfolio-tech/server.svg?branch=dev)
@@ -187,6 +187,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
   <tr>
     <td align="center"><a href="https://www.linkedin.com/in/yunfeijing/"><img src="https://avatars3.githubusercontent.com/u/18676002?v=4" width="100px;" alt=""/><br /><sub><b>Yunfei Jing</b></sub></a><br /><a href="https://github.com/eportfolio-tech/server/commits?author=yunfeijing" title="Code">💻</a></td>
     <td align="center"><a href="https://github.com/Skylar-Yang"><img src="https://avatars1.githubusercontent.com/u/61859437?v=4" width="100px;" alt=""/><br /><sub><b>Skylar-Yang</b></sub></a><br /><a href="https://github.com/eportfolio-tech/server/commits?author=Skylar-Yang" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/Zijian-Zeng"><img src="https://avatars3.githubusercontent.com/u/53477823?v=4" width="100px;" alt=""/><br /><sub><b>Zijian-Zeng</b></sub></a><br /><a href="https://github.com/eportfolio-tech/server/commits?author=Zijian-Zeng" title="Code">💻</a></td>
   </tr>
 </table>
 
