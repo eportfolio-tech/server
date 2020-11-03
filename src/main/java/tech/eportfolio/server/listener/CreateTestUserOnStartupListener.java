@@ -35,11 +35,11 @@ public class CreateTestUserOnStartupListener {
 
     @EventListener
     public void onApplicationEvent(ContextRefreshedEvent event) {
-        if (userService.findByUsername("test").isEmpty()) {
+        if (userService.findByUsername(username).isEmpty()) {
             User test = User.builder()
                     .avatarUrl(Faker.instance().internet().avatar())
                     .username(username)
-                    .email("")
+                    .email(Faker.instance().internet().emailAddress())
                     .firstName("test")
                     .lastName("man")
                     .phone("(03)90355511")
