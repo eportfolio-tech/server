@@ -22,8 +22,8 @@ Todo: WEBSITE DESCRIPTION TO BE COMPLETED
 
 ## Quick Start
 ### Using Docker
-
 This project requires Redis, MongoDB and RabbitMQ. We've created `docker-compose` configurations to simplify this process. 
+![](https://github.com/eportfolio-tech/server/blob/dev/diagram/docker-compose-diagram/docker-compose.png?raw=true)
 - `dev`: 
     + connect to an external MongoDB instance 
     + run Redis, and RabbitMQ on customised port
@@ -136,7 +136,6 @@ This project has implemented unit testing for API endpoints.
 3. run `export $(cat ./docker-compose/test/.env | xargs)` to export environment variables to active shell
 4. run `./gradlew test` on *unix or `.\gradlew.bat test` on Windows. Note that it might take a while to download dependencies.
 
-
 ## Repository Structure
 The following outlines structure of the repository with description.
 
@@ -169,10 +168,11 @@ The following outlines structure of the repository with description.
 ```
 
 
-## Spring Boot Project Structure
-
+## Architecture
+### Overview
+![](https://github.com/eportfolio-tech/server/blob/dev/diagram/architecture-diagram.png?raw=true)
 The following outlines the Spring Boot Application structure. We structured the project based on a layered architecture model.
-
+### Spring Boot Structure
 
 ```
 .
@@ -209,6 +209,9 @@ The following outlines the Spring Boot Application structure. We structured the 
                     ├── listener: listener tests
                     └── service: service tests
 ```
+
+## Message Queue Usage
+![](https://github.com/eportfolio-tech/server/blob/dev/diagram/message-queue.png?raw=true)
 
 ## Contributors ✨
 
